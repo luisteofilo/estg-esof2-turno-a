@@ -1,0 +1,33 @@
+namespace ESOF.WebApp.DBLayer.Entities;
+
+public enum Console
+{
+    Playstation1,
+    Playstation2,
+    Playstation3,
+    Playstation4,
+    Playstation5,
+    PocketStation,
+    PSPGO,
+    PlayStationPortable,
+    PlayStationVita,
+    GameBoy,
+    Xbox,
+    Xbox360,
+    XboxOne,
+    XboxOneS,
+    XboxOneX,
+    XboxOneXS,
+    Computer,
+    Nitendo,
+    SuperNintendo,
+    Nintendo64,
+    GameCube,
+    NintendoSwitch,
+    VirtualBoy,
+    GameBoyColor,
+    GameBoyAdvance,
+    PokemonMini,
+    Nintendo3DS,
+    NintendoSwitchLite,
+}
