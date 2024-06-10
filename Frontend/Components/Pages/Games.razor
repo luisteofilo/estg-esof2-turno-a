@@ -1,0 +1,79 @@
+@page "/Games"
+@using ESOF.WebApp.DBLayer.Entities
+@inject HttpClient Http
+
+<h3>Games</h3>
+
+@if (games == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="AddGame">Add Game</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Release Date</th>
+                <th>Developer</th>
+                <th>Publisher</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var game in games)
+            {
+                <tr>
+                    <td>@game.Name</td>
+                    <td>@game.ReleaseDate.ToShortDateString()</td>
+                    <td>@game.Developer</td>
+                    <td>@game.Publisher</td>
+                    <td>@game.Price.ToString("C")</td>
+                    <td>
+                        <button class="btn btn-secondary" @onclick="() => EditGame(game)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Game>? games; // Use nullable for initialization and correct type
+
+    protected override async Task OnInitializedAsync()
+    {
+        games = await Http.GetFromJsonAsync<List<Game>>("games"); // Corrected endpoint
+    }
+
+    private void AddGame()
+    {
+        // Logic to navigate to Add Game page or open a modal for adding a game
+    }
+
+    private async Task EditGame(Game game)
+    {
+        // Logic to navigate to Edit Game page or open a modal for editing a game
+    }
+
+    private async Task DeleteGame(Guid id)
+    {
+        var response = await Http.DeleteAsync($"game/{id}"); // Corrected endpoint
+        if (response.IsSuccessStatusCode)
+        {
+            var gameToRemove = games?.FirstOrDefault(g => g.GameId == id);
+            if (gameToRemove != null)
+            {
+                games.Remove(gameToRemove);
+                StateHasChanged(); // Notify Blazor that the state has changed to update the UI
+            }
+        }
+        else
+        {
+            // Log error - replace Console.Error with your logging mechanism
+        }
+    }
+}

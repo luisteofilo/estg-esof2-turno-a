@@ -78,6 +78,7 @@ public class GamesController : ControllerBase
         context.Games.Remove(game);
         await context.SaveChangesAsync();
         return NoContent();
-
     }
+    
+    
 }
