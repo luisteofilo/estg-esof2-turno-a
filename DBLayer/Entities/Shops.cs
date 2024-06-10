@@ -5,14 +5,16 @@ namespace ESOF.WebApp.DBLayer.Entities;
 
 public class Shops
 {
+    
     [Key]
-    public Guid gameOfMonthId { get; set; }
+    public Guid ShopId { get; set; }
+    public Guid GameOfMonthId { get; set; }
     
     [Required]
-    public DateTime date { get; set; }
+    public DateTime Date { get; set; }
     
     [Required]
-    public Guid gameId { get; set; }
+    public Guid GameId { get; set; }
     
     [ForeignKey("gameId")]
     public Game Game { get; set; }

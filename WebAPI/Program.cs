@@ -1,4 +1,7 @@
 using ESOF.WebApp.DBLayer.Context;
+using ESOF.WebApp.DBLayer.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -46,7 +50,10 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
+app.MapControllers();
+
 app.Run();
+
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {

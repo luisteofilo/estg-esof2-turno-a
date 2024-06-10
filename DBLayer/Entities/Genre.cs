@@ -9,7 +9,7 @@ public enum Genre
     HackESlash,
     PlatformerERunner,
     ThirdPersonShooter,
-    shump,
+    Shump,
     RolePlaying,
     ActionRPG,
     AdventureRPG,

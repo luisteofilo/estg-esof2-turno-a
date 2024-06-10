@@ -8,45 +8,35 @@ public partial class ApplicationDbContext
 {
     private void BuildGame(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Game>()
+            .Property(g => g.GameId)
+            .HasDefaultValueSql("gen_random_uuid()");
+        
         modelBuilder.Entity<Game>(entity =>
         {
             entity.HasKey(e => e.GameId);
 
-            entity.Property(e => e.name)
+            entity.Property(e => e.Name)
                 .IsRequired();
 
-            entity.Property(e => e.releaseDate)
+            entity.Property(e => e.ReleaseDate)
                 .IsRequired();
 
-            entity.Property(e => e.developer)
+            entity.Property(e => e.Developer)
                 .IsRequired();
 
-            entity.Property(e => e.publisher)
+            entity.Property(e => e.Publisher)
                 .IsRequired();
 
-            entity.Property(e => e.description)
+            entity.Property(e => e.Description)
                 .IsRequired();
 
-            entity.Property(e => e.price)
+            entity.Property(e => e.Price)
                 .IsRequired();
-
-            entity.Property(e => e.os);
-
-            entity.Property(e => e.processor);
-
-            entity.Property(e => e.memory);
-
-            entity.Property(e => e.graphics);
-
-            entity.Property(e => e.network);
-
-            entity.Property(e => e.storage);
-
-            entity.Property(e => e.additionalNotes);
 
             entity.HasMany(e => e.Shops)
                 .WithOne(s => s.Game)
-                .HasForeignKey(s => s.gameId);
+                .HasForeignKey(s => s.GameId);
         });
     }
 }

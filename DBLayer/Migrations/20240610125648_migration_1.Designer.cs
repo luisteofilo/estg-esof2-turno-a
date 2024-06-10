@@ -3,6 +3,7 @@ using System;
 using ESOF.WebApp.DBLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610125648_migration_1")]
+    partial class migration_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,42 +29,69 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 {
                     b.Property<Guid>("GameId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
-                    b.Property<int[]>("Categories")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<int[]>("Consoles")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("additionalNotes")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Developer")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int[]>("Genres")
+                    b.Property<int[]>("categories")
                         .IsRequired()
                         .HasColumnType("integer[]");
 
-                    b.Property<string>("Name")
+                    b.Property<int[]>("consoles")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("Price")
+                    b.Property<string>("developer")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int[]>("genres")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<string>("graphics")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("memory")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("network")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("os")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("price")
                         .HasColumnType("real");
 
-                    b.Property<string>("Publisher")
+                    b.Property<string>("processor")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("ReleaseDate")
+                    b.Property<string>("publisher")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("releaseDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("storage")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("GameId");
 
@@ -117,10 +147,9 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
                 {
-                    b.Property<Guid>("ShopId")
+                    b.Property<Guid>("GameOfMonthId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
@@ -128,13 +157,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<Guid>("GameId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("GameOfMonthId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("gameId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("ShopId");
+                    b.HasKey("GameOfMonthId");
 
                     b.HasIndex("GameId");
 

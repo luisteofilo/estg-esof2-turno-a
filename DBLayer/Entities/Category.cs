@@ -3,7 +3,7 @@ namespace ESOF.WebApp.DBLayer.Entities;
 public enum Category
 {
     Adventure,
-    FreetoPlay,
+    FreeToPlay,
     Farm,
     AFK,
     Racing,

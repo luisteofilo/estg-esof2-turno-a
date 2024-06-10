@@ -8,19 +8,25 @@ public partial class ApplicationDbContext
 {
     private void BuildShops(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Shops>()
+            .Property(s => s.ShopId)
+            .HasDefaultValueSql("gen_random_uuid()");
+        
         modelBuilder.Entity<Shops>(entity =>
         {
-            entity.HasKey(e => e.gameOfMonthId);
+            entity.HasKey(e => e.ShopId);
 
-            entity.Property(e => e.date)
+            entity.Property(e => e.GameOfMonthId);
+
+            entity.Property(e => e.Date)
                 .IsRequired();
 
-            entity.Property(e => e.gameId)
+            entity.Property(e => e.GameId)
                 .IsRequired();
 
             entity.HasOne(e => e.Game)
                 .WithMany(g => g.Shops)
-                .HasForeignKey(e => e.gameId);
+                .HasForeignKey(e => e.GameId);
         });
     }
 }
