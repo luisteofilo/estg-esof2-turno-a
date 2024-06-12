@@ -1,0 +1,116 @@
+﻿@page "/catalog"
+
+<PageTitle>Games catalog</PageTitle>
+<div class="menuFilters col-md-10 offset-md-1 mb-5">
+    <div>
+        <h1>Games catalog</h1>
+    </div>
+    <div class="dropdownFilters">
+        <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="genreDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Genre
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="genreDropdown">
+                        @foreach (var filtro in filtros)
+                        {
+                            <li><a class="dropdown-item" href="#">@filtro</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="orderDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Order
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </div>
+    </div>
+</div>
+
+
+@if (gamescard == null)
+{
+    <p class="col-md-10 offset-md-1 mb-5">
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+        <div class="cardsGames row col-md-10 offset-md-1">
+            @foreach (var game in gamescard)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card position-relative">
+                        <img src="https://picsum.photos/500/700" class="card-img" alt="...">
+                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                            <h5 class="card-title text-white mb-0">@game.Title</h5>
+                            <p class="card-text text-white">@game.Genre - @game.Platform</p>
+                        </div>
+                        <div class="card-button">
+                            <button type="button" class="btn btn-outline-light">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: currentColor;"><path d="m6.516 14.323-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+}
+
+@code {
+    private Game[] gamescard;
+    private string[] filtros;
+
+    protected override void OnInitialized()
+    {
+        gamescard = new[]
+        {
+            new Game { Title = "Game 1", Genre = "Action", Platform = "PC", ReleaseDate = DateTime.Parse("2021-01-01"), Price = 59.99M },
+            new Game { Title = "Game 2", Genre = "Adventure", Platform = "PS4", ReleaseDate = DateTime.Parse("2022-05-15"), Price = 49.99M },
+            new Game { Title = "Game 3", Genre = "RPG", Platform = "Xbox One", ReleaseDate = DateTime.Parse("2020-11-10"), Price = 39.99M },
+            new Game { Title = "Game 4", Genre = "Strategy", Platform = "PC", ReleaseDate = DateTime.Parse("2019-09-01"), Price = 29.99M },
+            new Game { Title = "Game 5", Genre = "Shooter", Platform = "PS5", ReleaseDate = DateTime.Parse("2021-12-01"), Price = 69.99M },
+            new Game { Title = "Game 6", Genre = "Horror", Platform = "Switch", ReleaseDate = DateTime.Parse("2021-10-31"), Price = 59.99M },
+            new Game { Title = "Game 7", Genre = "Simulation", Platform = "PC", ReleaseDate = DateTime.Parse("2020-06-20"), Price = 49.99M },
+            new Game { Title = "Game 8", Genre = "Racing", Platform = "PS4", ReleaseDate = DateTime.Parse("2019-07-15"), Price = 39.99M },
+            new Game { Title = "Game 9", Genre = "Sports", Platform = "Xbox Series X", ReleaseDate = DateTime.Parse("2021-09-22"), Price = 59.99M },
+            new Game { Title = "Game 10", Genre = "Puzzle", Platform = "Mobile", ReleaseDate = DateTime.Parse("2021-08-15"), Price = 9.99M },
+            new Game { Title = "Game 11", Genre = "Action", Platform = "PC", ReleaseDate = DateTime.Parse("2022-01-01"), Price = 59.99M },
+            new Game { Title = "Game 12", Genre = "Adventure", Platform = "PS4", ReleaseDate = DateTime.Parse("2023-05-15"), Price = 49.99M },
+            new Game { Title = "Game 13", Genre = "RPG", Platform = "Xbox One", ReleaseDate = DateTime.Parse("2021-11-10"), Price = 39.99M },
+            new Game { Title = "Game 14", Genre = "Strategy", Platform = "PC", ReleaseDate = DateTime.Parse("2022-09-01"), Price = 29.99M },
+            new Game { Title = "Game 15", Genre = "Shooter", Platform = "PS5", ReleaseDate = DateTime.Parse("2023-12-01"), Price = 69.99M },
+            new Game { Title = "Game 16", Genre = "Horror", Platform = "Switch", ReleaseDate = DateTime.Parse("2022-10-31"), Price = 59.99M },
+            new Game { Title = "Game 17", Genre = "Simulation", Platform = "PC", ReleaseDate = DateTime.Parse("2023-06-20"), Price = 49.99M },
+            new Game { Title = "Game 18", Genre = "Racing", Platform = "PS4", ReleaseDate = DateTime.Parse("2021-07-15"), Price = 39.99M },
+            new Game { Title = "Game 19", Genre = "Sports", Platform = "Xbox Series X", ReleaseDate = DateTime.Parse("2022-09-22"), Price = 59.99M },
+            new Game { Title = "Game 20", Genre = "Puzzle", Platform = "Mobile", ReleaseDate = DateTime.Parse("2020-08-15"), Price = 9.99M }
+        };
+
+        filtros = new[]
+        {
+            "Action",
+            "Adventure",
+            "RPG",
+            "Strategy",
+            "Shooter",
+            "Horror",
+            "Simulation",
+            "Racing",
+            "Sports",
+            "Puzzle"
+        };
+    }
+
+    public class Game
+    {
+        public string Title { get; set; }
+        public string Genre { get; set; }
+        public string Platform { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public decimal Price { get; set; }
+    }
+}
