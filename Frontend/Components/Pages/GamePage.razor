@@ -1,0 +1,140 @@
+﻿@page "/game/reviews"
+@rendermode InteractiveServer
+
+<PageTitle>Reviews</PageTitle>
+
+<h1>Reviews</h1>
+
+<div class="row">
+    <div class="reviews-section">
+
+        <!-- Critic Scores -->
+        <div class="critic-scores">
+            <h3>Critic Scores</h3>
+
+            <!-- Display the critic score -->
+            <div class="critic-score">
+                <!-- Number contained in a colored square -->
+                <div class="square red"> <!-- Change the class name based on the score -->
+                    <h4><span class="score-placeholder">7</span> Average</h4>
+                </div>
+            </div>
+
+            <!-- Visual representation with bars -->
+            <div class="score-bars">
+                <div class="bar bad-bar" style="width: 30%;"></div> <!-- Placeholder for bad scores -->
+                <div class="bar avg-bar" style="width: 40%;"></div> <!-- Placeholder for average scores -->
+                <div class="bar good-bar" style="width: 30%;"></div> <!-- Placeholder for good scores -->
+            </div>
+        </div>
+
+
+
+
+        <!-- User Scores -->
+        <div class="user-scores">
+            <h3>User Scores</h3>
+
+            <!-- Display the user score -->
+            <div class="user-score">
+                <!-- Number contained in a colored circle -->
+                <div class="circle green"> <!-- Change the class name based on the score -->
+                    <h4><span class="score-placeholder">8</span> Great</h4>
+                </div>
+            </div>
+
+            <!-- Visual representation with bars -->
+            <div class="score-bars">
+                <div class="bar bad-bar" style="width: 30%;"></div> <!-- Placeholder for bad scores -->
+                <div class="bar avg-bar" style="width: 40%;"></div> <!-- Placeholder for average scores -->
+                <div class="bar good-bar" style="width: 30%;"></div> <!-- Placeholder for good scores -->
+            </div>
+        </div>
+
+        <div class="latest-reviews card">
+            <h3 class="card-header">Latest Reviews</h3>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Latest Critic Reviews -->
+                    <div class="col-md-6">
+                        <h4>Critic Reviews</h4>
+                        <div class="review card mb-3">
+                            <div class="card-body">
+                                <div class="review-score circle green">
+                                    <span>8</span>
+                                </div>
+                                <div class="review-comment">
+                                    <p>"Excellent game with great mechanics!"</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review card mb-3">
+                            <div class="card-body">
+                                <div class="review-score circle yellow">
+                                    <span>5</span>
+                                </div>
+                                <div class="review-comment">
+                                    <p>"Good, but could be better in some aspects."</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review card mb-3">
+                            <div class="card-body">
+                                <div class="review-score circle red">
+                                    <span>3</span>
+                                </div>
+                                <div class="review-comment">
+                                    <p>"Lacks depth and engagement."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Latest User Reviews -->
+                    <div class="col-md-6">
+                        <h4>User Reviews</h4>
+                        <div class="review card mb-3">
+                            <div class="card-body">
+                                <div class="review-score circle green">
+                                    <span>9</span>
+                                </div>
+                                <div class="review-comment">
+                                    <p>"Loved every bit of it!"</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review card mb-3">
+                            <div class="card-body">
+                                <div class="review-score circle yellow">
+                                    <span>6</span>
+                                </div>
+                                <div class="review-comment">
+                                    <p>"Not bad, but not great either."</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review card mb-3">
+                            <div class="card-body">
+                                <div class="review-score circle red">
+                                    <span>4</span>
+                                </div>
+                                <div class="review-comment">
+                                    <p>"Disappointing experience."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Filter Options -->
+        <div class="filter-options">
+            <h3>Filter Options</h3>
+            <!-- Add filter options for positive, mixed, and negative reviews -->
+        </div>
+    </div>
+
+</div>
+
