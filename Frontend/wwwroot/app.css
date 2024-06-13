@@ -207,3 +207,16 @@ h1:focus {
 }
 
 
+.list-group-item {
+    cursor: pointer;
+}
+
+.toggle-buttons {
+    margin-bottom: 10px;
+}
+
+.toggle-buttons .btn.active {
+    font-weight: bold;
+}
+
+

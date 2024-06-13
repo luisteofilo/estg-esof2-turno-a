@@ -5,64 +5,88 @@
 
 <h1>User Evaluation Leaderboard</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <!-- Wrap the entire card with NavLink -->
-        <NavLink class="card-link no-link-style" href="game/reviews">
-            <div class="card">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                        <img src="favicon.png" class="card-img" alt="Game 1 Logo">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">Game 1</h5>
-                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </NavLink>
-    </div>
-
-    <div class="col-md-4">
-        <!-- Wrap the entire card with NavLink -->
-        <NavLink class="card-link no-link-style" href="game/reviews">
-            <div class="card">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                        <img src="favicon.png" class="card-img" alt="Game 1 Logo">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">Game 1</h5>
-                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </NavLink>
-    </div>
-
-    <div class="col-md-4">
-        <!-- Wrap the entire card with NavLink -->
-        <NavLink class="card-link no-link-style" href="game/reviews">
-            <div class="card">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                        <img src="favicon.png" class="card-img" alt="Game 1 Logo">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">Game 1</h5>
-                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </NavLink>
-    </div>
-
-
+<div class="toggle-buttons">
+    <button @onclick="SwitchToGridView" class="@($"{(isGridView ? "active" : "")} btn btn-sm btn-outline-primary mx-1")">
+        Grid View
+    </button>
+    <button @onclick="SwitchToListView" class="@($"{(!isGridView ? "active" : "")} btn btn-sm btn-outline-primary mx-1")">
+        List View
+    </button>
 </div>
 
+<div class="row">
+    @if (isGridView)
+    {
+    @foreach (var game in games)
+    {
+    <div class="col-md-4">
+        <!-- Wrap the entire card with NavLink -->
+        <NavLink class="card-link no-link-style" href="game/reviews">
+            <div class="card">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="favicon.png" class="card-img" alt="Game Logo">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">@game.Name</h5>
+                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </NavLink>
+    </div>
+    }
+    }
+    else
+    {
+    <div class="col-md-12">
+        <ul class="list-group">
+            @foreach (var game in games)
+            {
+            <li class="list-group-item">
+                <NavLink class="card-link no-link-style" href="game/reviews">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="favicon.png" class="card-img" alt="Game Logo">
+                        </div>
+                        <div class="col-md-10">
+                            <h5 class="card-title">@game.Name</h5>
+                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i></p>
+                        </div>
+                    </div>
+                </NavLink>
+            </li>
+            }
+        </ul>
+    </div>
+    }
+</div>
+
+@code {
+private List<Game> games = new List<Game>
+{
+new Game { Name = "Game 1", Rating = 8.5 },
+new Game { Name = "Game 2", Rating = 7.2 },
+new Game { Name = "Game 3", Rating = 9.0 }
+};
+
+private bool isGridView = true;
+
+private void SwitchToGridView()
+{
+isGridView = true;
+}
+
+private void SwitchToListView()
+{
+isGridView = false;
+}
+
+public class Game
+{
+public string Name { get; set; }
+public double Rating { get; set; }
+}
+}
