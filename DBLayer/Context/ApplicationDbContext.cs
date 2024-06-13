@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.DBLayer.Context;
 
+// TODO: Add tables for Games and Favourites list
 public partial class ApplicationDbContext : DbContext
 {
     private static readonly DbContextOptions DefaultOptions = new Func<DbContextOptions>(() =>
