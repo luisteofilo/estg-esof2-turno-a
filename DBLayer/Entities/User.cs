@@ -16,4 +16,7 @@ public class User
     [Required]
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
+    
+    // Add this line
+    public ICollection<Favourite> Favourites { get; set; }
 }
