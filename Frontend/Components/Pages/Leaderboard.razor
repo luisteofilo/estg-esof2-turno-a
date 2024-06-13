@@ -5,6 +5,66 @@
 
 <h1>User Evaluation Leaderboard</h1>
 
+<div class="podium-section">
+    @{
+    var game1 = games[1]; // Game 2 in your list
+    var game2 = games[0]; // Game 1 in your list
+    var game3 = games[2]; // Game 3 in your list
+    }
+
+    <!-- Game 2 - 2nd place -->
+    <div class="podium-game">
+        <div class="game-info2">
+            <div class="game-icon">
+                <img src="favicon.png" alt="Game Logo">
+            </div>
+            <h3>@game1.Name</h3>
+        </div>
+        <div class="podium-bar-container2">
+            <div class="podium-bar podium-silver" style="height: @(game1.Rating * 10)%;">
+                <div class="podium-rank">2</div>
+                <div class="podium-rating">@game1.Rating</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game 1 - 1st place -->
+    <div class="podium-game">
+        <div class="game-info">
+            <div class="game-icon">
+                <img src="favicon.png" alt="Game Logo">
+            </div>
+            <h3>@game2.Name</h3>
+        </div>
+        <div class="podium-bar-container">
+            <div class="podium-bar podium-gold" style="height: @(game2.Rating * 10)%;">
+                <div class="podium-rank">1</div>
+                <div class="podium-rating">@game2.Rating</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game 3 - 3rd place -->
+    <div class="podium-game">
+        <div class="game-info3">
+            <div class="game-icon">
+                <img src="favicon.png" alt="Game Logo">
+            </div>
+            <h3>@game3.Name</h3>
+        </div>
+        <div class="podium-bar-container3">
+            <div class="podium-bar podium-bronze" style="height: @(game3.Rating * 10)%;">
+                <div class="podium-rank">3</div>
+                <div class="podium-rating">@game3.Rating</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 <div class="toggle-buttons">
     <button @onclick="SwitchToGridView" class="@($"{(isGridView ? "active" : "")} btn btn-sm btn-outline-primary mx-1")">
         Grid View
@@ -14,10 +74,11 @@
     </button>
 </div>
 
+<!-- Main Leaderboard Section -->
 <div class="row">
     @if (isGridView)
     {
-    @foreach (var game in games)
+    @foreach (var game in games.Skip(3))
     {
     <div class="col-md-4">
         <!-- Wrap the entire card with NavLink -->
@@ -30,7 +91,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">@game.Name</h5>
-                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i></p>
+                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i> @game.Rating</p>
                         </div>
                     </div>
                 </div>
@@ -43,7 +104,7 @@
     {
     <div class="col-md-12">
         <ul class="list-group">
-            @foreach (var game in games)
+            @foreach (var game in games.Skip(3))
             {
             <li class="list-group-item">
                 <NavLink class="card-link no-link-style" href="game/reviews">
@@ -53,7 +114,7 @@
                         </div>
                         <div class="col-md-10">
                             <h5 class="card-title">@game.Name</h5>
-                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i></p>
+                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i> @game.Rating</p>
                         </div>
                     </div>
                 </NavLink>
@@ -65,12 +126,15 @@
 </div>
 
 @code {
-private List<Game> games = new List<Game>
-{
-new Game { Name = "Game 1", Rating = 8.5 },
-new Game { Name = "Game 2", Rating = 7.2 },
-new Game { Name = "Game 3", Rating = 9.0 }
-};
+    private List<Game> games = new List<Game>
+    {
+        new Game { Name = "Game 1", Rating = 9.0 },  // Swap Game 1 with Game 2
+        new Game { Name = "Game 2", Rating = 8.5 },
+        new Game { Name = "Game 3", Rating = 8.0 },
+        new Game { Name = "Game 4", Rating = 7.5 },
+        new Game { Name = "Game 5", Rating = 6.8 }
+    };
+
 
 private bool isGridView = true;
 
