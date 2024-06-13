@@ -15,7 +15,7 @@
             <!-- Display the critic score -->
             <div class="critic-score">
                 <!-- Number contained in a colored square -->
-                <div class="square red"> <!-- Change the class name based on the score -->
+                <div class="square green"> <!-- Change the class name based on the score -->
                     <h4><span class="score-placeholder">7</span> Average</h4>
                 </div>
             </div>
@@ -58,33 +58,45 @@
                     <!-- Latest Critic Reviews -->
                     <div class="col-md-6">
                         <h4>Critic Reviews</h4>
-                        <div class="review card mb-3">
-                            <div class="card-body">
-                                <div class="review-score circle green">
-                                    <span>8</span>
-                                </div>
-                                <div class="review-comment">
-                                    <p>"Excellent game with great mechanics!"</p>
+                        <div class="review-filters">
+                            <label for="critic-filter">Filter by:</label>
+                            <select id="critic-filter" class="form-select" onchange="filterReviews('critic')">
+                                <option value="all">All</option>
+                                <option value="good">Good</option>
+                                <option value="average">Average</option>
+                                <option value="bad">Bad</option>
+                            </select>
+                        </div>
+                        <div id="critic-reviews">
+                            <!-- Placeholder for reviews, dynamically filtered -->
+                            <div class="review card mb-3" data-rating="good">
+                                <div class="card-body">
+                                    <div class="review-score square green">
+                                        <span>9</span>
+                                    </div>
+                                    <div class="review-comment">
+                                        <p>"An outstanding game with immersive gameplay!"</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="review card mb-3">
-                            <div class="card-body">
-                                <div class="review-score circle yellow">
-                                    <span>5</span>
-                                </div>
-                                <div class="review-comment">
-                                    <p>"Good, but could be better in some aspects."</p>
+                            <div class="review card mb-3" data-rating="average">
+                                <div class="card-body">
+                                    <div class="review-score square yellow">
+                                        <span>6</span>
+                                    </div>
+                                    <div class="review-comment">
+                                        <p>"Decent, but there's room for improvement."</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="review card mb-3">
-                            <div class="card-body">
-                                <div class="review-score circle red">
-                                    <span>3</span>
-                                </div>
-                                <div class="review-comment">
-                                    <p>"Lacks depth and engagement."</p>
+                            <div class="review card mb-3" data-rating="bad">
+                                <div class="card-body">
+                                    <div class="review-score square red">
+                                        <span>3</span>
+                                    </div>
+                                    <div class="review-comment">
+                                        <p>"Failed to meet expectations in many areas."</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -92,33 +104,45 @@
                     <!-- Latest User Reviews -->
                     <div class="col-md-6">
                         <h4>User Reviews</h4>
-                        <div class="review card mb-3">
-                            <div class="card-body">
-                                <div class="review-score circle green">
-                                    <span>9</span>
-                                </div>
-                                <div class="review-comment">
-                                    <p>"Loved every bit of it!"</p>
+                        <div class="review-filters">
+                            <label for="user-filter">Filter by:</label>
+                            <select id="user-filter" class="form-select" onchange="filterReviews('user')">
+                                <option value="all">All</option>
+                                <option value="good">Good</option>
+                                <option value="average">Average</option>
+                                <option value="bad">Bad</option>
+                            </select>
+                        </div>
+                        <div id="user-reviews">
+                            <!-- Placeholder for reviews, dynamically filtered -->
+                            <div class="review card mb-3" data-rating="good">
+                                <div class="card-body">
+                                    <div class="review-score circle green">
+                                        <span>8</span>
+                                    </div>
+                                    <div class="review-comment">
+                                        <p>"Loved every bit of it!"</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="review card mb-3">
-                            <div class="card-body">
-                                <div class="review-score circle yellow">
-                                    <span>6</span>
-                                </div>
-                                <div class="review-comment">
-                                    <p>"Not bad, but not great either."</p>
+                            <div class="review card mb-3" data-rating="average">
+                                <div class="card-body">
+                                    <div class="review-score circle yellow">
+                                        <span>5</span>
+                                    </div>
+                                    <div class="review-comment">
+                                        <p>"Not bad, but not great either."</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="review card mb-3">
-                            <div class="card-body">
-                                <div class="review-score circle red">
-                                    <span>4</span>
-                                </div>
-                                <div class="review-comment">
-                                    <p>"Disappointing experience."</p>
+                            <div class="review card mb-3" data-rating="bad">
+                                <div class="card-body">
+                                    <div class="review-score circle red">
+                                        <span>4</span>
+                                    </div>
+                                    <div class="review-comment">
+                                        <p>"Disappointing experience."</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -126,15 +150,21 @@
                 </div>
             </div>
         </div>
-
-
-
-        <!-- Filter Options -->
-        <div class="filter-options">
-            <h3>Filter Options</h3>
-            <!-- Add filter options for positive, mixed, and negative reviews -->
-        </div>
     </div>
-
 </div>
 
+<script>
+    function filterReviews(type) {
+        const filterValue = document.getElementById(type + '-filter').value;
+        const reviews = document.getElementById(type + '-reviews').getElementsByClassName('review');
+
+        for (let review of reviews) {
+            const rating = review.getAttribute('data-rating');
+            if (filterValue === 'all' || rating === filterValue) {
+                review.style.display = 'block';
+            } else {
+                review.style.display = 'none';
+            }
+        }
+    }
+</script>

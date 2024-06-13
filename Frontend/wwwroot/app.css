@@ -167,12 +167,15 @@ h1:focus {
     justify-content: center;
     font-weight: bold;
     margin-right: 10px;
-    border-radius: 50%; /* Circle shape */
     color: white;
 }
 
+.review-score.square {
+    border-radius: 5px; /* Square shape */
+}
+
 .review-score.circle {
-    border-radius: 50%;
+    border-radius: 50%; /* Circle shape */
 }
 
 .review-score.green {
@@ -198,4 +201,9 @@ h1:focus {
 .review-comment p {
     margin: 0;
 }
+
+.review-filters {
+    margin-bottom: 10px;
+}
+
 
