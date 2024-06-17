@@ -106,7 +106,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permissions", x => x.GameId);
+                    table.PrimaryKey("PK_Games", x => x.GameId); // Change "PK_Permissions" to "PK_Games"
                 });
             
             migrationBuilder.CreateTable(

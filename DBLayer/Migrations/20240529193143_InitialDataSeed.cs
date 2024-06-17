@@ -77,6 +77,29 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 { adminUserId, adminRoleId },
                 { normalUserId, normalRoleId }
             });
+        
+        // Adding games
+        var game1Id = Guid.NewGuid();
+        var game2Id = Guid.NewGuid();
+
+        migrationBuilder.InsertData(
+            table: "Games",
+            columns: new[] { "GameId", "Name" },
+            values: new object[,]
+            {
+                { game1Id, "Game 1" },
+                { game2Id, "Game 2" }
+            });
+
+        // Adding favourites
+        migrationBuilder.InsertData(
+            table: "Favourites",
+            columns: new[] { "UserId", "GameId" },
+            values: new object[,]
+            {
+                { adminUserId, game1Id },
+                { normalUserId, game2Id }
+            });
         }
 
         /// <inheritdoc />
