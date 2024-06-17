@@ -17,5 +17,6 @@ public class Post
     
     public Game Game { get; set; }
     
+    public ICollection<Comment> Comment { get; set; }
     
 }

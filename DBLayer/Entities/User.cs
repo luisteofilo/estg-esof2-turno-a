@@ -19,4 +19,6 @@ public class User
     
     // Add this line
     public ICollection<Favourite> Favourites { get; set; }
+    
+    public ICollection<Comment> Comment { get; set; }
 }
