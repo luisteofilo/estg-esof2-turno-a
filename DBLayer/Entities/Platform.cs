@@ -4,8 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ESOF.WebApp.DBLayer.Entities
 {
-	public class Platform
-	{
+	public class Platform{
 		[Key]
 		public Guid platform_id { get; set; }
 		
@@ -17,5 +16,8 @@ namespace ESOF.WebApp.DBLayer.Entities
 			get => new DateTime(debut_year, 1, 1);
 			set => debut_year = value.Year;
 		}
+		public ICollection<GamePlatform> gamePlatform { get; set; }
+
 	}
+
 }

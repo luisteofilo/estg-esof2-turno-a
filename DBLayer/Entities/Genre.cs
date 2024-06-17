@@ -11,4 +11,7 @@ public class Genre{
 	
 	[Required]
 	public String description{ get; set; }
+	
+	public ICollection<GameGenre> gameGenres { get; set; }
+
 }

@@ -21,6 +21,8 @@ public class Order{
 	[OrderTypeValidator]
 	public String order_type{ get; set; }
 	
+	public ICollection<OrderItem> orderItems { get; set; }
+
 
 	
 }

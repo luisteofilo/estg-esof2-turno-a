@@ -21,4 +21,15 @@ public class Game{
 	[Required]
 	public int stock { get; set; }
 	
+	public ICollection<GameGenre> gameGenres { get; set; }
+	
+	public ICollection<GamePlatform> gamePlatforms { get; set; }
+	
+	public ICollection<Review> gameReviews { get; set; }
+	
+	public ICollection<OrderItem> orderItems { get; set; }
+
+
+
+
 }
