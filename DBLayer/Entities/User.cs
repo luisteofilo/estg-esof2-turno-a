@@ -16,4 +16,10 @@ public class User
     [Required]
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
+    
+    public ICollection<Post> Post { get; set; }
+    
+    public ICollection<Comment> Comment { get; set; }
+    
+    
 }

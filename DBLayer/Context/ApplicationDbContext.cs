@@ -43,6 +43,10 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    public DbSet<Game> Games { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<PostLike> PostLikes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -58,6 +62,10 @@ public partial class ApplicationDbContext : DbContext
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        BuildGames(modelBuilder);
+        BuildPosts(modelBuilder);
+        BuildComments(modelBuilder);
+        BuildPostLikes(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }
