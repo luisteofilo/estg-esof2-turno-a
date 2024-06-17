@@ -1,0 +1,29 @@
+@page "/marketplace"
+
+<PageTitle>Weather</PageTitle>
+
+<div class="main">
+    <div class="title">Marketplace</div>
+    <div>
+        <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search...">
+    </div>
+    <div class="game-card-container">
+        @for (var i = 0; i < 9; i++) {
+            @*<div class="game-card">
+                <img src="https://picsum.photos/200/300" alt="">
+            </div>*@
+            <div class="card" style="width: 18rem;">
+                <img src="https://picsum.photos/200/300" class="card-img-top" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">Example game</h5>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium atque, deleniti doloremque eaque ipsa ipsam modi nobis qui saepe ut.</p>
+                    <a href="#" class="btn btn-primary">View listing</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+}
