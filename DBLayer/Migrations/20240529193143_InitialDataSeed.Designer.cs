@@ -113,6 +113,55 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.ToTable("UserRoles");
                 });
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
+            {
+                b.Property<Guid>("GameId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("text");
+
+                b.HasKey("GameId");
+
+                b.HasIndex("Name")
+                    .IsUnique();
+
+                b.ToTable("Games");
+            });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favourite", b =>
+            {
+                b.Property<Guid>("UserId")
+                    .HasColumnType("uuid");
+
+                b.Property<Guid>("GameId")
+                    .HasColumnType("uuid");
+
+                b.HasKey("UserId", "GameId");
+
+                b.HasIndex("GameId");
+
+                b.ToTable("Favourites");
+
+                b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                    .WithMany("Favourites")
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
+                    .WithMany("Favourites")
+                    .HasForeignKey("GameId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("User");
+
+                b.Navigation("Game");
+            });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
                 {

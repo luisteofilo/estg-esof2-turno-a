@@ -158,6 +158,12 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 name: "IX_Favourites_GameId",
                 table: "Favourites",
                 column: "GameId");
+            
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_Name",
+                table: "Games",
+                column: "Name",
+                unique: true);
         }
 
         /// <inheritdoc />

@@ -29,15 +29,9 @@ public partial class ApplicationDbContext : DbContext
         return optionsBuilder.Options;
     })();
     
-    public ApplicationDbContext()
-        : base(DefaultOptions)
-    {
-    }
+    public ApplicationDbContext() : base(DefaultOptions) { }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }

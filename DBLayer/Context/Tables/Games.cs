@@ -20,5 +20,20 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<Game>()
             .Property(p => p.GameId)
             .HasDefaultValueSql("gen_random_uuid()");
+
+        modelBuilder.Entity<Favourite>()
+            .HasKey(f => new { f.UserId, f.GameId });
+
+        modelBuilder.Entity<Favourite>()
+            .HasOne(f => f.User)
+            .WithMany(u => u.Favourites)
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Favourite>()
+            .HasOne(f => f.Game)
+            .WithMany(g => g.Favourites)
+            .HasForeignKey(f => f.GameId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
