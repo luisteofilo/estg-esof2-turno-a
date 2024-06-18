@@ -12,7 +12,10 @@ public class Game
 
     [Required]
     public DateTime ReleaseDate { get; set; }
-
+    
+    [Required]
+    public String Url_Image { get; set; }
+    
     [Required]
     public String Developer { get; set; }
 

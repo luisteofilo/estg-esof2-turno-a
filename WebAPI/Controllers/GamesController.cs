@@ -52,6 +52,7 @@ public class GamesController : ControllerBase
         }
 
         game.Name = updatedGame.Name;
+        game.Url_Image = updatedGame.Url_Image;
         game.ReleaseDate = updatedGame.ReleaseDate;
         game.Developer = updatedGame.Developer;
         game.Publisher = updatedGame.Publisher;
