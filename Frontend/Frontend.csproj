@@ -21,4 +21,8 @@
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\Gametok\Index.razor" />
+    </ItemGroup>
+
 </Project>
