@@ -1,0 +1,146 @@
+﻿/* CSS styles for the score bars */
+.score-bars {
+    display: flex;
+    margin-top: 10px;
+}
+
+.bar {
+    height: 20px;
+}
+
+.bad-bar {
+    background-color: red;
+}
+
+.avg-bar {
+    background-color: yellow;
+}
+
+.good-bar {
+    background-color: green;
+}
+/* CSS styles for the Critic Scores section */
+.score-square {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+/* CSS styles for the User Scores section */
+.score-bar {
+    height: 20px;
+    background-color: #ccc; /* Default background color */
+    margin-top: 5px;
+}
+
+/* CSS styles for the square shapes */
+.square {
+    display: inline-block;
+    width: 30px; /* Adjust width as needed */
+    height: 30px; /* Adjust height as needed */
+    text-align: center;
+    line-height: 30px; /* Center the text vertically */
+    font-weight: bold;
+    margin-right: 5px; /* Add margin between shapes */
+    border-radius: 5px; /* For squares */
+}
+
+.square.red {
+    background-color: red;
+}
+
+.square.yellow {
+    background-color: yellow;
+}
+
+.square.green {
+    background-color: green;
+}
+
+/* CSS styles for the circle shapes */
+.circle {
+    display: inline-block;
+    width: 30px; /* Adjust width as needed */
+    height: 30px; /* Adjust height as needed */
+    text-align: center;
+    line-height: 30px; /* Center the text vertically */
+    font-weight: bold;
+    margin-right: 5px; /* Add margin between shapes */
+    border-radius: 50%; /* For circles */
+}
+
+.circle.red {
+    background-color: red;
+}
+
+.circle.yellow {
+    background-color: yellow;
+}
+
+.circle.green {
+    background-color: green;
+}
+
+/* Styles for the latest reviews section */
+.latest-reviews {
+    margin-top: 20px;
+}
+
+.latest-reviews .card-header {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.latest-reviews .review {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.review-score {
+    width: 40px; /* Adjust width as needed */
+    height: 40px; /* Adjust height as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
+    color: white;
+}
+
+.review-score.square {
+    border-radius: 5px; /* Square shape */
+}
+
+.review-score.circle {
+    border-radius: 50%; /* Circle shape */
+}
+
+.review-score.green {
+    background-color: green;
+}
+
+.review-score.yellow {
+    background-color: yellow;
+}
+
+.review-score.red {
+    background-color: red;
+}
+
+.review-score span {
+    line-height: 40px; /* Center the text vertically */
+}
+
+.review-comment {
+    flex: 1;
+}
+
+.review-comment p {
+    margin: 0;
+}
+
+.review-filters {
+    margin-bottom: 10px;
+}
