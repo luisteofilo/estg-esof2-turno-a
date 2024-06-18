@@ -11,7 +11,7 @@
 .challenge-video {
     width: 70%;
     height: 300px;
-    background-color: #FFE0B2;
+    background-color: #FFDC9B;
 }
 .challenge-info {
     margin-left: 20px;
@@ -19,7 +19,7 @@
 .icon-button, .upload-button {
     display: block;
     margin: 10px 0;
-    background-color: #FFC107;
+    background-color: #FDB42E;
     border: none;
     padding: 10px;
     cursor: pointer;
@@ -39,11 +39,11 @@
 .challenge-item {
     width: 30%;
     height: 100px;
-    background-color: #FFE0B2;
+    background-color: #FFDC9B;
 }
 
 .challenge-caption-box {
-    background-color: #FFC107;
+    background-color: #FDB42E;
     padding: 0 100px 100px 5px;
     border-radius: 10px;
     font-weight: bold;
