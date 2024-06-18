@@ -12,10 +12,10 @@ public class OrderItem{
 	public Game game{ get; set; }
 	
 	[Key]
-	public Guid user_id{ get; set; }
+	public Guid order_id{ get; set; }
 	
-	[ForeignKey("user_id")]
-	public User user{ get; set; }
+	[ForeignKey("order_id")]
+	public Order order{ get; set; }
 	
 	[Required]
 	public int amount{ get; set; }
