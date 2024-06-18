@@ -23,7 +23,7 @@ public class Game
     public String Description { get; set; }
 
     [Required]
-    public float Price { get; set; }
+    public double Price { get; set; }
 
     [Required]
     public List<Genre> Genres { get; set; } = new List<Genre>(); 
