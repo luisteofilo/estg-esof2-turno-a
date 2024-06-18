@@ -15,10 +15,12 @@
     <!-- Game 2 - 2nd place -->
     <div class="podium-game">
         <div class="game-info2">
-            <div class="game-icon">
-                <img src="favicon.png" alt="Game Logo">
-            </div>
+            <NavLink class="card-link no-link-style" href="game/123/reviews">
+                <div class="game-icon">
+                    <img src="favicon.png" alt="Game Logo">
+                </div>
             <h3>@game1.Name</h3>
+            </NavLink>
         </div>
         <div class="podium-bar-container2">
             <div class="podium-bar podium-silver" style="height: @(game1.Rating * 10)%;">
@@ -31,10 +33,12 @@
     <!-- Game 1 - 1st place -->
     <div class="podium-game">
         <div class="game-info">
-            <div class="game-icon">
-                <img src="favicon.png" alt="Game Logo">
-            </div>
-            <h3>@game2.Name</h3>
+            <NavLink class="card-link no-link-style" href="game/123/reviews">
+                <div class="game-icon">
+                    <img src="favicon.png" alt="Game Logo">
+                </div>
+                <h3>@game2.Name</h3>
+            </NavLink>
         </div>
         <div class="podium-bar-container">
             <div class="podium-bar podium-gold" style="height: @(game2.Rating * 10)%;">
@@ -47,10 +51,12 @@
     <!-- Game 3 - 3rd place -->
     <div class="podium-game">
         <div class="game-info3">
-            <div class="game-icon">
-                <img src="favicon.png" alt="Game Logo">
-            </div>
-            <h3>@game3.Name</h3>
+            <NavLink class="card-link no-link-style" href="game/123/reviews">
+                <div class="game-icon">
+                    <img src="favicon.png" alt="Game Logo">
+                </div>
+                <h3>@game3.Name</h3>
+            </NavLink>
         </div>
         <div class="podium-bar-container3">
             <div class="podium-bar podium-bronze" style="height: @(game3.Rating * 10)%;">
@@ -82,7 +88,7 @@
     {
     <div class="col-md-4">
         <!-- Wrap the entire card with NavLink -->
-        <NavLink class="card-link no-link-style" href="game/reviews">
+        <NavLink class="card-link no-link-style" href="game/123/reviews">
             <div class="card">
                 <div class="row no-gutters">
                     <div class="col-md-4">
@@ -107,7 +113,7 @@
             @foreach (var game in games.Skip(3))
             {
             <li class="list-group-item">
-                <NavLink class="card-link no-link-style" href="game/reviews">
+                <NavLink class="card-link no-link-style" href="game/123/reviews">
                     <div class="row align-items-center">
                         <div class="col-md-2">
                             <img src="favicon.png" class="card-img" alt="Game Logo">
