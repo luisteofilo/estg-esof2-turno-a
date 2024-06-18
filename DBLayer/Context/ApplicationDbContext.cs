@@ -47,6 +47,7 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostLike> PostLikes { get; set; }
+    public DbSet<CommentLike> CommentLikes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -66,6 +67,7 @@ public partial class ApplicationDbContext : DbContext
         BuildPosts(modelBuilder);
         BuildComments(modelBuilder);
         BuildPostLikes(modelBuilder);
+        BuildCommentLikes(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }
