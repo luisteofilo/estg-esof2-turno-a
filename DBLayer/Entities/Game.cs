@@ -13,7 +13,7 @@ public class Game{
 	public String description{ get; set; }
 	
 	[Required]
-	public DateTime release_date{ get; set; }
+	public DateTimeOffset release_date{ get; set; }
 	
 	[Required]
 	public float price { get; set; }

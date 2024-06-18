@@ -8,7 +8,7 @@ public partial class ApplicationDbContext{
 		modelBuilder.Entity<GamePlatform>(entity => {
 			entity.HasKey(e => e.game_id);
 
-			entity.HasKey(e => e.platform);
+			entity.HasKey(e => e.platform_id);
 			
 			entity.HasOne(e => e.game)
 				.WithMany(g => g.gamePlatforms)
