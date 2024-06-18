@@ -1,0 +1,110 @@
+@page "/gamereplays"
+@using Frontend.Helpers
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@inject ApiHelper ApiHelper
+
+<PageTitle>Game Replays</PageTitle>
+
+<h1>Game Replays</h1>
+
+<p>This component demonstrates uploading and displaying data from the API.</p>
+
+<div class="mb-3">
+    <label for="videoTitle" class="form-label">Title</label>
+    <input type="text" class="form-control" id="videoTitle" @bind="videoTitle" />
+</div>
+
+<div class="mb-3">
+    <label for="videoFile" class="form-label">Select Video</label>
+    <InputFile id="videoFile" OnChange="HandleFileSelected" />
+</div>
+
+<button class="btn btn-primary" @onclick="UploadFile">Upload</button>
+
+@if (_gameReplays == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>File Path</th>
+            <th>Upload Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var replay in _gameReplays)
+        {
+            <tr>
+                <td>@replay.Title</td>
+                <td>@replay.FilePath</td>
+                <td>@replay.UploadDate</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private string videoTitle = string.Empty;
+    private IBrowserFile? selectedFile;
+    private List<GameReplay>? _gameReplays;
+
+    private async Task UploadFile()
+    {
+        if (selectedFile != null && !string.IsNullOrEmpty(videoTitle))
+        {
+            try
+            {
+                var content = new MultipartFormDataContent();
+                var fileContent = new StreamContent(selectedFile.OpenReadStream(maxAllowedSize: 104857600)); // 100MB limit
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+                content.Add(fileContent, "VideoFile", selectedFile.Name);
+                content.Add(new StringContent(videoTitle), "Title");
+
+                var response = await ApiHelper.PostToApiAsync("gamereplays", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    await LoadGameReplays();
+                }
+                else
+                {
+                    // Handle upload error
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+            }
+        }
+    }
+
+    private async Task LoadGameReplays()
+    {
+        _gameReplays = await ApiHelper.GetFromApiAsync<List<GameReplay>>("gamereplays");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGameReplays();
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    public class GameReplay
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string FilePath { get; set; }
+        public DateTime UploadDate { get; set; }
+    }
+}

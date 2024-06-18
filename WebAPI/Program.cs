@@ -46,6 +46,15 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
+// Adicionar endpoints para GameReplay
+app.MapGet("/gamereplays", () =>
+    {
+        var db = new ApplicationDbContext();
+        return db.GameReplays;
+    })
+    .WithName("GetGameReplays")
+    .WithOpenApi();
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
