@@ -43,6 +43,18 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    
+    public DbSet<Game> Game { get; set; }
+    public DbSet<GameGenre> GameGenre { get; set; }
+    public DbSet<GamePlatform> GamePlatform { get; set; }
+    public DbSet<Genre> Genre { get; set; }
+    public DbSet<Order> Order { get; set; }
+    public DbSet<OrderItem> OrderItem { get; set; }
+    public DbSet<Platform> Platform { get; set; }
+    public DbSet<Review> Review { get; set; }
+
+
+    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -53,11 +65,22 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
         BuildUsers(modelBuilder);
         BuildRoles(modelBuilder);
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        
+        BuildGame(modelBuilder);
+        BuildGameGenre(modelBuilder);
+        BuildGamePlatform(modelBuilder);
+        BuildGenre(modelBuilder);
+        BuildOrder(modelBuilder);
+        BuildOrderItem(modelBuilder);
+        BuildPlatform(modelBuilder);
+        BuildReview(modelBuilder);
+
         base.OnModelCreating(modelBuilder);
     }
 }
