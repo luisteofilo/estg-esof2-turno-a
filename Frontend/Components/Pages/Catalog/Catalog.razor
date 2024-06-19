@@ -5,28 +5,38 @@
 @inject ApiHelper ApiHelper
 
 <PageTitle>Games catalog</PageTitle>
-<div class="col-md-10 offset-md-1 mb-5">
+<div class="mb-5">
     <h1>Games catalog</h1>
 </div>
 
 @if (_gamesCatalog == null)
 {
     <p class="col-md-10 offset-md-1 mb-5">
-        <em>Loading...</em>
+        <em>Loading games...</em>
     </p>
 }
 else
 {
     <div class="row">
         <div class="col-10">
-            <ul class="nav nav-underline mb-3" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Games</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="fav-tab" data-bs-toggle="tab" data-bs-target="#fav-tab-pane" type="button" role="tab" aria-controls="fav-tab-pane" aria-selected="false">Favorites</button>
-                </li>
-            </ul>
+            <div class="row justify-content-between align-items-center">
+                <ul class="nav col-8 nav-underline mb-3" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Games</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="fav-tab" data-bs-toggle="tab" data-bs-target="#fav-tab-pane" type="button" role="tab" aria-controls="fav-tab-pane" aria-selected="false">Favorites</button>
+                    </li>
+                </ul>
+                <div class="col-4">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.5 -2.5 24 24" width="28" fill="currentColor"><path d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm6.32-1.094l3.58 3.58a1 1 0 1 1-1.415 1.413l-3.58-3.58a8 8 0 1 1 1.414-1.414z"></path></svg>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <div class="cardsGames row">
@@ -53,14 +63,14 @@ else
                 </div>
                 <div class="tab-pane fade" id="fav-tab-pane" role="tabpanel" aria-labelledby="fav-tab" tabindex="0">
                     <div class="cardsGames row">
-                        @foreach (var game in _gamesCatalog)
+                        @foreach (var fav in _gamesFavorites)
                         {
                             <div class="col-md-3 mb-4">
                                 <div class="card position-relative">
                                     <img src="https://picsum.photos/500/700" class="card-img" alt="...">
                                     <div class="card-img-overlay d-flex flex-column justify-content-end">
-                                        <h5 class="card-title text-white mb-0">@game.Name</h5>
-                                        <p class="card-text text-white">@game.Genre - @game.Platform</p>
+                                        <h5 class="card-title text-white mb-0">@fav.Name</h5>
+                                        <p class="card-text text-white">@fav.Genre - @fav.Platform</p>
                                     </div>
                                     <div class="card-button">
                                         <button type="button" class="btn btn-outline-light">
@@ -80,8 +90,11 @@ else
             <div class="menuFilters mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="m-0">Filters</h5>
-                    <button type="button" class="btn btn-danger">Clear</button>
+                    <button type="button" class="btn btn-danger">Clear  <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="17" fill="currentColor"><path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path></svg></button>
                 </div>
+                <button type="button" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="28" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>  Genre</button>
+                <button type="button" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="28" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>  Console</button>
+                
             </div>
         </div>
     </div>
@@ -89,9 +102,22 @@ else
 
 @code {
     private List<Game>? _gamesCatalog;
-
+    private List<Game>? _gamesFavorites;
+    private List<Game>? _postgamesFavorites;
+    private List<Game>? _deletegamesFavorites;
+    private Guid userId = Guid.Parse("594d48ac-fa6b-4ff4-ad52-8e2a955b9d8c");
+    
     protected override async Task OnInitializedAsync()
     {
+        string favoritesUrl = $"favorites/{userId}";
+        /*string addFavoritesUrl = $"favorites/{userId}/{{gameId:guid}}";
+        string removeFavoritesUrl = $"favorites/{userId}/{{gameId:guid}}";*/
+        
         _gamesCatalog = await ApiHelper.GetFromApiAsync<List<Game>>("games");
+        _gamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>(favoritesUrl);
+        /*_postgamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>(favoritesUrl);
+        _gamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>(favoritesUrl);*/
+        
     }
 }
+
