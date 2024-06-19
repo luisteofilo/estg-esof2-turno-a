@@ -42,6 +42,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<byte[]>("VideoData")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
                     b.HasKey("Id");
 
                     b.ToTable("GameReplays");

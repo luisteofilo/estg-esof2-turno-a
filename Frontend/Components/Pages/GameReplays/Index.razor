@@ -8,7 +8,20 @@
 
 <h1>Game Replays</h1>
 
-<p>This component demonstrates uploading and displaying data from the API.</p>
+<p>This component demonstrates uploading and displaying videos from the API.</p>
+
+@if (!string.IsNullOrEmpty(uploadError))
+{
+    <div class="alert alert-danger">
+        @uploadError
+    </div>
+}
+@if (!string.IsNullOrEmpty(uploadResult))
+{
+    <div class="alert alert-success">
+        @uploadResult
+    </div>
+}
 
 <div class="mb-3">
     <label for="videoTitle" class="form-label">Title</label>
@@ -28,66 +41,101 @@
         <em>Loading...</em>
     </p>
 }
+else if (!_gameReplays.Any())
+{
+    <p>
+        <em>No game replays found.</em>
+    </p>
+}
 else
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Title</th>
-            <th>File Path</th>
-            <th>Upload Date</th>
-        </tr>
-        </thead>
-        <tbody>
+    <div class="video-container">
         @foreach (var replay in _gameReplays)
         {
-            <tr>
-                <td>@replay.Title</td>
-                <td>@replay.FilePath</td>
-                <td>@replay.UploadDate</td>
-            </tr>
+            <div class="video-item">
+                <h3>@replay.Title</h3>
+                <video width="640" height="480" controls>
+                    <source src="data:video/mp4;base64,@Convert.ToBase64String(replay.VideoData)" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p>Uploaded on: @replay.UploadDate.ToString("yyyy-MM-dd")</p>
+            </div>
         }
-        </tbody>
-    </table>
+    </div>
 }
 
 @code {
     private string videoTitle = string.Empty;
     private IBrowserFile? selectedFile;
     private List<GameReplay>? _gameReplays;
+    private string? uploadError;
+    private string? uploadResult;
 
     private async Task UploadFile()
     {
+        uploadError = null; // Reset any previous errors
+        uploadResult = null; // Reset previous result
         if (selectedFile != null && !string.IsNullOrEmpty(videoTitle))
         {
             try
             {
+                Console.WriteLine($"Selected file: {selectedFile.Name}, size: {selectedFile.Size}");
+                Console.WriteLine("Preparing to upload file...");
+
                 var content = new MultipartFormDataContent();
-                var fileContent = new StreamContent(selectedFile.OpenReadStream(maxAllowedSize: 104857600)); // 100MB limit
+                using var memoryStream = new MemoryStream();
+                await selectedFile.OpenReadStream(maxAllowedSize: 1073741824).CopyToAsync(memoryStream); // 1GB limit
+
+                Console.WriteLine($"MemoryStream length after reading file: {memoryStream.Length}");
+
+                var fileContent = new ByteArrayContent(memoryStream.ToArray());
                 fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+
+                // Log the Content-Type header
+                Console.WriteLine($"File Content-Type set to: {fileContent.Headers.ContentType}");
+
                 content.Add(fileContent, "VideoFile", selectedFile.Name);
                 content.Add(new StringContent(videoTitle), "Title");
+
+                // Log the Content-Type header for the multipart content
+                Console.WriteLine($"Content-Type being sent: {content.Headers.ContentType}");
 
                 var response = await ApiHelper.PostToApiAsync("gamereplays", content);
                 if (response.IsSuccessStatusCode)
                 {
+                    uploadResult = "Video uploaded successfully!";
+                    Console.WriteLine("Video uploaded successfully!");
                     await LoadGameReplays();
                 }
                 else
                 {
-                    // Handle upload error
+                    uploadError = $"Failed to upload video. Status code: {response.StatusCode}";
+                    Console.WriteLine($"Failed to upload video. Status code: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                // Handle exception
+                HandleException(ex);
+                Console.WriteLine($"Exception during upload: {ex.Message}");
             }
+        }
+        else
+        {
+            uploadError = "Please select a video file to upload and enter a title.";
+            Console.WriteLine("Video file or title is missing.");
         }
     }
 
     private async Task LoadGameReplays()
     {
-        _gameReplays = await ApiHelper.GetFromApiAsync<List<GameReplay>>("gamereplays");
+        try
+        {
+            _gameReplays = await ApiHelper.GetFromApiAsync<List<GameReplay>>("gamereplays");
+        }
+        catch (Exception ex)
+        {
+            HandleException(ex);
+        }
     }
 
     protected override async Task OnInitializedAsync()
@@ -98,13 +146,21 @@ else
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
         selectedFile = e.File;
+        Console.WriteLine($"Selected file: {selectedFile.Name}, size: {selectedFile.Size}");
+    }
+
+    private void HandleException(Exception ex)
+    {
+        uploadError = $"An error occurred: {ex.Message}";
+        Console.WriteLine($"Exception: {ex.Message}");
     }
 
     public class GameReplay
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public string FilePath { get; set; }
         public DateTime UploadDate { get; set; }
+        public byte[] VideoData { get; set; }
+        public string FilePath { get; set; }
     }
 }

@@ -28,5 +28,9 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<GameReplay>()
             .Property(gr => gr.UploadDate)
             .IsRequired();
+        
+        modelBuilder.Entity<GameReplay>()
+            .Property(gr => gr.VideoData)
+            .HasColumnType("bytea"); // Type to store binary data
     }
 }
