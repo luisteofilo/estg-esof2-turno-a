@@ -1,0 +1,97 @@
+﻿@page "/catalog"
+@using Frontend.Helpers
+@using ESOF.WebApp.DBLayer.Entities
+@attribute [StreamRendering]
+@inject ApiHelper ApiHelper
+
+<PageTitle>Games catalog</PageTitle>
+<div class="col-md-10 offset-md-1 mb-5">
+    <h1>Games catalog</h1>
+</div>
+
+@if (_gamesCatalog == null)
+{
+    <p class="col-md-10 offset-md-1 mb-5">
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="row">
+        <div class="col-10">
+            <ul class="nav nav-underline mb-3" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Games</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="fav-tab" data-bs-toggle="tab" data-bs-target="#fav-tab-pane" type="button" role="tab" aria-controls="fav-tab-pane" aria-selected="false">Favorites</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                    <div class="cardsGames row">
+                        @foreach (var game in _gamesCatalog)
+                        {
+                            <div class="col-md-3 mb-4">
+                                <div class="card position-relative">
+                                    <img src="https://picsum.photos/500/700" class="card-img" alt="...">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                        <h5 class="card-title text-white mb-0">@game.Name</h5>
+                                        <p class="card-text text-white">@game.Genre - @game.Platform</p>
+                                    </div>
+                                    <div class="card-button">
+                                        <button type="button" class="btn btn-outline-light">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2.5 24 24" width="24" fill="currentColor">
+                                                <path d="M10 13.554l3.517 1.85-.672-3.917 2.846-2.774-3.932-.571L10 4.579 8.241 8.142l-3.932.571 2.846 2.774-.672 3.916L10 13.554zm0 2.26L3.827 19.06l1.179-6.875L.01 7.317l6.902-1.003L10 .06l3.087 6.254 6.902 1.003-4.995 4.868 1.18 6.875L10 15.814z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="fav-tab-pane" role="tabpanel" aria-labelledby="fav-tab" tabindex="0">
+                    <div class="cardsGames row">
+                        @foreach (var game in _gamesCatalog)
+                        {
+                            <div class="col-md-3 mb-4">
+                                <div class="card position-relative">
+                                    <img src="https://picsum.photos/500/700" class="card-img" alt="...">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                        <h5 class="card-title text-white mb-0">@game.Name</h5>
+                                        <p class="card-text text-white">@game.Genre - @game.Platform</p>
+                                    </div>
+                                    <div class="card-button">
+                                        <button type="button" class="btn btn-outline-light">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: currentColor;">
+                                                <path d="m6.516 14.323-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="menuFilters mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="m-0">Filters</h5>
+                    <button type="button" class="btn btn-danger">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Game>? _gamesCatalog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _gamesCatalog = await ApiHelper.GetFromApiAsync<List<Game>>("games");
+    }
+}

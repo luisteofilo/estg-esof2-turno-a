@@ -18,6 +18,12 @@ public partial class ApplicationDbContext
             .IsUnique();
 
         modelBuilder.Entity<Game>()
+            .HasIndex(g => g.Genre);
+
+        modelBuilder.Entity<Game>()
+            .HasIndex(g => g.Platform);
+
+        modelBuilder.Entity<Game>()
             .Property(p => p.GameId)
             .HasDefaultValueSql("gen_random_uuid()");
 
