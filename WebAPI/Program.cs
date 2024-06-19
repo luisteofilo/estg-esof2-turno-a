@@ -24,40 +24,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
-
 app.MapGet("/users/emails", () =>
     {
         var db = new ApplicationDbContext();
         return db.Users.Select(u => u.Email);
     })
     .WithName("GetUsersNames")
-    .WithOpenApi();
-
-app.MapGet("/favorites", () =>
-    {
-        var db = new ApplicationDbContext();
-        return db.Favourites;
-    })
-    .WithName("GetFavorites")
     .WithOpenApi();
 
 app.MapGet("/games", () =>
@@ -68,42 +40,5 @@ app.MapGet("/games", () =>
     .WithName("GetGames")
     .WithOpenApi();
 
-// Add game to favorites
-app.MapPost("/favorites/{userId:guid}/{gameId:guid}", async ([FromServices] ApplicationDbContext db, Guid userId, Guid gameId) =>
-    {
-        var existingFavourite = await db.Favourites.FindAsync(userId, gameId);
-        if (existingFavourite != null)
-        {
-            return Results.Conflict("Este favorito já existe.");
-        }
-
-        var favourite = new Favourite { UserId = userId, GameId = gameId };
-        db.Favourites.Add(favourite);
-        await db.SaveChangesAsync();
-        return Results.Created($"/favorites/{favourite.UserId}/{favourite.GameId}", favourite);
-    })
-    .WithName("AddFavorite")
-    .WithOpenApi();
-
-// Remove game from favorites
-app.MapDelete("/favorites/{userId:guid}/{gameId:guid}", async ([FromServices] ApplicationDbContext db, Guid userId, Guid gameId) =>
-    {
-        var favourite = await db.Favourites.FindAsync(userId, gameId);
-        if (favourite == null)
-        {
-            return Results.NotFound();
-        }
-
-        db.Favourites.Remove(favourite);
-        await db.SaveChangesAsync();
-        return Results.NoContent();
-    })
-    .WithName("RemoveFavorite")
-    .WithOpenApi();
-
+app.MapFavoriteRoutes();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
