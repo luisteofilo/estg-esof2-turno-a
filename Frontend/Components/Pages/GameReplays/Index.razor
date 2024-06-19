@@ -23,17 +23,23 @@
     </div>
 }
 
-<div class="mb-3">
+<div class="form-container">
     <label for="videoTitle" class="form-label">Title</label>
     <input type="text" class="form-control" id="videoTitle" @bind="videoTitle" />
-</div>
-
-<div class="mb-3">
+    
     <label for="videoFile" class="form-label">Select Video</label>
-    <InputFile id="videoFile" OnChange="HandleFileSelected" />
+    <InputFile id="videoFile" class="form-control-file" OnChange="HandleFileSelected" />
+
+    <button class="btn btn-primary" @onclick="UploadFile" disabled="@isUploading">Upload</button>
 </div>
 
-<button class="btn btn-primary" @onclick="UploadFile">Upload</button>
+@if (isUploading)
+{
+    <div class="spinner-container">
+        <div class="spinner-border" role="status"></div>
+        <p class="loading-message">Uploading video, please wait...</p>
+    </div>
+}
 
 @if (_gameReplays == null)
 {
@@ -70,35 +76,35 @@ else
     private List<GameReplay>? _gameReplays;
     private string? uploadError;
     private string? uploadResult;
+    private bool isUploading = false;
 
     private async Task UploadFile()
     {
         uploadError = null; // Reset any previous errors
         uploadResult = null; // Reset previous result
+        isUploading = true; // Set uploading state to true
+
         if (selectedFile != null && !string.IsNullOrEmpty(videoTitle))
         {
             try
             {
                 Console.WriteLine($"Selected file: {selectedFile.Name}, size: {selectedFile.Size}");
                 Console.WriteLine("Preparing to upload file...");
-
+                
                 var content = new MultipartFormDataContent();
                 using var memoryStream = new MemoryStream();
                 await selectedFile.OpenReadStream(maxAllowedSize: 1073741824).CopyToAsync(memoryStream); // 1GB limit
-
+                
                 Console.WriteLine($"MemoryStream length after reading file: {memoryStream.Length}");
 
                 var fileContent = new ByteArrayContent(memoryStream.ToArray());
                 fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
-
+                
                 // Log the Content-Type header
                 Console.WriteLine($"File Content-Type set to: {fileContent.Headers.ContentType}");
-
+                
                 content.Add(fileContent, "VideoFile", selectedFile.Name);
                 content.Add(new StringContent(videoTitle), "Title");
-
-                // Log the Content-Type header for the multipart content
-                Console.WriteLine($"Content-Type being sent: {content.Headers.ContentType}");
 
                 var response = await ApiHelper.PostToApiAsync("gamereplays", content);
                 if (response.IsSuccessStatusCode)
@@ -124,6 +130,8 @@ else
             uploadError = "Please select a video file to upload and enter a title.";
             Console.WriteLine("Video file or title is missing.");
         }
+
+        isUploading = false; // Set uploading state to false
     }
 
     private async Task LoadGameReplays()

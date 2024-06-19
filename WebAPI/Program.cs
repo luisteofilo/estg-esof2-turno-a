@@ -125,14 +125,14 @@ app.MapPost("/gamereplays", async (HttpRequest request, ApplicationDbContext db)
             Console.WriteLine("Video file is too large. Maximum size allowed is 1 GB.");
             return Results.BadRequest("Video file is too large. Maximum size allowed is 1 GB.");
         }
-
+        
+        // Upload to a file path (Uploads)
         var filePath = Path.Combine("Uploads", videoFile.FileName);
-        Directory.CreateDirectory("Uploads");
-
-        await using (var fileStream = new FileStream(filePath, FileMode.Create))
-        {
-            await fileStream.WriteAsync(videoData, 0, videoData.Length);
-        }
+        //Directory.CreateDirectory("Uploads");
+        //await using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //{
+        //    await fileStream.WriteAsync(videoData, 0, videoData.Length);
+        //}
 
         var gameReplay = new GameReplay
         {
