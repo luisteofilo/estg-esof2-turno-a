@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nostalgist.js example</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container small">
+      <h1 class="text-center mt-3">Nostalgist.js example</h1>
+
+      <hr />
+
+      <h2>Input mapping</h2>
+      <div class="alert alert-light" role="alert">
+        <p>
+          <img
+            src="https://cdn.jsdelivr.net/npm/@mdi/svg@7.3.67/svg/gamepad-round-up.svg"
+            alt="gamepad-round-up icon"
+          />
+          - <kbd>up</kbd> |
+          <img
+            src="https://cdn.jsdelivr.net/npm/@mdi/svg@7.3.67/svg/gamepad-round-down.svg"
+            alt="gamepad-round-down icon"
+          />
+          - <kbd>down</kbd> |
+          <img
+            src="https://cdn.jsdelivr.net/npm/@mdi/svg@7.3.67/svg/gamepad-round-left.svg"
+            alt="gamepad-round-left icon"
+          />
+          - <kbd>left</kbd> |
+          <img
+            src="https://cdn.jsdelivr.net/npm/@mdi/svg@7.3.67/svg/gamepad-round-right.svg"
+            alt="gamepad-round-right icon"
+          />
+          - <kbd>right</kbd>
+        </p>
+        <p>
+          <img
+            src="https://cdn.jsdelivr.net/npm/@mdi/svg@7.3.67/svg/gamepad-circle-left.svg"
+            alt="gamepad-circle-left icon"
+          />
+          - <kbd>A</kbd> |
+          <img
+            src="https://cdn.jsdelivr.net/npm/@mdi/svg@7.3.67/svg/gamepad-circle-up.svg"
+            alt="gamepad-circle-up icon"
+          />
+          - <kbd>S</kbd> |
+          <img
+            src="https://cdn.jsdelivr.net/npm/@mdi/svg@7.3.67/svg/gamepad-circle-down.svg"
+            alt="gamepad-circle-down icon"
+          />
+          - <kbd>Z</kbd> |
+          <img
+            src="https://cdn.jsdelivr.net/npm/@mdi/svg@7.3.67/svg/gamepad-circle-right.svg"
+            alt="gamepad-circle-right icon"
+          />
+          - <kbd>X</kbd>
+        </p>
+        <p>
+          <kbd>start</kbd> - <kbd>Enter</kbd> | <kbd>select</kbd> -
+          <kbd>Shift</kbd>
+        </p>
+        <p>Press <kbd>Esc</kbd> to quit a game while playing.</p>
+      </div>
+      <div class="alert alert-light" role="alert">
+        You can also use a real game controller.
+      </div>
+
+      <h3>Games</h3>
+      <div class="alert alert-light" role="alert">
+        Games below are all loaded from
+        <a href="https://retrobrews.github.io/">retrobrews</a>.
+      </div>
+
+      <!-- Formulário para seleção de ficheiro -->
+      <form id="gameForm">
+        <div class="form-group">
+          <label for="gameFile">Select game file:</label>
+          <input
+            type="file"
+            class="form-control-file"
+            id="gameFile"
+            accept=".nes"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Load Game</button>
+      </form>
+
+      <!-- Botões para salvar e carregar estados do jogo -->
+      <div class="mt-3">
+        <button id="saveStateBtn" class="btn btn-success mr-2">
+          Save State
+        </button>
+        <button id="loadStateBtn" class="btn btn-primary">Load State</button>
+      </div>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Game</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script src="/libs/nostalgist.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

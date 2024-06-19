@@ -1,0 +1,43 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css");
+@import url("https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/css/materialdesignicons.min.css");
+
+.alert img {
+  width: 24px;
+  height: 24px;
+}
+
+.table img {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table td .btn {
+  min-width: 140px;
+}
+
+#canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50% !important;
+  height: 100%;
+  background-color: black;
+  z-index: 10;
+}
+
+.container.small {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
