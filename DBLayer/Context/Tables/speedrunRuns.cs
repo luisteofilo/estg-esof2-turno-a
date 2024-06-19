@@ -10,6 +10,9 @@ public class speedrunRuns
         modelBuilder.Entity<speedrunRun>(entity =>
         {
             entity.HasKey(e => e.runID);
+            
+            entity.Property(e => e.runID)
+                .HasDefaultValueSql("gen_random_uuid()");
 
             entity.Property(e => e.playerID).IsRequired();
 

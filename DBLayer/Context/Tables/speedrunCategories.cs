@@ -11,6 +11,9 @@ public class speedrunCategories
         {
             entity.HasKey(e => e.categoryID);
 
+            entity.Property( e => e.categoryID)
+                .HasDefaultValueSql("gen_random_uuid()" );
+            
             entity.Property(e => e.gameID).IsRequired();
 
             entity.HasOne(e => e.Game)
@@ -28,6 +31,7 @@ public class speedrunCategories
             entity.HasMany(e => e.speedrunRuns)
                 .WithOne(run => run.category)
                 .HasForeignKey(run => run.categoryID);
+            
         });
             
     }

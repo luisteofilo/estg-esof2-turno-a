@@ -10,6 +10,9 @@ public class speedrunModerators
         modelBuilder.Entity<speedrunModerator>(entity =>
         {
             entity.HasKey(e => e.moderatorID);
+            
+            entity.Property(e => e.moderatorID)
+                .HasDefaultValueSql("gen_random_uuid()");
 
             entity.Property(e => e.userID).IsRequired();
 
