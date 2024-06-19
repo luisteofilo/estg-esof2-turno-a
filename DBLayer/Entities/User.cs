@@ -16,12 +16,9 @@ public class User
     [Required]
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
-<<<<<<< HEAD
+
     //Novo parametro 
     public Achievement Achievement { get; set; }
     
-=======
-    
-    //Parametro para achievements
->>>>>>> 156f5a44b941a5be34e63436643a5953da985e91
+
 }
