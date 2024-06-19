@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.DBLayer.Context;
 
-public class speedrunCategories
+public partial class ApplicationDbContext
 {
-    public void BuildSpeedrunCategory(ModelBuilder modelBuilder) 
+    public void BuildSpeedrunCategories(ModelBuilder modelBuilder) 
     {
         modelBuilder.Entity<speedrunCategory>(entity =>
         {

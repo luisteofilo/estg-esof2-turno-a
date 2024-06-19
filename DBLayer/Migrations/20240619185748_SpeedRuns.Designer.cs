@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240619184014_SpeedRuns")]
+    [Migration("20240619185748_SpeedRuns")]
     partial class SpeedRuns
     {
         /// <inheritdoc />
@@ -50,7 +50,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("game_id");
 
-                    b.ToTable("Game");
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
@@ -146,7 +146,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 {
                     b.Property<Guid>("categoryID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("categoryDescription")
                         .IsRequired()
@@ -170,13 +171,17 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasIndex("gameID");
 
-                    b.ToTable("speedrunCategory");
+                    b.ToTable("speedrunCategories");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.speedrunModerator", b =>
                 {
                     b.Property<Guid>("moderatorID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("gameID")
@@ -190,21 +195,27 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("moderatorID");
 
+                    b.HasIndex("UserId");
+
                     b.HasIndex("gameID");
 
                     b.HasIndex("userID");
 
-                    b.ToTable("speedrunModerator");
+                    b.ToTable("speedrunModerators");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.speedrunRun", b =>
                 {
                     b.Property<Guid>("runID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTime>("SubmissionDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("categoryID")
                         .HasColumnType("uuid");
@@ -216,7 +227,9 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("integer");
 
                     b.Property<bool>("verified")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<Guid>("verifierID")
                         .HasColumnType("uuid");
@@ -227,13 +240,15 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("runID");
 
+                    b.HasIndex("UserId");
+
                     b.HasIndex("categoryID");
 
                     b.HasIndex("playerID");
 
                     b.HasIndex("verifierID");
 
-                    b.ToTable("speedrunRun");
+                    b.ToTable("speedrunRuns");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
@@ -287,6 +302,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.speedrunModerator", b =>
                 {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", null)
+                        .WithMany("speedrunModerators")
+                        .HasForeignKey("UserId");
+
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "game")
                         .WithMany()
                         .HasForeignKey("gameID")
@@ -294,7 +313,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired();
 
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "user")
-                        .WithMany("speedrunModerators")
+                        .WithMany()
                         .HasForeignKey("userID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -306,6 +325,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.speedrunRun", b =>
                 {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", null)
+                        .WithMany("speedrunRuns")
+                        .HasForeignKey("UserId");
+
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.speedrunCategory", "category")
                         .WithMany("speedrunRuns")
                         .HasForeignKey("categoryID")
@@ -313,7 +336,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired();
 
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "player")
-                        .WithMany("speedrunRuns")
+                        .WithMany()
                         .HasForeignKey("playerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

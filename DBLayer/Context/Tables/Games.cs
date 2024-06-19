@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ESOF.WebApp.DBLayer.Context;
 
 public partial class ApplicationDbContext{
-    private void BuildGame(ModelBuilder modelBuilder){
+    private void BuildGames(ModelBuilder modelBuilder){
         modelBuilder.Entity<Game>(entity => {
             entity.HasKey(e => e.game_id);
 

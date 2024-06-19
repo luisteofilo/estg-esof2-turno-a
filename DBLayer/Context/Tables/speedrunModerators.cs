@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.DBLayer.Context;
 
-public class speedrunModerators
+public partial class ApplicationDbContext
 {
     public void BuildSpeedrunModerators(ModelBuilder modelBuilder)
     {
