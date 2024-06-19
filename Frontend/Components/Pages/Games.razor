@@ -12,7 +12,11 @@
 }
 else
 {
-<button class="btn btn-primary" @onclick="AddGame">Click me</button>
+
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGame" >
+        Add Game
+    </button>
+    
     <table class="table">
         <thead>
             <tr>
@@ -44,25 +48,91 @@ else
         </tbody>
     </table>
 
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Launch demo modal
-    </button>
-
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addGame" tabindex="-1" aria-labelledby="addGameLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="addGameLabel">Add Game</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <div class="container d-flex justify-content-center">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="gameName1" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="gameName1" placeholder="Name" aria-label="Name">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="labelA1" class="form-label">a</label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="releaseDate1" class="form-label">Release Date</label>
+                                        <input type="date" class="form-control" id="releaseDate1" placeholder="Release Date" aria-label="Release Date">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="labelA2" class="form-label">a</label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="gameName3" class="form-label">Developer</label>
+                                        <input type="text" class="form-control" id="gameName3" placeholder="Name" aria-label="Name">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="labelA3" class="form-label">a</label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="gameName4" class="form-label">Publisher</label>
+                                        <input type="text" class="form-control" id="gameName4" placeholder="Name" aria-label="Name">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="labelA4" class="form-label">a</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="gameName5" class="form-label">Description</label>
+                                        <input type="text" class="form-control" id="gameName5" placeholder="Name" aria-label="Name">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="labelA5" class="form-label">a</label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="genres" class="form-label">Genres</label>
+                                        <select class="form-control" id="genres"></select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="labelA5" class="form-label">a</label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="gameName7" class="form-label">Categories</label>
+                                        <input type="text" class="form-control" id="gameName7" placeholder="Name" aria-label="Name">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="labelA7" class="form-label">a</label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="gameName8" class="form-label">Console</label>
+                                        <input type="text" class="form-control" id="gameName8" placeholder="Name" aria-label="Name">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="labelA8" class="form-label">a</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" @onclick="AddGame">Add Game</button>
                 </div>
             </div>
         </div>
