@@ -13,5 +13,6 @@ public class Achievement
     public string Description { get; set; }
     [Required]
     public int RequiredScore { get; set; }
+    
     public ICollection<User> PlayerAchivements { get; set; }
 }
