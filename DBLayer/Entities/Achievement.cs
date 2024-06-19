@@ -14,5 +14,7 @@ public class Achievement
     [Required]
     public int RequiredScore { get; set; }
     
-    public ICollection<User> PlayerAchivements { get; set; }
+    public ICollection<PlayerAchievement> PlayerAchievements { get; set; }
+    //public User User { get; set; }
+    //public Guid UserId { get; set; }
 }

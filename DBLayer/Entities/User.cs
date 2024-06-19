@@ -18,7 +18,7 @@ public class User
     public ICollection<UserRole> UserRoles { get; set; }
 
     //Novo parametro 
-    public Achievement Achievement { get; set; }
+    public ICollection<PlayerAchievement> PlayerAchievements { get; set; }
     
 
 }
