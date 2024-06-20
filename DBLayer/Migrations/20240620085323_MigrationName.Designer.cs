@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240619165127_MigrationName")]
+    [Migration("20240620085323_MigrationName")]
     partial class MigrationName
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favourite", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favorite", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -39,7 +39,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Favourites");
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
@@ -162,16 +162,16 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favourite", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favorite", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
-                        .WithMany("Favourites")
+                        .WithMany("Favorites")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
-                        .WithMany("Favourites")
+                        .WithMany("Favorites")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -221,7 +221,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
-                    b.Navigation("Favourites");
+                    b.Navigation("Favorites");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
@@ -238,7 +238,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
-                    b.Navigation("Favourites");
+                    b.Navigation("Favorites");
 
                     b.Navigation("UserRoles");
                 });

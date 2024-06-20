@@ -48,5 +48,13 @@ app.MapGet("/games", () =>
     .WithName("GetGames")
     .WithOpenApi();
 
+app.MapGet("/games/{gameId:guid}", (Guid GameId) =>
+    {
+        var db = new ApplicationDbContext();
+        return db.Games.Find(GameId);
+    })
+    .WithName("GetGamesById")
+    .WithOpenApi();
+
 app.MapFavoriteRoutes();
 app.Run();
