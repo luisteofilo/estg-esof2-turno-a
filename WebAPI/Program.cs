@@ -49,6 +49,24 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
+app.MapGet("/mods", () =>
+    {
+        var db = new ApplicationDbContext();
+        return db.Mods.Select(u => u);
+    })
+    .WithName("GetMods")
+    .WithOpenApi();
+
+app.MapPost("/mods", async (Mod mod) =>
+    {
+        using var db = new ApplicationDbContext();  // Create a new instance of ApplicationDbContext
+        db.Mods.Add(mod);
+        await db.SaveChangesAsync();
+        return Results.Created($"/mods/{mod.ModId}", mod);
+    })
+    .WithName("AddMod")
+    .WithOpenApi();
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

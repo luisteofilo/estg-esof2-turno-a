@@ -7,6 +7,10 @@
 
 <h1>Mods</h1>
 
+<NavLink class="nav-link" href="add-mod">
+    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Adicionar Mod
+    </NavLink>
+
 <p>This component demonstrates showing data from the API for mods.</p>
 
 @if (mods == null)
@@ -49,4 +53,5 @@ else
     {
         mods = await ApiHelper.GetFromApiAsync<Mod[]>("mods");
     }
+    
 }
