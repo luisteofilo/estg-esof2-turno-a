@@ -31,7 +31,9 @@ else
                 <div class="col-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.5 -2.5 24 24" width="28" fill="currentColor"><path d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm6.32-1.094l3.58 3.58a1 1 0 1 1-1.415 1.413l-3.58-3.58a8 8 0 1 1 1.414-1.414z"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.5 -2.5 24 24" width="28" fill="currentColor">
+                                <path d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm6.32-1.094l3.58 3.58a1 1 0 1 1-1.415 1.413l-3.58-3.58a8 8 0 1 1 1.414-1.414z"></path>
+                            </svg>
                         </span>
                         <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
                     </div>
@@ -50,10 +52,20 @@ else
                                         <p class="card-text text-white">@game.Genre - @game.Platform</p>
                                     </div>
                                     <div class="card-button">
-                                        <button type="button" class="btn btn-outline-light">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2.5 24 24" width="24" fill="currentColor">
-                                                <path d="M10 13.554l3.517 1.85-.672-3.917 2.846-2.774-3.932-.571L10 4.579 8.241 8.142l-3.932.571 2.846 2.774-.672 3.916L10 13.554zm0 2.26L3.827 19.06l1.179-6.875L.01 7.317l6.902-1.003L10 .06l3.087 6.254 6.902 1.003-4.995 4.868 1.18 6.875L10 15.814z"></path>
-                                            </svg>
+                                        <button type="button" class="btn btn-outline-light" @onclick="() => ToggleFavorite(game)">
+                                            @if (IsFavorite(game))
+                                            {
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
+                                                                                                    <path d="M10 16.207l-6.173 3.246 1.179-6.874L.01 7.71l6.902-1.003L10 .453l3.087 6.254 6.902 1.003-4.995 4.869 1.18 6.874z"></path>
+                                                                                                </svg>
+                                            }
+                                            else
+                                            {
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" fill="currentColor">
+                                                                                                    <path d="M6.516 14.323l-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z"></path>
+                                                                                                </svg>
+                                                
+                                            }
                                         </button>
                                     </div>
                                 </div>
@@ -73,11 +85,21 @@ else
                                         <p class="card-text text-white">@fav.Genre - @fav.Platform</p>
                                     </div>
                                     <div class="card-button">
-                                        <button type="button" class="btn btn-outline-light">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: currentColor;">
-                                                <path d="m6.516 14.323-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z"></path>
-                                            </svg>
-                                        </button>
+                                        <button type="button" class="btn btn-outline-light" @onclick="() => ToggleFavorite(fav)">
+                                            @if (IsFavorite(fav))
+                                                {
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
+                                                                                                                                            <path d="M10 16.207l-6.173 3.246 1.179-6.874L.01 7.71l6.902-1.003L10 .453l3.087 6.254 6.902 1.003-4.995 4.869 1.18 6.874z"></path>
+                                                                                                                                        </svg>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" fill="currentColor">
+                                                                                                                                            <path d="M6.516 14.323l-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z"></path>
+                                                                                                                                        </svg>
+                                                                                        
+                                                                                    }
+                                            </button>
                                     </div>
                                 </div>
                             </div>
@@ -90,11 +112,22 @@ else
             <div class="menuFilters mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="m-0">Filters</h5>
-                    <button type="button" class="btn btn-danger">Clear  <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="17" fill="currentColor"><path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path></svg></button>
+                    <button type="button" class="btn btn-danger">Clear
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="17" fill="currentColor">
+                            <path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path>
+                        </svg>
+                    </button>
                 </div>
-                <button type="button" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="28" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>  Genre</button>
-                <button type="button" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="28" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>  Console</button>
-                
+                <button type="button" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="28" fill="currentColor">
+                        <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
+                    </svg> Genre
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="28" fill="currentColor">
+                        <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
+                    </svg> Console
+                </button>
             </div>
         </div>
     </div>
@@ -103,21 +136,50 @@ else
 @code {
     private List<Game>? _gamesCatalog;
     private List<Game>? _gamesFavorites;
-    private List<Game>? _postgamesFavorites;
-    private List<Game>? _deletegamesFavorites;
     private Guid userId = Guid.Parse("594d48ac-fa6b-4ff4-ad52-8e2a955b9d8c");
-    
+
     protected override async Task OnInitializedAsync()
     {
-        string favoritesUrl = $"favorites/{userId}";
-        /*string addFavoritesUrl = $"favorites/{userId}/{{gameId:guid}}";
-        string removeFavoritesUrl = $"favorites/{userId}/{{gameId:guid}}";*/
-        
         _gamesCatalog = await ApiHelper.GetFromApiAsync<List<Game>>("games");
-        _gamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>(favoritesUrl);
-        /*_postgamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>(favoritesUrl);
-        _gamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>(favoritesUrl);*/
-        
+        _gamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>($"favorites/{userId}");
+    }
+
+    private async Task AddToFavorites(Guid gameId)
+    {
+        string addFavoritesUrl = $"favorites/{userId}/{gameId}";
+        await ApiHelper.PostToApiAsync<object>(addFavoritesUrl);
+        var game = _gamesCatalog?.FirstOrDefault(g => g.GameId == gameId);
+        if (game != null)
+        {
+            _gamesFavorites?.Add(game);
+        }
+    }
+
+    private async Task RemoveFromFavorites(Guid gameId)
+    {
+        string removeFavoritesUrl = $"favorites/{userId}/{gameId}";
+        await ApiHelper.DeleteFromApiAsync<object>(removeFavoritesUrl);
+        var game = _gamesFavorites?.FirstOrDefault(g => g.GameId == gameId);
+        if (game != null)
+        {
+            _gamesFavorites?.Remove(game);
+        }
+    }
+
+    private bool IsFavorite(Game game)
+    {
+        return _gamesFavorites?.Any(fav => fav.GameId == game.GameId) ?? false;
+    }
+
+    private async Task ToggleFavorite(Game game)
+    {
+        if (IsFavorite(game))
+        {
+            await RemoveFromFavorites(game.GameId);
+        }
+        else
+        {
+            await AddToFavorites(game.GameId);
+        }
     }
 }
-
