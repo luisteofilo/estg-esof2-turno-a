@@ -8,7 +8,7 @@ public class GameGenre{
 	public Guid game_id{ get; set; }
 	
 	[ForeignKey("game_id")]
-	public Game game{ get; set; }
+	public MarketPlace_Game MarketPlaceGame{ get; set; }
 	
 	[Key]
 	public Guid genre_id{ get; set; }

@@ -45,14 +45,14 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     
-    public DbSet<Game> Game { get; set; }
+    public DbSet<MarketPlace_Game> MarketPlaceGame { get; set; }
     public DbSet<GameGenre> GameGenre { get; set; }
     public DbSet<GamePlatform> GamePlatform { get; set; }
     public DbSet<Genre> Genre { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<OrderItem> OrderItem { get; set; }
     public DbSet<Platform> Platform { get; set; }
-    public DbSet<Review> Review { get; set; }
+    public DbSet<OrderReview> OrderReview { get; set; }
 
 
     
@@ -73,7 +73,7 @@ public partial class ApplicationDbContext : DbContext
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
         
-        BuildGame(modelBuilder);
+        BuildMarketPlace_Game(modelBuilder);
         BuildGameGenre(modelBuilder);
         BuildGamePlatform(modelBuilder);
         BuildGenre(modelBuilder);

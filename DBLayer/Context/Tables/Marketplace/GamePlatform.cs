@@ -12,7 +12,7 @@ public partial class ApplicationDbContext{
 
 			entity.HasKey(e => e.platform_id);
 			
-			entity.HasOne(e => e.game)
+			entity.HasOne(e => e.MarketPlaceGame)
 				.WithMany(g => g.gamePlatforms)
 				.HasForeignKey(e => e.platform_id);
 			

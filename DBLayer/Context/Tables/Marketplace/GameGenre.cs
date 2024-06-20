@@ -16,7 +16,7 @@ public partial class ApplicationDbContext{
 				.WithMany(g => g.gameGenres)
 				.HasForeignKey(e => e.genre_id);
 
-			entity.HasOne(e => e.game)
+			entity.HasOne(e => e.MarketPlaceGame)
 				.WithMany(g => g.gameGenres)
 				.HasForeignKey(e => e.genre_id);
 		});

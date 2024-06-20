@@ -22,7 +22,52 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.GameGenre", b =>
+                {
+                    b.Property<Guid>("genre_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("game_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("genre_id");
+
+                    b.ToTable("GameGenre");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.GamePlatform", b =>
+                {
+                    b.Property<Guid>("platform_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("game_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("platform_id");
+
+                    b.ToTable("GamePlatform");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.Genre", b =>
+                {
+                    b.Property<Guid>("genre_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("genre_id");
+
+                    b.ToTable("Genre");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.MarketPlace_Game", b =>
                 {
                     b.Property<Guid>("game_id")
                         .ValueGeneratedOnAdd()
@@ -47,55 +92,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("game_id");
 
-                    b.ToTable("Game");
+                    b.ToTable("MarketPlaceGame");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameGenre", b =>
-                {
-                    b.Property<Guid>("genre_id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("game_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("genre_id");
-
-                    b.ToTable("GameGenre");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GamePlatform", b =>
-                {
-                    b.Property<Guid>("platform_id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("game_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("platform_id");
-
-                    b.ToTable("GamePlatform");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Genre", b =>
-                {
-                    b.Property<Guid>("genre_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("genre_id");
-
-                    b.ToTable("Genre");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Order", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.Order", b =>
                 {
                     b.Property<Guid>("user_id")
                         .HasColumnType("uuid");
@@ -115,9 +115,12 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.OrderItem", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.OrderItem", b =>
                 {
                     b.Property<Guid>("game_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("amount")
@@ -128,9 +131,36 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("game_id");
 
+                    b.HasIndex("UserId");
+
                     b.HasIndex("order_id");
 
                     b.ToTable("OrderItem");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.OrderReview", b =>
+                {
+                    b.Property<Guid>("game_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("rating")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("review")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("review_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("reviewer_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("game_id");
+
+                    b.HasIndex("reviewer_id");
+
+                    b.ToTable("OrderReview");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
@@ -161,26 +191,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasKey("platform_id");
 
                     b.ToTable("Platform");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Review", b =>
-                {
-                    b.Property<Guid>("game_id")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("rating")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("review")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("review_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("game_id");
-
-                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Role", b =>
@@ -256,28 +266,28 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameGenre", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.GameGenre", b =>
                 {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "game")
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Marketplace.MarketPlace_Game", "MarketPlaceGame")
                         .WithMany("gameGenres")
                         .HasForeignKey("genre_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Genre", "genre")
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Marketplace.Genre", "genre")
                         .WithMany("gameGenres")
                         .HasForeignKey("genre_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("game");
+                    b.Navigation("MarketPlaceGame");
 
                     b.Navigation("genre");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GamePlatform", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.GamePlatform", b =>
                 {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "game")
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Marketplace.MarketPlace_Game", "MarketPlaceGame")
                         .WithMany("gamePlatforms")
                         .HasForeignKey("platform_id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -289,12 +299,12 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("game");
+                    b.Navigation("MarketPlaceGame");
 
                     b.Navigation("platform");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Order", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.Order", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "user")
                         .WithMany()
@@ -305,34 +315,46 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.OrderItem", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.OrderItem", b =>
                 {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "game")
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", null)
+                        .WithMany("UserOrderItems")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Marketplace.MarketPlace_Game", "MarketPlaceGame")
                         .WithMany("orderItems")
                         .HasForeignKey("game_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Order", "order")
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Marketplace.Order", "order")
                         .WithMany("orderItems")
                         .HasForeignKey("order_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("game");
+                    b.Navigation("MarketPlaceGame");
 
                     b.Navigation("order");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Review", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.OrderReview", b =>
                 {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "game")
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Marketplace.MarketPlace_Game", "MarketPlaceGame")
                         .WithMany("gameReviews")
                         .HasForeignKey("game_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("game");
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "Reviewer")
+                        .WithMany("UserOrderReviews")
+                        .HasForeignKey("reviewer_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MarketPlaceGame");
+
+                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
@@ -373,7 +395,12 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.Genre", b =>
+                {
+                    b.Navigation("gameGenres");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.MarketPlace_Game", b =>
                 {
                     b.Navigation("gameGenres");
 
@@ -384,12 +411,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("orderItems");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Genre", b =>
-                {
-                    b.Navigation("gameGenres");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Order", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.Order", b =>
                 {
                     b.Navigation("orderItems");
                 });
@@ -413,6 +435,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
+                    b.Navigation("UserOrderItems");
+
+                    b.Navigation("UserOrderReviews");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

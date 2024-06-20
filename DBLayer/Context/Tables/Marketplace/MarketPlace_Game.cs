@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ESOF.WebApp.DBLayer.Context;
 
 public partial class ApplicationDbContext{
-	private void BuildGame(ModelBuilder modelBuilder){
-		modelBuilder.Entity<Game>(entity => {
+	private void BuildMarketPlace_Game(ModelBuilder modelBuilder){
+		modelBuilder.Entity<MarketPlace_Game>(entity => {
 			entity.HasKey(e => e.game_id);
 
 			entity.Property(e => e.name).IsRequired();
@@ -21,19 +21,19 @@ public partial class ApplicationDbContext{
 			entity.Property(e => e.release_date).IsRequired();
 
 			entity.HasMany(e => e.gameGenres)
-				.WithOne(genre => genre.game)
+				.WithOne(genre => genre.MarketPlaceGame)
 				.HasForeignKey(e => e.game_id);
 			
 			entity.HasMany(e => e.gamePlatforms)
-				.WithOne(p => p.game )
+				.WithOne(p => p.MarketPlaceGame )
 				.HasForeignKey(e => e.game_id);
 			
 			entity.HasMany(e => e.gameReviews)
-				.WithOne(gr => gr.game )
+				.WithOne(gr => gr.MarketPlaceGame )
 				.HasForeignKey(e => e.game_id);
 			
 			entity.HasMany(e => e.orderItems)
-				.WithOne(oi => oi.game )
+				.WithOne(oi => oi.MarketPlaceGame )
 				.HasForeignKey(e => e.game_id);
 			});
 	}

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ESOF.WebApp.DBLayer.Entities.Marketplace;
 
-public class Game{
+public class MarketPlace_Game{
 	[Key]
 	public Guid game_id{ get; set; }
 	
@@ -25,7 +25,7 @@ public class Game{
 	
 	public ICollection<GamePlatform> gamePlatforms { get; set; }
 	
-	public ICollection<Review> gameReviews { get; set; }
+	public ICollection<OrderReview> gameReviews { get; set; }
 	
 	public ICollection<OrderItem> orderItems { get; set; }
 
