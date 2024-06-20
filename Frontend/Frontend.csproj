@@ -11,6 +11,7 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+      <Content Remove="Components\Pages\Mods.razor" />
     </ItemGroup>
 
     <ItemGroup>
@@ -18,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DBLayer\DBLayer.csproj" />
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 

@@ -1,0 +1,52 @@
+@page "/mods"
+@using Frontend.Helpers
+@using ESOF.WebApp.DBLayer.Entities
+@inject ApiHelper ApiHelper
+
+<PageTitle>Mods</PageTitle>
+
+<h1>Mods</h1>
+
+<p>This component demonstrates showing data from the API for mods.</p>
+
+@if (mods == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Game</th>
+            <th>Description</th>
+            <th>Release Date</th>
+            <th>Author</th>
+            <th>Version</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var mod in mods)
+        {
+            <tr>
+                <td>@mod.Name</td>
+                <td>@mod.Game</td>
+                <td>@mod.Description</td>
+                <td>@mod.ReleaseDate.ToShortDateString()</td>
+                <td>@mod.Author</td>
+                <td>@mod.Version</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Mod[]? mods;
+
+    protected override async Task OnInitializedAsync()
+    {
+        mods = await ApiHelper.GetFromApiAsync<Mod[]>("mods");
+    }
+}
