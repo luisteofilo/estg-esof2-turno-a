@@ -7,7 +7,7 @@ namespace ESOF.WebApp.DBLayer.Context;
 
 public partial class ApplicationDbContext{
 	private void BuildReview(ModelBuilder modelBuilder){
-		modelBuilder.Entity<Review>(entity => {
+		modelBuilder.Entity<OrderReview>(entity => {
 			
 			entity.HasKey(e => e.review_id);
 			
@@ -17,10 +17,14 @@ public partial class ApplicationDbContext{
 			
 			entity.Property(e => e.review).IsRequired();
 			
-			entity.HasOne(e => e.game)
+			entity.HasOne(e => e.MarketPlaceGame)
 				.WithMany(g => g.gameReviews)
 				.HasForeignKey(e => e.game_id);
-			
+
+			entity.HasOne(e => e.Reviewer)
+				.WithMany(u => u.UserOrderReviews)
+				.HasForeignKey(e => e.reviewer_id);
+
 		});
 	}
 }
