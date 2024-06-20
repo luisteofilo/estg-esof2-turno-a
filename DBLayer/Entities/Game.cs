@@ -27,6 +27,9 @@ public class Game
 
     [Required]
     public double Price { get; set; }
+    
+    [Required]
+    public byte[] Rom { get; set; }
 
     [Required]
     public List<Genre> Genres { get; set; } = new List<Genre>(); 

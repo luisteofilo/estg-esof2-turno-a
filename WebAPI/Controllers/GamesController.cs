@@ -58,6 +58,7 @@ public class GamesController : ControllerBase
         game.Publisher = updatedGame.Publisher;
         game.Description = updatedGame.Description;
         game.Price = updatedGame.Price;
+        game.Rom = updatedGame.Rom;
         
         
         await context.SaveChangesAsync();
@@ -80,6 +81,4 @@ public class GamesController : ControllerBase
         await context.SaveChangesAsync();
         return NoContent();
     }
-    
-    
 }
