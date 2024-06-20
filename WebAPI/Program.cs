@@ -41,31 +41,13 @@ app.MapGet("/weatherforecast", () =>
     .WithName("GetWeatherForecast")
     .WithOpenApi();
 
-app.MapGet("/users/emails", async ([FromServices] ApplicationDbContext context) =>
+app.MapGet("/users/emails", () =>
     {
         var db = new ApplicationDbContext();
         return db.Users.Select(u => u.Email);
     })
     .WithName("GetUsersNames")
     .WithOpenApi();
-
-app.MapGet("/mods", async ([FromServices] ApplicationDbContext context) =>
-    {
-        var mods = await context.Mods.ToListAsync();
-        return Results.Ok(mods);
-    })
-    .WithName("GetMods")
-    .WithOpenApi();
-
-app.MapPost("/mods", async ([FromServices] ApplicationDbContext context,  [FromBody] Mod mod) =>
-    {
-        context.Mods.Add(mod);
-        await context.SaveChangesAsync();
-        return Results.Created($"/mods/{mod.ModId}", mod);
-    })
-    .WithName("AddMod")
-    .WithOpenApi();
-
 
 app.Run();
 
