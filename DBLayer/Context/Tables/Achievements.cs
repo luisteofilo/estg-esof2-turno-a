@@ -7,8 +7,6 @@ public partial class ApplicationDbContext
 {
     public void BuildAchievements(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Achievement>()
-            .HasKey(a => a.IdAchievement);
 
         modelBuilder.Entity<Achievement>()
             .Property(a => a.Name)
@@ -21,6 +19,8 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<Achievement>()
             .Property(a => a.RequiredScore)
             .IsRequired();
-        
+        modelBuilder.Entity<Achievement>()
+            .Property(p => p.IdAchievement)
+            .HasDefaultValueSql("gen_random_uuid()");
     }
 }

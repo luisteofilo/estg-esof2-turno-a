@@ -16,6 +16,10 @@ public partial class ApplicationDbContext
             .HasOne(pa => pa.Achievement)
             .WithMany(a => a.PlayerAchievements)
             .HasForeignKey(pa => pa.AchievementId);
+        
+        modelBuilder.Entity<PlayerAchievement>()
+            .Property(p => p.IdPalyerAchievement)
+            .HasDefaultValueSql("gen_random_uuid()");
     }
     
 }
