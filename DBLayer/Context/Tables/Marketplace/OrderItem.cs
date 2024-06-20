@@ -15,7 +15,7 @@ public partial class ApplicationDbContext{
 			
 			entity.Property(e => e.amount).IsRequired();
 			
-			entity.HasOne(e => e.game)
+			entity.HasOne(e => e.MarketPlaceGame)
 				.WithMany(g => g.orderItems)
 				.HasForeignKey(e => e.game_id);
 			

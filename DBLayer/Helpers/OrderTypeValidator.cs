@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using ESOF.WebApp.DBLayer.Entities;
+using ESOF.WebApp.DBLayer.Entities.Marketplace;
 
 namespace ESOF.WebApp.DBLayer.Helpers;
 
