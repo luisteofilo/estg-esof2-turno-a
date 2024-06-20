@@ -74,7 +74,7 @@ else
                 </div>
                 <div class="tab-pane fade" id="fav-tab-pane" role="tabpanel" aria-labelledby="fav-tab" tabindex="0">
                     <div class="cardsGames row">
-                        @foreach (var fav in _gamesFavorites)
+                        @foreach (var fav in _gamesFavoritesById)
                         {
                             <div class="col-md-3 mb-4">
                                 <div class="card position-relative">
@@ -156,7 +156,6 @@ else
         if (game != null)
         {
             _gamesFavorites?.Add(game);
-            _gamesFavoritesById?.Add(game);
         }
     }
 
@@ -168,7 +167,6 @@ else
         if (game != null)
         {
             _gamesFavorites?.Remove(game);
-            _gamesFavoritesById?.Remove(game);
         }
     }
 
