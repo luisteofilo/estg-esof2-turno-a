@@ -1,4 +1,5 @@
 using System.Text.Json;
+using ESOF.WebApp.DBLayer.Entities;
 
 namespace Frontend.Helpers;
 
@@ -26,19 +27,31 @@ public class ApiHelper(HttpClient httpClient)
         {
             var response = await httpClient.PostAsync(url, null);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<T>();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"API Response: {responseContent}");
+
+            return JsonSerializer.Deserialize<T>(responseContent);
         }
         catch (HttpRequestException e)
         {
             // Handle exception
+            Console.WriteLine($"HTTP Request Error: {e.Message}");
             throw new ApplicationException($"Error posting data to {url}: {e.Message}");
+        }
+        catch (JsonException e)
+        {
+            // Handle JSON deserialization exception
+            Console.WriteLine($"JSON Deserialization Error: {e.Message}");
+            throw new ApplicationException($"Error deserializing response from {url}: {e.Message}");
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine($"General Error: {e.Message}");
             throw;
         }
     }
+
     
     public async Task<T> DeleteFromApiAsync<T>(string url)
     {
