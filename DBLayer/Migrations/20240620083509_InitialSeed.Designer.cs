@@ -3,6 +3,7 @@ using System;
 using ESOF.WebApp.DBLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240529193143_InitialDataSeed")]
+    partial class InitialDataSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,54 +24,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favourite", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnOrder(0);
-
-                    b.Property<Guid>("GameId")
-                        .HasColumnType("uuid")
-                        .HasColumnOrder(1);
-
-                    b.HasKey("UserId", "GameId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Favourites", (string)null);
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
-                {
-                    b.Property<Guid>("GameId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("Genre")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Platform")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("GameId");
-
-                    b.HasIndex("Genre");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.HasIndex("Platform");
-
-                    b.ToTable("Games", (string)null);
-                });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
                 {
@@ -83,7 +38,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("PermissionId");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Role", b =>
@@ -99,7 +54,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
@@ -114,7 +69,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("RolePermissions", (string)null);
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
@@ -141,7 +96,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.UserRole", b =>
@@ -156,26 +111,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favourite", b =>
-                {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
-                        .WithMany("Favourites")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
-                        .WithMany("Favourites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("User");
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
@@ -216,11 +152,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
-                {
-                    b.Navigation("Favourites");
-                });
-
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -235,8 +166,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
-                    b.Navigation("Favourites");
-
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

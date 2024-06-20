@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.DBLayer.Context;
 
-// TODO: Add tables for Games and Favourites list
+// TODO: Add tables for Games and Favorites list
 public partial class ApplicationDbContext : DbContext
 {
     private static readonly DbContextOptions DefaultOptions = new Func<DbContextOptions>(() =>
@@ -39,7 +39,7 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<Game> Games { get; set; }
-    public DbSet<Favourite> Favourites { get; set; }
+    public DbSet<Favorite> Favorites { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -56,7 +56,7 @@ public partial class ApplicationDbContext : DbContext
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
         BuildGames(modelBuilder); 
-        BuildFavourites(modelBuilder); 
+        BuildFavorites(modelBuilder); 
         base.OnModelCreating(modelBuilder);
     }
 }

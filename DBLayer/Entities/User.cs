@@ -18,5 +18,5 @@ public class User
     public ICollection<UserRole> UserRoles { get; set; }
     
     // Add this line
-    public ICollection<Favourite> Favourites { get; set; }
+    public ICollection<Favorite> Favorites { get; set; }
 }

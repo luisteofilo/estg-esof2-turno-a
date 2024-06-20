@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
-public class Favourite
+public class Favorite
 {
     [Key, Column(Order = 0)]
     public Guid UserId { get; set; }

@@ -32,6 +32,14 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
+app.MapGet("/users", () =>
+    {
+        var db = new ApplicationDbContext();
+        return db.Users;
+    })
+    .WithName("GetUsers")
+    .WithOpenApi();
+
 app.MapGet("/games", () =>
     {
         var db = new ApplicationDbContext();

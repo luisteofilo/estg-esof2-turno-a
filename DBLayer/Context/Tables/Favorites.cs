@@ -3,22 +3,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.DBLayer.Context;
 
-// TODO: Implement context for the Favourites table
+// TODO: Implement context for the Favorites table
 public partial class ApplicationDbContext
 {
-    private void BuildFavourites(ModelBuilder modelBuilder)
+    private void BuildFavorites(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Favourite>()
+        modelBuilder.Entity<Favorite>()
             .HasKey(f => new { f.UserId, f.GameId });
 
-        modelBuilder.Entity<Favourite>()
+        modelBuilder.Entity<Favorite>()
             .HasOne(f => f.User)
-            .WithMany(u => u.Favourites)
+            .WithMany(u => u.Favorites)
             .HasForeignKey(f => f.UserId);
 
-        modelBuilder.Entity<Favourite>()
+        modelBuilder.Entity<Favorite>()
             .HasOne(f => f.Game)
-            .WithMany(g => g.Favourites)
+            .WithMany(g => g.Favorites)
             .HasForeignKey(f => f.GameId);
     }
 }

@@ -9,7 +9,7 @@ public partial class ApplicationDbContext
     private void BuildGames(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Game>()
-            .HasMany(g => g.Favourites)
+            .HasMany(g => g.Favorites)
             .WithOne(f => f.Game)
             .HasForeignKey(f => f.GameId);
 
@@ -27,18 +27,18 @@ public partial class ApplicationDbContext
             .Property(p => p.GameId)
             .HasDefaultValueSql("gen_random_uuid()");
 
-        modelBuilder.Entity<Favourite>()
+        modelBuilder.Entity<Favorite>()
             .HasKey(f => new { f.UserId, f.GameId });
 
-        modelBuilder.Entity<Favourite>()
+        modelBuilder.Entity<Favorite>()
             .HasOne(f => f.User)
-            .WithMany(u => u.Favourites)
+            .WithMany(u => u.Favorites)
             .HasForeignKey(f => f.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Favourite>()
+        modelBuilder.Entity<Favorite>()
             .HasOne(f => f.Game)
-            .WithMany(g => g.Favourites)
+            .WithMany(g => g.Favorites)
             .HasForeignKey(f => f.GameId)
             .OnDelete(DeleteBehavior.Cascade);
     }

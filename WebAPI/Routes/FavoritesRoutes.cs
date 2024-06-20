@@ -10,18 +10,18 @@ public static class FavoriteRoutes
         app.MapGet("/favorites", () =>
         {
             var db = new ApplicationDbContext();
-            return db.Favourites;
+            return db.Favorites;
         })
         .WithName("GetFavorites")
         .WithOpenApi();
 
         app.MapGet("/favorites/{userId:guid}", async ([FromServices] ApplicationDbContext db, Guid userId) =>
         {
-            var favourites = await db.Favourites
+            var Favorites = await db.Favorites
                 .Where(f => f.UserId == userId)
                 .Select(f => new { f.UserId, f.GameId, f.Game })
                 .ToListAsync();
-            return favourites == null ? Results.NotFound() : Results.Ok(favourites);
+            return Favorites == null ? Results.NotFound() : Results.Ok(Favorites);
         })
         .WithName("GetUserFavorites")
         .WithOpenApi();
@@ -29,16 +29,16 @@ public static class FavoriteRoutes
         // Add game to favorites
         app.MapPost("/favorites/{userId:guid}/{gameId:guid}", async ([FromServices] ApplicationDbContext db, Guid userId, Guid gameId) =>
         {
-            var existingFavourite = await db.Favourites.FindAsync(userId, gameId);
-            if (existingFavourite != null)
+            var existingfavorite = await db.Favorites.FindAsync(userId, gameId);
+            if (existingfavorite != null)
             {
                 return Results.Conflict("Este favorito já existe.");
             }
 
-            var favourite = new Favourite { UserId = userId, GameId = gameId };
-            db.Favourites.Add(favourite);
+            var favorite = new Favorite { UserId = userId, GameId = gameId };
+            db.Favorites.Add(favorite);
             await db.SaveChangesAsync();
-            return Results.Created($"/favorites/{favourite.UserId}/{favourite.GameId}", favourite);
+            return Results.Created($"/favorites/{favorite.UserId}/{favorite.GameId}", favorite);
         })
         .WithName("AddFavorite")
         .WithOpenApi();
@@ -46,13 +46,13 @@ public static class FavoriteRoutes
         // Remove game from favorites
         app.MapDelete("/favorites/{userId:guid}/{gameId:guid}", async ([FromServices] ApplicationDbContext db, Guid userId, Guid gameId) =>
         {
-            var favourite = await db.Favourites.FindAsync(userId, gameId);
-            if (favourite == null)
+            var favorite = await db.Favorites.FindAsync(userId, gameId);
+            if (favorite == null)
             {
                 return Results.NotFound();
             }
 
-            db.Favourites.Remove(favourite);
+            db.Favorites.Remove(favorite);
             await db.SaveChangesAsync();
             return Results.NoContent();
         })

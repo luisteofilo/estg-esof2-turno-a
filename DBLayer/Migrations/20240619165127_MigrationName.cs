@@ -88,7 +88,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Favourites",
+                name: "Favorites",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -96,15 +96,15 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Favourites", x => new { x.UserId, x.GameId });
+                    table.PrimaryKey("PK_Favorites", x => new { x.UserId, x.GameId });
                     table.ForeignKey(
-                        name: "FK_Favourites_Games_GameId",
+                        name: "FK_Favorites_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "GameId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Favourites_Users_UserId",
+                        name: "FK_Favorites_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -136,8 +136,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Favourites_GameId",
-                table: "Favourites",
+                name: "IX_Favorites_GameId",
+                table: "Favorites",
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
@@ -177,7 +177,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Favourites");
+                name: "Favorites");
 
             migrationBuilder.DropTable(
                 name: "RolePermissions");
