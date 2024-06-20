@@ -1,9 +1,12 @@
 ﻿using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
+namespace ESOF.WebApp.DBLayer.Context;
+
+
 public partial class ApplicationDbContext
 {
-    private void BuildComments(ModelBuilder modelBuilder)
+    private void BuildComment(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Comment>()
             .Property(p => p.CommentId)

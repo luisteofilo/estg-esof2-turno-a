@@ -39,6 +39,7 @@ public partial class ApplicationDbContext : DbContext
     }
     
     public DbSet<User> Users { get; set; }
+    public DbSet<Favourite> Favourites { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -65,9 +66,10 @@ public partial class ApplicationDbContext : DbContext
         BuildUserRoles(modelBuilder);
         BuildGames(modelBuilder);
         BuildPosts(modelBuilder);
-        BuildComments(modelBuilder);
+        BuildComment(modelBuilder);
         BuildPostLikes(modelBuilder);
         BuildCommentLikes(modelBuilder);
+        BuildFavourites(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }

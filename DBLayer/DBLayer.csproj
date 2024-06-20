@@ -22,4 +22,8 @@
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Entities\Comments.cs" />
+    </ItemGroup>
+
 </Project>
