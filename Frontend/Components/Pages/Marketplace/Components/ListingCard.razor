@@ -1,0 +1,12 @@
+<a href="/marketplace/listing/@ListingId" class="card position-relative">
+    <img src="https://picsum.photos/500/700" class="card-img" alt="...">
+    <div class="card-img-overlay d-flex flex-column justify-content-end">
+        <h5 class="card-title text-white mb-0">Title</h5>
+        <p class="card-text text-white">Description</p>
+    </div>
+</a>
+
+@code {
+    [Parameter]
+    public int ListingId { get; set; }
+}

@@ -20,17 +20,3 @@
     gap: 2rem;
 }
 
-.game-card {
-    display: flex;
-    width: 16rem;
-    height: 16rem;
-    color: red;
-    background-color: var(--bs-gray-100);
-}
-
-.card-img-top {
-    width: 18rem;
-    height: 16rem;
-    object-fit: cover;
-}
-
