@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ESOF.WebApp.DBLayer.Helpers;
 
-namespace ESOF.WebApp.DBLayer.Entities;
+namespace ESOF.WebApp.DBLayer.Entities.Marketplace;
 
 public class Order{
 	[Key]

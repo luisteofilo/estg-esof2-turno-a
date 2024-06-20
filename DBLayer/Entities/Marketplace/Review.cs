@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ESOF.WebApp.DBLayer.Entities;
+namespace ESOF.WebApp.DBLayer.Entities.Marketplace;
 
 public class Review{
 	[Key]

@@ -1,5 +1,6 @@
 using DotNetEnv;
 using ESOF.WebApp.DBLayer.Entities;
+using ESOF.WebApp.DBLayer.Entities.Marketplace;
 using Helpers;
 using Microsoft.EntityFrameworkCore;
 
