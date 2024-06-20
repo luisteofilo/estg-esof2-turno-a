@@ -1,7 +1,11 @@
+using System.Text.Json;
+
 namespace Frontend.Helpers;
 
 public class ApiHelper(HttpClient httpClient)
 {
+    private JsonSerializerOptions? _jsonOptions;
+
     public async Task<T?> GetFromApiAsync<T>(string url)
     {
         try
@@ -36,18 +40,26 @@ public class ApiHelper(HttpClient httpClient)
         }
     }
     
-    public async Task<T?> DeleteFromApiAsync<T>(string url)
+    public async Task<T> DeleteFromApiAsync<T>(string url)
     {
-        try
+        using (var response = await httpClient.DeleteAsync(url))
         {
-            var response = await httpClient.DeleteAsync(url);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<T>();
-        }
-        catch (HttpRequestException e)
-        {
-            // Handle exception
-            throw new ApplicationException($"Error deleting data from {url}: {e.Message}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrWhiteSpace(content))
+                {
+                    return JsonSerializer.Deserialize<T>(content, _jsonOptions);
+                }
+                else
+                {
+                    return default; 
+                }
+            }
+            else
+            {
+                throw new HttpRequestException($"Erro ao chamar a API. Status code: {response.StatusCode}");
+            }
         }
     }
 }
