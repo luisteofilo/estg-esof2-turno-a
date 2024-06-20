@@ -18,13 +18,13 @@ public class Review
     [Required]
     public Guid UserId { get; set; }
     
-    [ForeignKey("id_user___fk")]
+    [ForeignKey(nameof(UserId))]
     public User User { get; set; }
     
     
     [Required]
     public Guid GameId { get; set; }
     
-    [ForeignKey("id_game___fk")]
+    [ForeignKey(nameof(GameId))]
     public Game Game { get; set; }
 }

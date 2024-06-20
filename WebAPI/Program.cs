@@ -1,4 +1,6 @@
 using ESOF.WebApp.DBLayer.Context;
+using ESOF.WebApp.DBLayer.Entities;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +46,22 @@ app.MapGet("/users/emails", () =>
         return db.Users.Select(u => u.Email);
     })
     .WithName("GetUsersNames")
+    .WithOpenApi();
+
+app.MapGet("/Games", () =>
+    {
+        var db = new ApplicationDbContext();
+        return  db.Games;
+    })
+    .WithName("GetGames")
+    .WithOpenApi();
+
+app.MapGet("/Reviews", () =>
+    {
+        var db = new ApplicationDbContext();
+        return  db.Reviews;
+    })
+    .WithName("GetReviews")
     .WithOpenApi();
 
 app.Run();
