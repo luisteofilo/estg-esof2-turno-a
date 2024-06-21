@@ -18,84 +18,50 @@
 }
 else
 {
+    @if (!string.IsNullOrEmpty(_alertMessage))
+    {
+        <div class="alert @_alertClass alert-dismissible" role="alert">
+            @_alertMessage
+            <button type="button" class="btn-close" aria-label="Close" @onclick="ClearAlert"></button>
+        </div>
+    }
     <div class="row">
-        <div class="col-10 border-color-right">
-            <div class="row justify-content-between align-items-center">
-                <ul class="nav col-8 nav-underline mb-3" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Games</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="fav-tab" data-bs-toggle="tab" data-bs-target="#fav-tab-pane" type="button" role="tab" aria-controls="fav-tab-pane" aria-selected="false">Favorites</button>
-                    </li>
-                </ul>
-                <div class="col-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.5 -2.5 24 24" width="28" fill="currentColor">
-                                <path d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm6.32-1.094l3.58 3.58a1 1 0 1 1-1.415 1.413l-3.58-3.58a8 8 0 1 1 1.414-1.414z"></path>
-                            </svg>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
+            <div class="col-10 border-color-right">
+                <div class="row justify-content-between align-items-center">
+                    <ul class="nav col-8 nav-underline mb-3" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Games</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="fav-tab" data-bs-toggle="tab" data-bs-target="#fav-tab-pane" type="button" role="tab" aria-controls="fav-tab-pane" aria-selected="false">Favorites</button>
+                        </li>
+                    </ul>
+                    <div class="col-4">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.5 -2.5 24 24" width="28" fill="currentColor">
+                                    <path d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm6.32-1.094l3.58 3.58a1 1 0 1 1-1.415 1.413l-3.58-3.58a8 8 0 1 1 1.414-1.414z"></path>
+                                </svg>
+                            </span>
+                            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" @bind="searchText" @bind:event="oninput">
+                        </div>
                     </div>
                 </div>
-            </div>
-            @if (!string.IsNullOrEmpty(_alertMessage))
-            {
-                <div class="alert @_alertClass alert-dismissible" role="alert">
-                    @_alertMessage
-                    <button type="button" class="btn-close" aria-label="Close" @onclick="ClearAlert"></button>
-                </div>
-            }
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <div class="cardsGames row">
-                        @foreach (var game in _gamesCatalog)
-                        {
-                            <div class="col-md-3 mb-4">
-                                <div class="card position-relative">
-                                    <img src="https://picsum.photos/500/700" class="card-img" alt="...">
-                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                                        <h5 class="card-title text-orange mb-0">@game.Name</h5>
-                                        <p class="card-text text-orange">@game.Genre - @game.Platform</p>
-                                    </div>
-                                    <div class="card-button">
-                                        <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(game)">
-                                            @if (IsFavorite(game))
-                                            {
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
-                                                    <path d="M10 16.207l-6.173 3.246 1.179-6.874L.01 7.71l6.902-1.003L10 .453l3.087 6.254 6.902 1.003-4.995 4.869 1.18 6.874z"></path>
-                                                </svg>
-                                            }
-                                            else
-                                            {
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" fill="currentColor">
-                                                    <path d="M6.516 14.323l-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z"></path>
-                                                </svg>
-                                            }
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="fav-tab-pane" role="tabpanel" aria-labelledby="fav-tab" tabindex="0">
-                    <div class="cardsGames row">
-                        @if (_gamesFavoritesById != null)
-                        {
-                            @foreach (var fav in _gamesFavoritesById)
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                        <div class="cardsGames row">
+                            @foreach (var game in FilteredGames)
                             {
                                 <div class="col-md-3 mb-4">
                                     <div class="card position-relative">
                                         <img src="https://picsum.photos/500/700" class="card-img" alt="...">
                                         <div class="card-img-overlay d-flex flex-column justify-content-end">
-                                            <h5 class="card-title text-orange mb-0">@fav.Name</h5>
-                                            <p class="card-text text-orange">@fav.Genre - @fav.Platform</p>
+                                            <h3 class="card-title text-orange mb-0">@game.Name</h3>
+                                            <h5 class="card-text text-orange">@game.Genre - @game.Platform</h5>@*mudar para game.Genres - @game.Consoles*@
                                         </div>
                                         <div class="card-button">
-                                            <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(fav)">
-                                                @if (IsFavorite(fav))
+                                            <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(game)">
+                                                @if (IsFavorite(game))
                                                 {
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
                                                         <path d="M10 16.207l-6.173 3.246 1.179-6.874L.01 7.71l6.902-1.003L10 .453l3.087 6.254 6.902 1.003-4.995 4.869 1.18 6.874z"></path>
@@ -112,52 +78,86 @@ else
                                     </div>
                                 </div>
                             }
-                        }
-                        else
-                        {
-                            <p>No favorites selected.</p>
-                        }
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="fav-tab-pane" role="tabpanel" aria-labelledby="fav-tab" tabindex="0">
+                        <div class="cardsGames row">
+                            @if (_gamesFavoritesById != null && _gamesFavoritesById.Any())
+                            {
+                                @foreach (var fav in FilteredFavorites)
+                                {
+                                    <div class="col-md-3 mb-4">
+                                        <div class="card position-relative">
+                                            <img src="https://picsum.photos/500/700" class="card-img" alt="...">
+                                            <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                                <h3 class="card-title text-orange mb-0">@fav.Name</h3>
+                                                <h5 class="card-text text-orange">@fav.Genre - @fav.Platform</h5>@*mudar para fav.Genres - @fav.Consoles*@
+                                            </div>
+                                            <div class="card-button">
+                                                <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(fav)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
+                                                        <path d="M10 16.207l-6.173 3.246 1.179-6.874L.01 7.71l6.902-1.003L10 .453l3.087 6.254 6.902 1.003-4.995 4.869 1.18 6.874z"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="col-md-10 offset-md-1 mb-5">
+                                    <em>No favorites yet...</em>
+                                </p>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
     <div class="col-2">
         <div class="menuFilters mb-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="m-0">Filters</h5>
-                <button type="button" class="btn btn-orange">Clear
+                <button type="button" class="btn btn-orange" @onclick="ClearFilters">Clear
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="20" fill="currentColor">
                         <path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path>
                     </svg>
                 </button>
             </div>
-            <button type="button" class="btn btn-orange w-100">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor">
+            <button type="button" class="btn btn-orange w-100" @onclick="ToggleGenreFilters">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor" class="filter-icon @((genreFiltersOpen) ? "rotate" : "")">
                     <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
                 </svg> Genre
             </button>
-            <div class="filtrosGenre">
-                <div class="form-check my-3 ms-4">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Default checkbox
-                    </label>
-                </div>
+            <div class="filtrosGenre filter-container @((genreFiltersOpen) ? "open" : "")">
+                @foreach (var genre in Enum.GetValues(typeof(ESOF.WebApp.DBLayer.Entities.Genre)).Cast<ESOF.WebApp.DBLayer.Entities.Genre>())
+                {
+                    <div class="form-check my-3 ms-4">
+                        <input class="form-check-input" type="checkbox" id="@("genre_" + genre)" checked="@selectedGenres.Contains(genre)" @onchange="(e => HandleGenreCheckboxChange(e, genre))" />
+                        <label class="form-check-label" for="@("genre_" + genre)">
+                            @genre
+                        </label>
+                    </div>
+                }
             </div>
-            <button type="button" class="btn btn-orange w-100">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor">
+            
+            <button type="button" class="btn btn-orange w-100" @onclick="ToggleConsoleFilters">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor" class="filter-icon @((consoleFiltersOpen) ? "rotate" : "")">
                     <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
                 </svg> Console
             </button>
-            <div class="filtrosConsole">
-                <div class="form-check my-3 ms-4">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Default checkbox
-                    </label>
-                </div>
-
+            <div class="filtrosConsole filter-container @((consoleFiltersOpen) ? "open" : "")">
+                @foreach (var console in Enum.GetValues(typeof(ESOF.WebApp.DBLayer.Entities.Consoles)).Cast<ESOF.WebApp.DBLayer.Entities.Consoles>())
+                {
+                    <div class="form-check my-3 ms-4">
+                        <input class="form-check-input" type="checkbox" id="@("console_" + console)" checked="@selectedConsoles.Contains(console)" @onchange="(e => HandleConsoleCheckboxChange(e, console))" />
+                        <label class="form-check-label" for="@("console_" + console)">
+                            @console
+                        </label>
+                    </div>
+                }
             </div>
+
         </div>
     </div>
 </div>
@@ -171,6 +171,7 @@ else
     private string? _alertMessage;
     private string _alertClass = string.Empty;
     private System.Timers.Timer? _alertTimer;
+    private string searchText;
 
     protected override async Task OnInitializedAsync()
     {
@@ -228,7 +229,6 @@ else
 
     private async Task ToggleFavorite(Game game)
     {
-        Console.WriteLine("Toggle favorite");
         if (IsFavorite(game))
         {
             await RemoveFromFavorites(game.GameId);
@@ -259,5 +259,53 @@ else
             _alertTimer?.Stop();
         };
         _alertTimer.Start();
+    }
+    
+    private IEnumerable<Game> FilteredGames => _gamesCatalog?.Where(game => string.IsNullOrEmpty(searchText) || game.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    private IEnumerable<Game> FilteredFavorites => _gamesFavoritesById?.Where(fav => string.IsNullOrEmpty(searchText) || fav.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    
+    private bool genreFiltersOpen = false;
+    private bool consoleFiltersOpen = false;
+
+    private void ToggleGenreFilters()
+    {
+        genreFiltersOpen = !genreFiltersOpen;
+    }
+
+    private void ToggleConsoleFilters()
+    {
+        consoleFiltersOpen = !consoleFiltersOpen;
+    }
+
+    private HashSet<ESOF.WebApp.DBLayer.Entities.Genre> selectedGenres = new HashSet<ESOF.WebApp.DBLayer.Entities.Genre>();
+    private HashSet<ESOF.WebApp.DBLayer.Entities.Consoles> selectedConsoles = new HashSet<ESOF.WebApp.DBLayer.Entities.Consoles>();
+
+    private void ClearFilters()
+    {
+        selectedGenres.Clear();
+        selectedConsoles.Clear();
+    }
+    
+    private void HandleGenreCheckboxChange(ChangeEventArgs e, ESOF.WebApp.DBLayer.Entities.Genre genre)
+    {
+        if ((bool)e.Value)
+        {
+            selectedGenres.Add(genre);
+        }
+        else
+        {
+            selectedGenres.Remove(genre);
+        }
+    }
+    private void HandleConsoleCheckboxChange(ChangeEventArgs e, ESOF.WebApp.DBLayer.Entities.Consoles console)
+    {
+        if ((bool)e.Value)
+        {
+            selectedConsoles.Add(console);
+        }
+        else
+        {
+            selectedConsoles.Remove(console);
+        }
     }
 }

@@ -161,3 +161,38 @@
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: none;
 }
+
+.filter-icon {
+    transition: transform 0.3s ease-out;
+}
+
+.rotate {
+    transform: rotate(90deg);
+}
+
+/* Estilos para o scroll apenas nos filtros */
+.filter-container.open {
+    max-height: 300px;
+}
+
+.filter-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #FFCF76 transparent;
+}
+
+.filter-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.filter-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.filter-container::-webkit-scrollbar-thumb {
+    background-color: #FDB42E;
+    border-radius: 4px;
+}
