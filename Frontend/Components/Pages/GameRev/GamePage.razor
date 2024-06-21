@@ -133,7 +133,7 @@ else
                         <h4>User Reviews</h4>
                         <div class="review-filters">
                             <label for="user-filter">Filter by:</label>
-                            <select id="user-filter" class="form-select" onchange="filterReviews('user')">
+                            <select id="user-filter" class="form-select" @onchange="HandleFilterChange">
                                 <option value="all">All</option>
                                 <option value="good">Good</option>
                                 <option value="average">Average</option>
@@ -144,7 +144,7 @@ else
                             <!-- Placeholder for reviews, dynamically filtered -->
                             @if (_reviews != null)
                             {
-                                foreach (var review in _reviews)
+                                foreach (var review in FilteredReviews(currentFilter))
                                 {
                                     <div class="review card mb-3" data-rating="good">
                                         <div class="card-body">
@@ -160,27 +160,20 @@ else
                             }
                         </div>
                     </div>
+                    @code {
+                        private string currentFilter = "all";
+
+                        private void HandleFilterChange(ChangeEventArgs args)
+                        {
+                            currentFilter = args.Value?.ToString() ?? "all";
+                        }
+                    }
+                    
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    function filterReviews(type) {
-        const filterValue = document.getElementById(type + '-filter').value;
-        const reviews = document.getElementById(type + '-reviews').getElementsByClassName('review');
-
-        for (let review of reviews) {
-            const rating = review.getAttribute('data-rating');
-            if (filterValue === 'all' || rating === filterValue) {
-                review.style.display = 'block';
-            } else {
-                review.style.display = 'none';
-            }
-        }
-    }
-</script>
 
 
 @code{
@@ -297,6 +290,23 @@ else
         
         return 0;
     }
-
     
+    private IEnumerable<Reviews> FilteredReviews(string filter)
+    {
+        if (_reviews == null)
+            return Enumerable.Empty<Reviews>();
+
+        switch (filter)
+        {
+            case "good":
+                return _reviews.Where(r => r.Evaluation >= 7);
+            case "average":
+                return _reviews.Where(r => r.Evaluation >= 5 && r.Evaluation < 7);
+            case "bad":
+                return _reviews.Where(r => r.Evaluation < 5);
+            case "all":
+            default:
+                return _reviews;
+        }
+    }
 }
