@@ -24,6 +24,10 @@
 
     <ItemGroup>
       <Compile Remove="Helpers\AchievementMethods.cs" />
+      <Compile Remove="Context\Tables\TestChallengeUser.cs" />
+      <Compile Remove="Context\Tables\TestChallenges.cs" />
+      <Compile Remove="Entities\TestChallenge.cs" />
+      <Compile Remove="Entities\TestChallengeUser.cs" />
     </ItemGroup>
 
 </Project>

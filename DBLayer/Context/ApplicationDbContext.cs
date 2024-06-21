@@ -64,6 +64,8 @@ public partial class ApplicationDbContext : DbContext
         //Build para os Achievements
         BuildAchievements(modelBuilder);
         BuildPlayerAchievements(modelBuilder);
+        //Build para tabelas de teste de scores
+        BuildTestUserScores(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }
