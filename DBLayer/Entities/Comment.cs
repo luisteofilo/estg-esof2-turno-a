@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
-public class Comments
+public class Comment
 {
     [Key]
     public Guid comment_id{ get; set; }
@@ -12,7 +12,7 @@ public class Comments
     public User user{ get; set; }
     
     [ForeignKey("video_id")]
-    public Videos video{ get; set; }
+    public Video video{ get; set; }
     
     [Required]
     public String comment{ get; set; }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace ESOF.WebApp.DBLayer.Entities;
 
-public class Games
+public class Game
 {
     [Key]
     public Guid game_id{ get; set; }
@@ -10,7 +10,7 @@ public class Games
     public String name{ get; set; }
     
     [Required]
-    public String concole{ get; set; }
+    public String console{ get; set; }
     
-    public ICollection<Challenges> challenges { get; set; }
+    public ICollection<Challenge> challenges { get; set; }
 }
