@@ -212,6 +212,8 @@ else
 
         if (_reviews != null)
         {
+            Array.Reverse(_reviews);
+            
             foreach (var rev in _reviews)
             {
                     if (rev.GameId.Equals(GameId))
