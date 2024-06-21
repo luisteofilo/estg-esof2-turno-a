@@ -1,4 +1,4 @@
-@page "/Games"
+﻿@page "/Games"
 @using ESOF.WebApp.DBLayer.Entities
 @using ESOF.WebApp.DBLayer.Dto
 @inject HttpClient Http
@@ -8,45 +8,45 @@
 
 @if (_games == null)
 {
-    <p><em>Loading...</em></p>
+<p><em>Loading...</em></p>
 }
 else
 {
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGame">Add Game</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Url Image</th>
-                <th>Release Date</th>
-                <th>Developer</th>
-                <th>Publisher</th>
-                <th>Price</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var game in _games)
-        {
-            <tr>
-                <td>@game.Name</td>
-                <td>@game.Url_Image</td>
-                <td>@game.ReleaseDate.ToShortDateString()</td>
-                <td>@game.Developer</td>
-                <td>@game.Publisher</td>
-                <td>@game.Price.ToString("C")</td>
-                <td>
-                    <button class="btn btn-secondary" @onclick="() => EditGame(game)">Edit</button>
-                    <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGame">Add Game</button>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Url Image</th>
+        <th>Release Date</th>
+        <th>Developer</th>
+        <th>Publisher</th>
+        <th>Price</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var game in _games)
+    {
+    <tr>
+        <td>@game.Name</td>
+        <td>@game.Url_Image</td>
+        <td>@game.ReleaseDate.ToShortDateString()</td>
+        <td>@game.Developer</td>
+        <td>@game.Publisher</td>
+        <td>@game.Price.ToString("C")</td>
+        <td>
+            <button class="btn btn-secondary" @onclick="() => EditGame(game)">Edit</button>
+            <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
 }
 
 <div class="modal fade" id="addGame" tabindex="-1" aria-labelledby="addGameLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog custom-modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="addGameLabel">Add Game</h1>
@@ -55,55 +55,91 @@ else
             <div class="modal-body">
                 <EditForm Model="newGameDto" OnValidSubmit="HandleValidSubmit">
                     <div class="row">
-                        <div class="col-md-8">
-                            <InputText id="gameName" class="form-control" @bind-Value="newGameDto.Name" placeholder="Name" />
-                            <InputDate id="releaseDate" class="form-control" @bind-Value="newGameDto.ReleaseDate" />
-                            <InputText id="developer" class="form-control" @bind-Value="newGameDto.Developer" />
-                            <InputText id="publisher" class="form-control" @bind-Value="newGameDto.Publisher" />
-                            <InputTextArea id="description" class="form-control" @bind-Value="newGameDto.Description" />
-                            <InputNumber id="price" class="form-control" @bind-Value="newGameDto.Price" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <InputText id="gameName" class="form-control" @bind-Value="newGameDto.Name" placeholder="Name"/>
+                            </div>
+                            <div class="form-group">
+                                <InputDate id="releaseDate" class="form-control" @bind-Value="newGameDto.ReleaseDate" />
+                            </div>
+                            <div class="form-group">
+                                <InputText id="developer" class="form-control" @bind-Value="newGameDto.Developer" placeholder="Developer Name"/>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="fileInput">Game Picture:</label>
-                            <InputFile id="fileInput" OnChange="HandleFileSelected" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <InputText id="publisher" class="form-control" @bind-Value="newGameDto.Publisher" placeholder="Publisher Name"/>
+                            </div>
+                            <div class="form-group">
+                                <InputNumber id="price" class="form-control" @bind-Value="newGameDto.Price" placeholder="Price"/>
+                            </div>
+                            <div class="form-group">
+                                <InputTextArea id="description" class="form-control" @bind-Value="newGameDto.Description" placeholder="description"/>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="col-md-8">
-                        <!-- Checkboxes for selection -->
-                        <label>Consoles</label>
-                        @if (availableConsoles != null)
-                        {
-                            @foreach (var console in availableConsoles)
-                            {
-                                <div>
-                                    <InputCheckbox @bind-Value="console.IsChecked" /> @console.Name
-                                </div>
-                            }
-                        }
-                        <label>Categories</label>
-                        @if (availableCategories != null)
-                        {
-                            @foreach (var category in availableCategories)
-                            {
-                                <div>
-                                    <InputCheckbox @bind-Value="category.IsChecked" /> @category.Name
-                                </div>
-                            }
-                        }
-                        <label>Genres</label>
-                        @if (availableGenres != null)
-                        {
-                            @foreach (var genre in availableGenres)
-                            {
-                                <div>
-                                    <InputCheckbox @bind-Value="genre.IsChecked" /> @genre.Name
-                                </div>
-                            }
-                        }
+                    <div class="form-group">
+                        <label for="fileInput">Game Picture:</label>
+                        <InputFile id="fileInput" OnChange="HandleFileSelected" />
                     </div>
                     
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Consoles</h4>
+                            <div class="row">
+                                @if (availableConsoles != null)
+                                {
+                                    @foreach (var console in availableConsoles)
+                                    {
+                                        <div class="col-md-2">
+                                            <div>
+                                                <InputCheckbox @bind-Value="console.IsChecked"/> @console.Name
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Categories</h4>
+                            <div class="row">
+                                @if (availableCategories != null)
+                                {
+                                    @foreach (var category in availableCategories)
+                                    {
+                                        <div class="col-md-2">
+                                            <div>
+                                                <InputCheckbox @bind-Value="category.IsChecked"/> @category.Name
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Genres</h4>
+                            <div class="row">
+                                @if (availableGenres != null)
+                                {
+                                    @foreach (var genre in availableGenres)
+                                    {
+                                        <div class="col-md-2">
+                                            <div>
+                                                <InputCheckbox @bind-Value="genre.IsChecked"/> @genre.Name
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Add Game</button>
                     </div>
@@ -184,3 +220,4 @@ else
         public bool IsChecked { get; set; }
     }
 }
+

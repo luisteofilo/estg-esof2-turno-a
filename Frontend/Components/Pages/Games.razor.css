@@ -1,0 +1,19 @@
+.custom-modal-dialog {
+    max-width: 80%;
+    width: 80%;
+}
+
+h4 {
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+.custom-file-input {
+    cursor: pointer;
+}
+.custom-file-label::after {
+    content: "Browse";
+}
