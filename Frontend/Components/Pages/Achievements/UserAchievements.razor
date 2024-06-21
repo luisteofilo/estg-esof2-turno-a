@@ -45,9 +45,11 @@ else
 {
     private string apiUrl = $"/achievements/5cc030f2-377f-475b-a4fa-fd20cfa46ff1";
     private PlayerAchievementsViewModel[]? _user_achievements;
-
+    
+    //Muito importante como não foi possivel fazer a autenticação foi festa o pedido do id do utilizador atraves de uma variavel estatica
+    Guid teste = new Guid("1cd94aba-997a-490a-ac21-b1ea2cd2f6a4");
     protected override async Task OnInitializedAsync()
     {
-        _user_achievements = await ApiHelper.GetFromApiAsync<PlayerAchievementsViewModel[]>("/user_achievements");
+        _user_achievements = await ApiHelper.GetFromApiAsync<PlayerAchievementsViewModel[]>($"/user_achievements/{teste}");
     }
 }

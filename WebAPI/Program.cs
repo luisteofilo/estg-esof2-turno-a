@@ -61,9 +61,8 @@ app.MapGet("/achievements", () =>
     .WithName("GetAchievements")
     .WithOpenApi();
 
-app.MapGet("/user_achievements", () =>
+app.MapGet("/user_achievements/{userId:Guid}", (Guid userId) =>
     {
-        var userId = new Guid("5cc030f2-377f-475b-a4fa-fd20cfa46ff1");
         var db = new ApplicationDbContext();
         var user_achievements =  (from pa in db.PlayerAchievements
             join a in db.Achievements on pa.AchievementId equals a.IdAchievement
@@ -77,6 +76,18 @@ app.MapGet("/user_achievements", () =>
         return user_achievements;
     })
     .WithName("GetUserAchievements")
+    .WithOpenApi();
+
+app.MapGet("/users", () =>
+    {
+        var db = new ApplicationDbContext();
+        return db.Users.Select(a => new UserViewModel()
+        {
+            Email = a.Email,
+            UserId = a.UserId
+        }).ToArray();
+    })
+    .WithName("GetUsers")
     .WithOpenApi();
 
 app.Run();
