@@ -1,4 +1,9 @@
-﻿/*Css to catalog page*/
+﻿:root {
+    --primary-color: #FDB42E;
+    --secondary-color: #FFCF76;
+}
+
+/*Css to catalog page*/
 
 .cardsGames .card-img-overlay {
     position: absolute;
@@ -45,8 +50,114 @@
 }
 
 .nav-link{
-    color: #74859e;
+    color: #FFCF76;
 }
 .menuFilters .nav-link:focus, .nav-link:hover {
-    color: #fd7e14;
+    color: #FDB42E;
+}
+
+.alert {
+    position: fixed;
+    right: 0;
+    top: 0;
+    margin: 20px;
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #FDB42E;
+    --bs-btn-border-color: #FDB42E;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #FDB42E;
+    --bs-btn-hover-border-color: #FDB42E;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #FDB42E;
+    --bs-btn-active-border-color: #FDB42E;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #FDB42E;
+    --bs-btn-disabled-border-color: #FDB42E;
+}
+
+.form-check-input:checked {
+    background-color: #FDB42E;
+    border-color: #FDB42E;
+}
+
+.nav-underline .nav-link.active, .nav-underline .show>.nav-link {
+    color: #FDB42E;
+}
+
+.input-group-text {
+    background-color: #FFCF76;
+    border: none;
+    border-radius: 24px;
+}
+
+.form-control {
+    background-color: #FFCF76;
+    border: none;
+    border-radius: 24px;
+}
+
+.form-control:focus{
+    box-shadow: none;
+}
+
+.btn-orange{
+        --bs-btn-color: #000;
+        --bs-btn-bg: #FDB42E;
+        --bs-btn-border-color: #FDB42E;
+        --bs-btn-hover-color: #000;
+        --bs-btn-hover-bg: #FDB42E;
+        --bs-btn-hover-border-color: #FDB42E;
+        --bs-btn-focus-shadow-rgb: 225, 83, 97;
+        --bs-btn-active-color: #000;
+        --bs-btn-active-bg: #FDB42E;
+        --bs-btn-active-border-color: #FDB42E;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        --bs-btn-disabled-color: #000;
+        --bs-btn-disabled-bg: #FDB42E;
+        --bs-btn-disabled-border-color: #FDB42E;
+}
+
+.border-color-right{
+    border-right: 2px solid #FFCF76;
+}
+.title {
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 76.8px;
+    letter-spacing: 0.36000001430511475px;
+    text-align: left;
+}
+
+.btn {
+    text-align: left;
+}
+
+.text-orange{
+    color: #FDB42E;
+}
+
+.btn-outline-orange {
+    --bs-btn-color: #FDB42E;
+    --bs-btn-border-color: #FDB42E;
+    --bs-btn-hover-color: #000;
+    --bs-btn-hover-bg: #FDB42E;
+    --bs-btn-hover-border-color: #FDB42E;
+    --bs-btn-focus-shadow-rgb: 248, 249, 250;
+    --bs-btn-active-color: #000;
+    --bs-btn-active-bg: #FDB42E;
+    --bs-btn-active-border-color: #FDB42E;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #FDB42E;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #FDB42E;
+    --bs-gradient: none;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: none;
 }

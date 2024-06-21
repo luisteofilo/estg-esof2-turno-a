@@ -6,8 +6,8 @@
 @rendermode InteractiveServer
 
 <PageTitle>Games catalog</PageTitle>
-<div class="mb-5">
-    <h1>Games catalog</h1>
+<div class="mb-4">
+    <h1 class="title">Games catalog</h1>
 </div>
 
 @if (_gamesCatalog == null)
@@ -19,7 +19,7 @@
 else
 {
     <div class="row">
-        <div class="col-10">
+        <div class="col-10 border-color-right">
             <div class="row justify-content-between align-items-center">
                 <ul class="nav col-8 nav-underline mb-3" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -40,6 +40,13 @@ else
                     </div>
                 </div>
             </div>
+            @if (!string.IsNullOrEmpty(_alertMessage))
+            {
+                <div class="alert @_alertClass alert-dismissible" role="alert">
+                    @_alertMessage
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="ClearAlert"></button>
+                </div>
+            }
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <div class="cardsGames row">
@@ -49,11 +56,11 @@ else
                                 <div class="card position-relative">
                                     <img src="https://picsum.photos/500/700" class="card-img" alt="...">
                                     <div class="card-img-overlay d-flex flex-column justify-content-end">
-                                        <h5 class="card-title text-white mb-0">@game.Name</h5>
-                                        <p class="card-text text-white">@game.Genre - @game.Platform</p>
+                                        <h5 class="card-title text-orange mb-0">@game.Name</h5>
+                                        <p class="card-text text-orange">@game.Genre - @game.Platform</p>
                                     </div>
                                     <div class="card-button">
-                                        <button type="button" class="btn btn-outline-light" @onclick="() => ToggleFavorite(game)">
+                                        <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(game)">
                                             @if (IsFavorite(game))
                                             {
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
@@ -83,11 +90,11 @@ else
                                     <div class="card position-relative">
                                         <img src="https://picsum.photos/500/700" class="card-img" alt="...">
                                         <div class="card-img-overlay d-flex flex-column justify-content-end">
-                                            <h5 class="card-title text-white mb-0">@fav.Name</h5>
-                                            <p class="card-text text-white">@fav.Genre - @fav.Platform</p>
+                                            <h5 class="card-title text-orange mb-0">@fav.Name</h5>
+                                            <p class="card-text text-orange">@fav.Genre - @fav.Platform</p>
                                         </div>
                                         <div class="card-button">
-                                            <button type="button" class="btn btn-outline-light" @onclick="() => ToggleFavorite(fav)">
+                                            <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(fav)">
                                                 @if (IsFavorite(fav))
                                                 {
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
@@ -114,36 +121,56 @@ else
                 </div>
             </div>
         </div>
-        <div class="col-2">
-            <div class="menuFilters mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="m-0">Filters</h5>
-                    <button type="button" class="btn btn-danger">Clear
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="17" fill="currentColor">
-                            <path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path>
-                        </svg>
-                    </button>
+    <div class="col-2">
+        <div class="menuFilters mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="m-0">Filters</h5>
+                <button type="button" class="btn btn-orange">Clear
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="20" fill="currentColor">
+                        <path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path>
+                    </svg>
+                </button>
+            </div>
+            <button type="button" class="btn btn-orange w-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor">
+                    <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
+                </svg> Genre
+            </button>
+            <div class="filtrosGenre">
+                <div class="form-check my-3 ms-4">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Default checkbox
+                    </label>
                 </div>
-                <button type="button" class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="28" fill="currentColor">
-                        <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
-                    </svg> Genre
-                </button>
-                <button type="button" class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="28" fill="currentColor">
-                        <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
-                    </svg> Console
-                </button>
+            </div>
+            <button type="button" class="btn btn-orange w-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor">
+                    <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
+                </svg> Console
+            </button>
+            <div class="filtrosConsole">
+                <div class="form-check my-3 ms-4">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Default checkbox
+                    </label>
+                </div>
+
             </div>
         </div>
     </div>
-}
+</div>
+    }
 
 @code {
     private List<Game>? _gamesCatalog;
     private List<Game> _gamesFavorites = new List<Game>();
     private List<Game>? _gamesFavoritesById;
-    private Guid userId = Guid.Parse("4b7970ba-b06a-40d9-a440-4c40704dab23");
+    private Guid userId = Guid.Parse("0236150e-d075-4c98-af8e-527bc758c100");
+    private string? _alertMessage;
+    private string _alertClass = string.Empty;
+    private System.Timers.Timer? _alertTimer;
 
     protected override async Task OnInitializedAsync()
     {
@@ -158,24 +185,22 @@ else
 
     private async Task AddToFavorites(Guid gameId)
     {
-        Console.WriteLine("Add to favorites");
         string addFavoritesUrl = $"favorites/{userId}/{gameId}";
         var favorite = await ApiHelper.PostToApiAsync<Favorite>(addFavoritesUrl);
-    
-        if (favorite != null)
-        {
+
             var game = _gamesCatalog?.FirstOrDefault(g => g.GameId == gameId);
             if (game != null)
             {
                 _gamesFavorites.Add(game);
                 UpdateFavoritesById();
+                _alertMessage = $"{game.Name} was added to favorites.";
+                _alertClass = "alert-success";
+                StartAlertTimer();
             }
-        }
+        
     }
-
     private async Task RemoveFromFavorites(Guid gameId)
     {
-        Console.WriteLine("Remove from favorites");
         string removeFavoritesUrl = $"favorites/{userId}/{gameId}";
         await ApiHelper.DeleteFromApiAsync<List<Game>>(removeFavoritesUrl);
     
@@ -184,8 +209,12 @@ else
         {
             _gamesFavorites.Remove(game);
             UpdateFavoritesById();
+            _alertMessage = $"{game.Name} was removed from favorites.";
+            _alertClass = "alert-warning";
+            StartAlertTimer();
         }
     }
+    
 
     private void UpdateFavoritesById()
     {
@@ -203,12 +232,32 @@ else
         if (IsFavorite(game))
         {
             await RemoveFromFavorites(game.GameId);
-            Console.WriteLine("Removed from favorites.");
         }
         else
         {
             await AddToFavorites(game.GameId);
-            Console.WriteLine("Added to favorites.");
         }
+    }
+
+    private void ClearAlert()
+    {
+        _alertMessage = null;
+        StateHasChanged();
+    }
+
+    private void StartAlertTimer()
+    {
+        _alertTimer?.Stop();
+        _alertTimer = new System.Timers.Timer(2000); 
+        _alertTimer.Elapsed += (sender, e) =>
+        {
+            InvokeAsync(() => 
+            {
+                ClearAlert();
+                StateHasChanged(); 
+            });
+            _alertTimer?.Stop();
+        };
+        _alertTimer.Start();
     }
 }
