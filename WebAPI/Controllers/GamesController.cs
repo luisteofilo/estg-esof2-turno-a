@@ -1,7 +1,7 @@
 using AutoMapper;
 using ESOF.WebApp.DBLayer.Context;
+using ESOF.WebApp.DBLayer.Dto;
 using ESOF.WebApp.DBLayer.Entities;
-using ESOF.WebApp.DBLayer.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

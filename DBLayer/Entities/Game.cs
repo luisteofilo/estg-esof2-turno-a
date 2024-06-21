@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
@@ -37,7 +38,7 @@ public class Game
     public List<Category> Categories { get; set; } = new List<Category>(); 
 
     [Required]
-    public List<Console> Consoles { get; set; } = new List<Console>();
+    public List<Consoles> Consoles { get; set; } = new List<Consoles>();
 
     public ICollection<Shops> Shops { get; set; }
 }

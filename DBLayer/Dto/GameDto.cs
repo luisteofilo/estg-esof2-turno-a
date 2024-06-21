@@ -1,4 +1,7 @@
-namespace ESOF.WebApp.DBLayer.ViewModel;
+using System.Runtime.InteropServices.JavaScript;
+using ESOF.WebApp.DBLayer.Entities;
+
+namespace ESOF.WebApp.DBLayer.Dto;
 
 public class GameDto
 {
@@ -20,9 +23,9 @@ public class GameDto
 
     public string RomBase64 { get; set; } 
 
-    public List<int> Genres { get; set; }
+    public List<Genre> Genres { get; set; }
 
-    public List<int> Categories { get; set; }
+    public List<Category> Categories { get; set; }
 
-    public List<int> Consoles { get; set; }
+    public List<Consoles> Consoles { get; set; }
 }

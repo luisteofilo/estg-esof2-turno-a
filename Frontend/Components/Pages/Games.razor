@@ -1,6 +1,6 @@
 @page "/Games"
 @using ESOF.WebApp.DBLayer.Entities
-@using Console = System.Console
+@using ESOF.WebApp.DBLayer.Dto
 @inject HttpClient Http
 @rendermode InteractiveServer
 
@@ -12,16 +12,12 @@
 }
 else
 {
-
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGame" >
-        Add Game
-    </button>
-    
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGame">Add Game</button>
     <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Url Image</th> 
+                <th>Url Image</th>
                 <th>Release Date</th>
                 <th>Developer</th>
                 <th>Publisher</th>
@@ -30,178 +26,161 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var game in _games)
-            {
-                <tr>
-                    <td>@game.Name</td>
-                    <td>@game.Url_Image</td>
-                    <td>@game.ReleaseDate.ToShortDateString()</td>
-                    <td>@game.Developer</td>
-                    <td>@game.Publisher</td>
-                    <td>@game.Price.ToString("C")</td>
-                    <td>
-                        <button class="btn btn-secondary" @onclick="() => EditGame(game)">Edit</button>
-                        <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
-                    </td>
-                </tr>
-            }
+        @foreach (var game in _games)
+        {
+            <tr>
+                <td>@game.Name</td>
+                <td>@game.Url_Image</td>
+                <td>@game.ReleaseDate.ToShortDateString()</td>
+                <td>@game.Developer</td>
+                <td>@game.Publisher</td>
+                <td>@game.Price.ToString("C")</td>
+                <td>
+                    <button class="btn btn-secondary" @onclick="() => EditGame(game)">Edit</button>
+                    <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
+}
 
-    <!-- Modal -->
-    <div class="modal fade" id="addGame" tabindex="-1" aria-labelledby="addGameLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="addGameLabel">Add Game</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container d-flex justify-content-center">
-                        <form>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="gameName1" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="gameName1" placeholder="Name" aria-label="Name">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="labelA1" class="form-label">a</label>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="releaseDate1" class="form-label">Release Date</label>
-                                        <input type="date" class="form-control" id="releaseDate1" placeholder="Release Date" aria-label="Release Date">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="labelA2" class="form-label">a</label>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="gameName3" class="form-label">Developer</label>
-                                        <input type="text" class="form-control" id="gameName3" placeholder="Name" aria-label="Name">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="labelA3" class="form-label">a</label>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="gameName4" class="form-label">Publisher</label>
-                                        <input type="text" class="form-control" id="gameName4" placeholder="Name" aria-label="Name">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="labelA4" class="form-label">a</label>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="gameName5" class="form-label">Description</label>
-                                        <input type="text" class="form-control" id="gameName5" placeholder="Name" aria-label="Name">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="labelA5" class="form-label">a</label>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="genres" class="form-label">Genres</label>
-                                        <select class="form-control" id="genres"></select>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="labelA5" class="form-label">a</label>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="gameName7" class="form-label">Categories</label>
-                                        <input type="text" class="form-control" id="gameName7" placeholder="Name" aria-label="Name">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="labelA7" class="form-label">a</label>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="gameName8" class="form-label">Console</label>
-                                        <input type="text" class="form-control" id="gameName8" placeholder="Name" aria-label="Name">
-                                    </div>
-                                    <div class="mb-2">
-                                        <label for="labelA8" class="form-label">a</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+<div class="modal fade" id="addGame" tabindex="-1" aria-labelledby="addGameLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addGameLabel">Add Game</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="newGameDto" OnValidSubmit="HandleValidSubmit">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <InputText id="gameName" class="form-control" @bind-Value="newGameDto.Name" placeholder="Name" />
+                            <InputDate id="releaseDate" class="form-control" @bind-Value="newGameDto.ReleaseDate" />
+                            <InputText id="developer" class="form-control" @bind-Value="newGameDto.Developer" />
+                            <InputText id="publisher" class="form-control" @bind-Value="newGameDto.Publisher" />
+                            <InputTextArea id="description" class="form-control" @bind-Value="newGameDto.Description" />
+                            <InputNumber id="price" class="form-control" @bind-Value="newGameDto.Price" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fileInput">Game Picture:</label>
+                            <InputFile id="fileInput" OnChange="HandleFileSelected" />
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @onclick="AddGame">Add Game</button>
-                </div>
+                    
+                    <div class="col-md-8">
+                        <!-- Checkboxes for selection -->
+                        <label>Consoles</label>
+                        @if (availableConsoles != null)
+                        {
+                            @foreach (var console in availableConsoles)
+                            {
+                                <div>
+                                    <InputCheckbox @bind-Value="console.IsChecked" /> @console.Name
+                                </div>
+                            }
+                        }
+                        <label>Categories</label>
+                        @if (availableCategories != null)
+                        {
+                            @foreach (var category in availableCategories)
+                            {
+                                <div>
+                                    <InputCheckbox @bind-Value="category.IsChecked" /> @category.Name
+                                </div>
+                            }
+                        }
+                        <label>Genres</label>
+                        @if (availableGenres != null)
+                        {
+                            @foreach (var genre in availableGenres)
+                            {
+                                <div>
+                                    <InputCheckbox @bind-Value="genre.IsChecked" /> @genre.Name
+                                </div>
+                            }
+                        }
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Game</button>
+                    </div>
+                </EditForm>
             </div>
         </div>
     </div>
-}
+</div>
 
 @code {
-    private List<Game>? _games; // Use nullable for initialization and correct type
+    private List<GameDto>? _games;
+    private GameDto newGameDto = new GameDto();
+
+    List<SelectableItem>? availableConsoles;
+    List<SelectableItem>? availableCategories;
+    List<SelectableItem>? availableGenres;
 
     protected override async Task OnInitializedAsync()
     {
-        _games = await Http.GetFromJsonAsync<List<Game>>("games"); // Corrected endpoint
-    }
-    
-    private async Task AddGame()
-    {
-        Console.WriteLine("a");
-        var newGame = GenerateRandomGame();
+        _games = await Http.GetFromJsonAsync<List<GameDto>>("games");
         
-        var response = await Http.PostAsJsonAsync("game", newGame);
+        var consoles = await Http.GetFromJsonAsync<List<string>>("consoles");
+        var categories = await Http.GetFromJsonAsync<List<string>>("categories");
+        var genres = await Http.GetFromJsonAsync<List<string>>("genres");
+
+        availableConsoles = consoles?.Select(c => new SelectableItem { Name = c, IsChecked = false }).ToList();
+        availableCategories = categories?.Select(c => new SelectableItem { Name = c, IsChecked = false }).ToList();
+        availableGenres = genres?.Select(g => new SelectableItem { Name = g, IsChecked = false }).ToList();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        
+        newGameDto.ReleaseDate = newGameDto.ReleaseDate.ToUniversalTime();
+        
+        if (availableConsoles != null)
+            newGameDto.Consoles = availableConsoles.Where(c => c.IsChecked).Select(c => Enum.Parse<Consoles>(c.Name)).ToList();
+        if (availableCategories != null)
+            newGameDto.Categories = availableCategories.Where(c => c.IsChecked).Select(c => Enum.Parse<Category>(c.Name)).ToList();
+        if (availableGenres != null)
+            newGameDto.Genres = availableGenres.Where(g => g.IsChecked).Select(g => Enum.Parse<Genre>(g.Name)).ToList();
+
+        var response = await Http.PostAsJsonAsync("game", newGameDto);
         if (response.IsSuccessStatusCode)
         {
-            _games.Add(newGame);
-            StateHasChanged(); // Atualiza o estado para refletir a adição do novo jogo
-        }
-        else
-        {
-            Console.WriteLine("Failed to add game.");
+            _games?.Add(await response.Content.ReadFromJsonAsync<GameDto>());
+            StateHasChanged();
         }
     }
 
-    private Game GenerateRandomGame()
+    private void HandleFileSelected(InputFileChangeEventArgs e)
     {
-        Random random = new Random();
-        return new Game
+        var file = e.File;
+        if (file != null)
         {
-            GameId = Guid.NewGuid(),
-            Name = "Random Game " + random.Next(1, 1000),
-            ReleaseDate = DateTime.Now.AddDays(-random.Next(1, 365)),
-            Developer = "Random Developer " + random.Next(1, 20),
-            Publisher = "Random Publisher " + random.Next(1, 10),
-            Description = "Random description lorem ipsum dolor sit amet.",
-            Price = random.Next(10, 100) + random.NextDouble(),
-            Genres = new List<Genre>(),  // Adjust these lists as per your actual relationships
-            Categories = new List<Category>(),
-            Consoles = new List<ESOF.WebApp.DBLayer.Entities.Console>()
-        };
+            newGameDto.Url_Image = file.Name;
+        }
     }
-
-    private async Task EditGame(Game game)
+    
+    private async Task EditGame(GameDto game)
     {
-        // Logic to navigate to Edit Game page or open a modal for editing a game
+        // Implementation depends on further details
     }
 
     private async Task DeleteGame(Guid id)
     {
-        var response = await Http.DeleteAsync($"game/{id}"); // Corrected endpoint
+        var response = await Http.DeleteAsync($"game/{id}");
         if (response.IsSuccessStatusCode)
         {
-            var gameToRemove = _games?.FirstOrDefault(g => g.GameId == id);
-            if (gameToRemove != null)
-            {
-                _games.Remove(gameToRemove);
-                StateHasChanged(); // Notify Blazor that the state has changed to update the UI
-            }
+            _games = _games?.Where(g => g.GameId != id).ToList();
+            StateHasChanged();
         }
-        else
-        {
-            // Log error - replace Console.Error with your logging mechanism
-        }
+    }
+
+    public class SelectableItem
+    {
+        public string Name { get; set; }
+        public bool IsChecked { get; set; }
     }
 }
