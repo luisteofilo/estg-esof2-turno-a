@@ -8,7 +8,7 @@
 
 <h1>User Evaluation Leaderboard</h1>
 
-@if (_games != null && _games.Length >= 3)
+@if (_games is { Length: >= 3 })
 {
     <div class="podium-section">
         @{
@@ -164,20 +164,19 @@ else
 
     public class Games
     {
-        public string gameId { get; set; } = "";
+        public string GameId { get; set; } = "";
         public string Name { get; set; } = "";
-        public string Reviews { get; set; } = "";
 
-        public int countReviews = 0;
-        public int total = 0;
+        public int CountReviews = 0;
+        public int Total = 0;
         public float Media = 0;
     }
 
     public class Reviews
     {
-        public string reviewId { get; set; } = "";
-        public string comment { get; set; } = "";
-        public int evaluation { get; set; } = 0;
+        public string ReviewId { get; set; } = "";
+        public string Comment { get; set; } = "";
+        public int Evaluation { get; set; } = 0;
         public string UserId { get; set; } = "";
         public string GameId { get; set; } = "";
     }
@@ -190,30 +189,23 @@ else
         _games = await ApiHelper.GetFromApiAsync<Games[]>("/Games");
         _reviews = await ApiHelper.GetFromApiAsync<Reviews[]>("/Reviews");
 
-        if (_reviews != null)
+        if (_reviews != null && _games != null)
         {
             foreach (var game in _games)
             {
                 foreach (var rev in _reviews)
                 {
-                    if (rev.GameId.Equals(game.gameId))
+                    if (rev.GameId.Equals(game.GameId))
                     {
-                        game.countReviews++;
-                        game.total += rev.evaluation;
+                        game.CountReviews++;
+                        game.Total += rev.Evaluation;
                     }
                 }
 
-                game.Media = (float)game.total / game.countReviews; 
+                game.Media = (float)game.Total / game.CountReviews; 
             }
 
             _games = _games.OrderByDescending(game => game.Media).ToArray();
-        }
-
-
-
-        foreach (var teste in _games)
-        {
-            Console.WriteLine(teste.Media);
         }
     }
     
