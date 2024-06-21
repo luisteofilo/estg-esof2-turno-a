@@ -21,4 +21,8 @@
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Components\Pages\Achievements\index.razor.css" />
+    </ItemGroup>
+
 </Project>

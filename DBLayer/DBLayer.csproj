@@ -22,4 +22,8 @@
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Helpers\AchievementMethods.cs" />
+    </ItemGroup>
+
 </Project>

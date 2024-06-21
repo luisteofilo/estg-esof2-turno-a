@@ -1,4 +1,5 @@
 using ESOF.WebApp.DBLayer.Context;
+using Helpers.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,38 @@ app.MapGet("/users/emails", () =>
         return db.Users.Select(u => u.Email);
     })
     .WithName("GetUsersNames")
+    .WithOpenApi();
+
+
+/*GET ALL ACHIEVEMENT LIST*/
+app.MapGet("/achievements", () =>
+    {
+        var db = new ApplicationDbContext();
+        return db.Achievements.Select(a => new AchievementsViewModel()
+        {
+            Name = a.Name,
+            Description = a.Description
+        }).ToArray();
+    })
+    .WithName("GetAchievements")
+    .WithOpenApi();
+
+app.MapGet("/user_achievements", () =>
+    {
+        var userId = new Guid("5cc030f2-377f-475b-a4fa-fd20cfa46ff1");
+        var db = new ApplicationDbContext();
+        var user_achievements =  (from pa in db.PlayerAchievements
+            join a in db.Achievements on pa.AchievementId equals a.IdAchievement
+            where pa.UserId == userId
+            select new PlayerAchievementsViewModel
+            {
+                Name = a.Name,
+                Description = a.Description,
+                Unlocked = pa.Unlocked
+            }).ToArray();
+        return user_achievements;
+    })
+    .WithName("GetUserAchievements")
     .WithOpenApi();
 
 app.Run();
