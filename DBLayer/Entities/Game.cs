@@ -28,7 +28,6 @@ public class Game
     [Required]
     public double Price { get; set; }
     
-    [Required]
     public byte[] Rom { get; set; }
 
     [Required]

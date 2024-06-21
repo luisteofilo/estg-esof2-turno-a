@@ -63,6 +63,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<byte[]>("Rom")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
                     b.Property<string>("Url_Image")
                         .IsRequired()
                         .HasColumnType("text");
