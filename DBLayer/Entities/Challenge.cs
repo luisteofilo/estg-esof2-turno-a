@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
-public class Challenges
+public class Challenge
 {
     [Key]
-    public Guid challende_id{ get; set; }
+    public Guid challenge_id{ get; set; }
     
     [ForeignKey("game_id")]
-    public Games game{ get; set; }
+    public Game game{ get; set; }
     
     [Required]
     public String description{ get; set; }
@@ -17,6 +17,6 @@ public class Challenges
     [Required]
     public DateTime created_at{ get; set; }
     
-    public ICollection<Videos> videos { get; set; }
+    public ICollection<Video> videos { get; set; }
     
 }
