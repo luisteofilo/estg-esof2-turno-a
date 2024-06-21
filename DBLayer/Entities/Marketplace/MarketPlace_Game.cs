@@ -29,7 +29,11 @@ public class MarketPlace_Game{
 	
 	public ICollection<OrderItem> orderItems { get; set; }
 
-
-
-
+	public MarketPlace_Game() {
+		gameGenres = new List<GameGenre>();
+		gamePlatforms = new List<GamePlatform>();
+		gameReviews = new List<OrderReview>();
+		orderItems = new List<OrderItem>();
+	}
+	
 }

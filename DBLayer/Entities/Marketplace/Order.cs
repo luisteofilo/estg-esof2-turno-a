@@ -23,6 +23,7 @@ public class Order{
 	
 	public ICollection<OrderItem> orderItems { get; set; }
 
-
-	
+	public Order(){
+		orderItems = new List<OrderItem>();
+	}
 }

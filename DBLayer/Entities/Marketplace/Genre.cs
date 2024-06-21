@@ -14,4 +14,7 @@ public class Genre{
 	
 	public ICollection<GameGenre> gameGenres { get; set; }
 
+	public Genre(){
+		gameGenres = new List<GameGenre>();
+	}
 }

@@ -19,6 +19,5 @@ public class OrderItem{
 	
 	[Required]
 	public int amount{ get; set; }
-	
 
 }
