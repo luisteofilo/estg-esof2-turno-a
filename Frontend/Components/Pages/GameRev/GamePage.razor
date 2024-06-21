@@ -1,9 +1,25 @@
-﻿@page "/game/123/reviews"
+﻿@page "/game/reviews/{gameid}"
 @rendermode InteractiveServer
+@using Frontend.Helpers
+@using Microsoft.Extensions.Logging.Console
+@inject ApiHelper ApiHelper
+
+@code
+{
+    [Parameter] public string? GameId { get; set; }
+}
 
 <PageTitle>Reviews</PageTitle>
 
-<h1>Reviews</h1>
+@if (_game != null)
+{
+    <h1>Reviews from @_game.Name</h1>
+}
+else
+{
+    <h1>Loading...</h1>
+}
+
 
 <div class="row">
     <div class="reviews-section">
@@ -38,17 +54,28 @@
             <!-- Display the user score -->
             <div class="user-score">
                 <!-- Number contained in a colored circle -->
-                <div class="circle green"> <!-- Change the class name based on the score -->
-                    <h4><span class="score-placeholder">8</span> Great</h4>
+                <div class="@GetCollorMedia(_media)"> <!-- Change the class name based on the score -->
+                    <h4><span class="score-placeholder">@_media</span> @GetMediaLabel(_media)</h4>
                 </div>
             </div>
 
             <!-- Visual representation with bars -->
-            <div class="score-bars">
-                <div class="bar bad-bar" style="width: 30%;"></div> <!-- Placeholder for bad scores -->
-                <div class="bar avg-bar" style="width: 40%;"></div> <!-- Placeholder for average scores -->
-                <div class="bar good-bar" style="width: 30%;"></div> <!-- Placeholder for good scores -->
-            </div>
+            @if (_countReviews>0)
+            {
+                <div class="score-bars">
+                    <div class="bar bad-bar" style="width: @GetBarPercentage(_badReviews, _countReviews)%;"></div> <!-- Placeholder for bad scores -->
+                    <div class="bar avg-bar" style="width: @GetBarPercentage(_averageReviews, _countReviews)%;"></div> <!-- Placeholder for average scores -->
+                    <div class="bar good-bar" style="width: @GetBarPercentage(_goodReviews, _countReviews)%;"></div> <!-- Placeholder for good scores -->
+                </div>
+            }
+            else
+            {
+                <div class="score-bars">
+                    <div class="bar bad-bar" style="width: 30%;"></div> <!-- Placeholder for bad scores -->
+                    <div class="bar avg-bar" style="width: 40%;"></div> <!-- Placeholder for average scores -->
+                    <div class="bar good-bar" style="width: 30%;"></div> <!-- Placeholder for good scores -->
+                </div>
+            }
         </div>
 
         <div class="latest-reviews card">
@@ -115,36 +142,22 @@
                         </div>
                         <div id="user-reviews">
                             <!-- Placeholder for reviews, dynamically filtered -->
-                            <div class="review card mb-3" data-rating="good">
-                                <div class="card-body">
-                                    <div class="review-score circle green">
-                                        <span>8</span>
+                            @if (_reviews != null)
+                            {
+                                foreach (var review in _reviews)
+                                {
+                                    <div class="review card mb-3" data-rating="good">
+                                        <div class="card-body">
+                                            <div class="@GetCollorReview(review.Evaluation)">
+                                                <span>@review.Evaluation</span>
+                                            </div>
+                                            <div class="review-comment">
+                                                <p>@review.Comment</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="review-comment">
-                                        <p>"Loved every bit of it!"</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="review card mb-3" data-rating="average">
-                                <div class="card-body">
-                                    <div class="review-score circle yellow">
-                                        <span>5</span>
-                                    </div>
-                                    <div class="review-comment">
-                                        <p>"Not bad, but not great either."</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="review card mb-3" data-rating="bad">
-                                <div class="card-body">
-                                    <div class="review-score circle red">
-                                        <span>4</span>
-                                    </div>
-                                    <div class="review-comment">
-                                        <p>"Disappointing experience."</p>
-                                    </div>
-                                </div>
-                            </div>
+                                }
+                            }
                         </div>
                     </div>
                 </div>
@@ -168,3 +181,122 @@
         }
     }
 </script>
+
+
+@code{
+
+    public class Reviews
+    {
+        public string ReviewId { get; set; } = "";
+        public string Comment { get; set; } = "";
+        public int Evaluation { get; set; } = 0;
+        public string UserId { get; set; } = "";
+        public string GameId { get; set; } = "";
+    }
+
+    public class Game
+    {
+        public string GameId { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+    
+    double _media;
+    int _total;
+    int _countReviews;
+
+    int _goodReviews;
+    int _averageReviews;
+    int _badReviews;
+
+    
+    private Reviews[]? _reviews;
+    private Game? _game;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _reviews = await ApiHelper.GetFromApiAsync<Reviews[]>($"/Reviews/{GameId}");
+        _game = await ApiHelper.GetFromApiAsync<Game>($"/Games/{GameId}");
+
+        if (_reviews != null)
+        {
+            foreach (var rev in _reviews)
+            {
+                    if (rev.GameId.Equals(GameId))
+                    {
+                        _countReviews++;
+                        _total += rev.Evaluation;
+                        switch (rev.Evaluation)
+                        {
+                            case <5 :
+                                _badReviews++;
+                                break;
+                            case >= 5 and < 7:
+                                _averageReviews++;
+                                break;
+                            case >= 7:
+                                _goodReviews++;
+                                break;
+                        }
+                    }
+            }
+            
+            _media = Math.Round((double)_total / _countReviews, 1);
+        }
+    }
+
+    private string GetCollorMedia(double score)
+    {
+        switch (score)
+        {
+            case <4.5 :
+                return "circle red";
+            case >=4.5 and <= 7:
+                return "circle yellow";
+            case > 7:
+                return "circle green";
+            default:
+                return "";
+        }
+    }
+    
+    private string GetMediaLabel(double media)
+    {
+        switch (media)
+        {
+            case <4.5 :
+                return "Bad";
+            case >=4.5 and <= 7:
+                return "Average";
+            case > 7:
+                return "Good";
+            default:
+                return "";
+        }
+    }
+
+    private string GetCollorReview(int nota)
+    {
+        switch (nota)
+        {
+            case <5 :
+                return "review-score circle red";
+            case >= 5 and < 7:
+                return "review-score circle yellow";
+            case >= 7:
+                return "review-score circle green";
+        }
+    }
+
+    private int GetBarPercentage(int parcela, int total)
+    {
+        if (total != 0)
+        {
+            int percentagem = (int)Math.Round((total / (double)parcela) * 100);
+            return percentagem;
+        }
+        
+        return 0;
+    }
+
+    
+}

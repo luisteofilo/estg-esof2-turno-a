@@ -64,6 +64,25 @@ app.MapGet("/Reviews", () =>
     .WithName("GetReviews")
     .WithOpenApi();
 
+app.MapGet("/Reviews/{gameId}", async (string gameId) =>
+    {
+        var db = new ApplicationDbContext();
+        var reviews = await db.Reviews.Where(r => r.GameId.ToString() == gameId).ToListAsync();
+        return  reviews;
+    })
+    .WithName("GetReviewsFromGame")
+    .WithOpenApi();
+
+app.MapGet("/Games/{gameId}", async (string gameId) =>
+    {
+        var db = new ApplicationDbContext();
+        var game = await db.Games.FirstAsync(g => g.GameId.ToString() == gameId);
+        
+        return  game;
+    })
+    .WithName("GetGameName")
+    .WithOpenApi();
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

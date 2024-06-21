@@ -20,9 +20,9 @@
         <!-- Game 2 - 2nd place -->
         <div class="podium-game">
             <div class="game-info2">
-                <NavLink class="card-link no-link-style" href="game/123/reviews">
+                <NavLink class="card-link no-link-style" href="@($"game/reviews/{game1.GameId}")">
                     <div class="game-icon">
-                        <img src="favicon.png" alt="Game Logo">
+                        <img src="favicon.png" alt="Game Logo"> <!--Associar a imagem do jogo aqui--> 
                     </div>
                     <h3>@game1.Name</h3>
                 </NavLink>
@@ -38,7 +38,7 @@
         <!-- Game 1 - 1st place -->
         <div class="podium-game">
             <div class="game-info">
-                <NavLink class="card-link no-link-style" href="game/123/reviews">
+                <NavLink class="card-link no-link-style" href="@($"game/reviews/{game2.GameId}")">
                     <div class="game-icon">
                         <img src="favicon.png" alt="Game Logo">
                     </div>
@@ -56,7 +56,7 @@
         <!-- Game 3 - 3rd place -->
         <div class="podium-game">
             <div class="game-info3">
-                <NavLink class="card-link no-link-style" href="game/123/reviews">
+                <NavLink class="card-link no-link-style" href="@($"game/reviews/{game3.GameId}")">
                     <div class="game-icon">
                         <img src="favicon.png" alt="Game Logo">
                     </div>
@@ -101,7 +101,7 @@ else
             {
             <div class="col-md-4">
                 <!-- Wrap the entire card with NavLink -->
-                <NavLink class="card-link no-link-style" href="game/123/reviews">
+                <NavLink class="card-link no-link-style" href="@($"game/reviews/{game.GameId}")">
                     <div class="card">
                         <div class="row no-gutters">
                             <div class="col-md-4">
@@ -129,7 +129,7 @@ else
             @foreach (var game in _games.Skip(3))
             {
             <li class="list-group-item">
-                <NavLink class="card-link no-link-style" href="game/123/reviews">
+                <NavLink class="card-link no-link-style" href="@($"game/reviews/{game.GameId}")">
                     <div class="row align-items-center">
                         <div class="col-md-2">
                             <img src="favicon.png" class="card-img" alt="Game Logo">
@@ -169,7 +169,7 @@ else
 
         public int CountReviews = 0;
         public int Total = 0;
-        public float Media = 0;
+        public double Media = 0;
     }
 
     public class Reviews
@@ -202,7 +202,7 @@ else
                     }
                 }
 
-                game.Media = (float)game.Total / game.CountReviews; 
+                game.Media = Math.Round((double)game.Total / game.CountReviews, 1); 
             }
 
             _games = _games.OrderByDescending(game => game.Media).ToArray();
