@@ -17,4 +17,6 @@ public class Challenges
     [Required]
     public DateTime created_at{ get; set; }
     
+    public ICollection<Videos> videos { get; set; }
+    
 }

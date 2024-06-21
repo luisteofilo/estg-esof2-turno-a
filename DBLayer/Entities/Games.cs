@@ -11,4 +11,6 @@ public class Games
     
     [Required]
     public String concole{ get; set; }
+    
+    public ICollection<Challenges> challenges { get; set; }
 }
