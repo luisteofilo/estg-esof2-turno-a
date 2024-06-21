@@ -1,0 +1,19 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ESOF.WebApp.DBLayer.Entities;
+
+public class Comments
+{
+    [Key]
+    public Guid comment_id{ get; set; }
+    
+    [ForeignKey("user_id")]
+    public Users user{ get; set; }
+    
+    [ForeignKey("video_id")]
+    public Videos video{ get; set; }
+    
+    [Required]
+    public String comment{ get; set; }
+}
