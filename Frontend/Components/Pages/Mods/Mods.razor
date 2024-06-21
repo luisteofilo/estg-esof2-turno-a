@@ -1,45 +1,68 @@
 @page "/mods"
+@page "/mods/{tagId:guid?}"
 @using Frontend.Helpers
 @using ESOF.WebApp.DBLayer.Entities
 @inject ApiHelper ApiHelper
+@inject NavigationManager NavigationManager
 
-<PageTitle>Mods</PageTitle>
+<PageTitle>Mods and Tags</PageTitle>
 
-<h1>Mods</h1>
+<h1>Mods and Tags</h1>
 
 <NavLink class="nav-link" href="add-mod">
     <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Adicionar Mod
-    </NavLink>
+</NavLink>
 
-<p>This component demonstrates showing data from the API for mods.</p>
+<p>This component demonstrates showing data from the API for mods and tags.</p>
 
-@if (mods == null)
+@if (mods == null || tags == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
+    <div class="btn-group" role="group">
+        @foreach (var tag in tags)
+        {
+            <NavLink class="btn btn-primary" href="@($"/mods/{tag.TagId}")">
+                @tag.Name
+            </NavLink>
+        }
+        <NavLink class="btn btn-primary" href="@($"/mods")">
+            Clear Filter
+        </NavLink>
+    </div>
+
     <table class="table">
         <thead>
-        <tr>
-            <th>Name</th>
-            <th>Game</th>
-            <th>Description</th>
-            <th>Release Date</th>
-            <th>Author</th>
-            <th>Version</th>
-        </tr>
+            <tr>
+                <th>Name</th>
+                <th>Game</th>
+                <th>Description</th>
+                <th>Release Date</th>
+                <th>Author</th>
+                <th>Version</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var mod in mods)
+        @if (filteredMods != null && filteredMods.Any())
+        {
+            @foreach (var mod in filteredMods)
+            {
+                <tr>
+                    <td>@mod.Name</td>
+                    <td>@mod.Game</td>
+                    <td>@mod.Description</td>
+                    <td>@mod.ReleaseDate.ToString("yyyy-MM-dd")</td>
+                    <td>@mod.Author</td>
+                    <td>@mod.Version</td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>@mod.Name</td>
-                <td>@mod.Game</td>
-                <td>@mod.Description</td>
-                <td>@mod.ReleaseDate.ToShortDateString()</td>
-                <td>@mod.Author</td>
-                <td>@mod.Version</td>
+                <td colspan="6"><em>No mods available.</em></td>
             </tr>
         }
         </tbody>
@@ -47,11 +70,79 @@ else
 }
 
 @code {
-    private Mod[]? mods;
+    private List<ModDto>? mods;  // List of all mods, initially null
+    private List<TagDto>? tags;  // List of all tags, initially null
+    private List<ModDto>? filteredMods; // This will store either all mods or filtered mods
+    private Guid? selectedTagId;
+
+    [Parameter]
+    public Guid? tagId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        mods = await ApiHelper.GetFromApiAsync<Mod[]>("mods");
+        try
+        {
+            var modsResponse = await ApiHelper.GetFromApiAsync<List<ModDto>>("mods");
+            var tagsResponse = await ApiHelper.GetFromApiAsync<List<TagDto>>("tags");
+            mods = modsResponse ?? new List<ModDto>();
+            tags = tagsResponse ?? new List<TagDto>();
+            filteredMods = new List<ModDto>(mods); // Start with all mods displayed
+
+            // Log the loaded data for debugging
+            Console.WriteLine($"Loaded {mods.Count} mods and {tags.Count} tags.");
+            foreach (var mod in mods)
+            {
+                Console.WriteLine($"Mod: {mod.Name}, Tags: {string.Join(", ", mod.Tags.Select(t => t.Name))}");
+            }
+
+            if (tagId.HasValue)
+            {
+                selectedTagId = tagId.Value;
+                FilterMods();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading data: {ex.Message}");
+        }
     }
-    
+
+    private void FilterMods()
+    {
+        if (selectedTagId.HasValue)
+        {
+            Console.WriteLine($"Filtering mods by tag ID: {selectedTagId}");
+            filteredMods = mods.Where(m => m.Tags.Any(t => t.TagId == selectedTagId.Value)).ToList();
+            Console.WriteLine($"Filtered {filteredMods.Count} mods.");
+        }
+        else
+        {
+            filteredMods = new List<ModDto>(mods); // If no tag is selected or selection is cleared, show all mods
+            Console.WriteLine("No tag selected, showing all mods.");
+        }
+    }
+
+    public class TagDto
+    {
+        public Guid TagId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class ModDto
+    {
+        public Guid ModId { get; set; }
+        public string Name { get; set; }
+        public string Game { get; set; }
+        public string Description { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public string Author { get; set; }
+        public string Version { get; set; }
+        public bool IsApproved { get; set; }
+        public string FilePath { get; set; }
+        public string DownloadLink { get; set; }
+        public int DownloadCount { get; set; }
+        public double Rating { get; set; }
+        public List<TagDto> Tags { get; set; }
+    }
 }

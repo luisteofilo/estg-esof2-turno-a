@@ -52,9 +52,34 @@ app.MapGet("/users/emails", () =>
 app.MapGet("/mods", () =>
     {
         var db = new ApplicationDbContext();
-        return db.Mods.Select(u => u);
+        return db.Mods
+            .Include(m => m.Tags)  // Make sure to include tags
+            .Select(m => new {
+                m.ModId,
+                m.Name,
+                m.Game,
+                m.Description,
+                m.ReleaseDate,
+                m.Author,
+                m.Version,
+                m.IsApproved,
+                m.FilePath,
+                m.DownloadLink,
+                m.DownloadCount,
+                m.Rating,
+                Tags = m.Tags.Select(t => new { t.TagId, t.Name, t.Description }).ToList()  // Project tags into a simpler format
+            })
+            .ToList();
     })
     .WithName("GetMods")
+    .WithOpenApi();
+
+app.MapGet("/tags", () =>
+    {
+        var db = new ApplicationDbContext();
+        return db.ModTags.Select(u => u);
+    })
+    .WithName("GetTags")
     .WithOpenApi();
 
 app.MapPost("/mods", async (Mod mod) =>
