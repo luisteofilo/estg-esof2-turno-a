@@ -43,6 +43,12 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    
+    public DbSet<Game> Game { get; set; }
+    public DbSet<Challenge> Challenge { get; set; }
+    public DbSet<Comment> Comment { get; set; }
+    public DbSet<Like> Like { get; set; }
+    public DbSet<Video> Video { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -58,6 +64,12 @@ public partial class ApplicationDbContext : DbContext
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        
+        BuildGame(modelBuilder);
+        BuildChallenge(modelBuilder);
+        BuildComment(modelBuilder);
+        BuildLike(modelBuilder);
+        BuildVideo(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }
