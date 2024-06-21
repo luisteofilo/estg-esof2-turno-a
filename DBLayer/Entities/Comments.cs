@@ -9,7 +9,7 @@ public class Comments
     public Guid comment_id{ get; set; }
     
     [ForeignKey("user_id")]
-    public Users user{ get; set; }
+    public User user{ get; set; }
     
     [ForeignKey("video_id")]
     public Videos video{ get; set; }

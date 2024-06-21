@@ -12,8 +12,12 @@ public class Videos
     public Challenges challenge{ get; set; }
     
     [ForeignKey("user_id")]
-    public Users user{ get; set; }
+    public User user{ get; set; }
     
     [Required]
     public String caption{ get; set; }
+    
+    public ICollection<Likes> likes { get; set; }
+    
+    public ICollection<Comments> comments { get; set; }
 }

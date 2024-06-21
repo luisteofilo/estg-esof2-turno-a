@@ -9,7 +9,7 @@ public class Likes
     public Guid like_id{ get; set; }
     
     [ForeignKey("user_id")]
-    public Users user{ get; set; }
+    public User user{ get; set; }
     
     [Required]
     public DateTime created_at{ get; set; }
