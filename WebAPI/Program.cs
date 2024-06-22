@@ -1,8 +1,6 @@
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
 using Helpers.Models;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,49 +91,24 @@ app.MapGet("/users", () =>
     .WithName("GetUsers")
     .WithOpenApi();
 
-app.MapGet("/score_achievements/{score:long}", (long score) =>
+app.MapPost("/save_score", async context =>
     {
+        var request = await context.Request.ReadFromJsonAsync<ScoreViewModel>();
         var db = new ApplicationDbContext();
-        var achievements =  (from a in db.Achievements
-            where a.RequiredScore <= score
-            select new AchievementsViewModel()
-            {
-                IdAchievement = a.IdAchievement,
-                Name = a.Name
-            }).ToArray();
-        return achievements;
-    })
-    .WithName("GetScoreAchievements")
-    .WithOpenApi();
 
-app.MapPost("/player_achievements/{userId:Guid}/{achievementId:Guid}", async (Guid userId, Guid achievementId) =>
-    {
-        var db = new ApplicationDbContext();
-        // Verifica se já existe um registo com o mesmo UserId e AchievementId
-        var existingAchievement = await db.PlayerAchievements
-            .AnyAsync(pa => pa.UserId == userId && pa.AchievementId == achievementId);
-
-        if (existingAchievement)
+        var scoreEntry = new TestUserScore
         {
-            return Results.BadRequest("Achievement already exists for this user.");
-        }
-
-        // Cria um novo registo
-        var newAchievement = new PlayerAchievement()
-        {
-            UserId = userId,
-            AchievementId = achievementId,
-            Unlocked = DateOnly.FromDateTime(DateTime.Now)
+            UserId = request.UserId,
+            Score = request.Score
         };
 
-        db.PlayerAchievements.Add(newAchievement);
+        db.TestUserScores.Add(scoreEntry);
         await db.SaveChangesAsync();
-
-        return Results.Ok(new { message = "Achievement added successfully." });
-    })
-    .WithName("InsertPlayerAchievements")
+        
+        context.Response.StatusCode = StatusCodes.Status200OK;
+        await context.Response.WriteAsync("Score saved successfully.");
+    }).WithName("SaveScore")
     .WithOpenApi();
-
 
 app.Run();
 

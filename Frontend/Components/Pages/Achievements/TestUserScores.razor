@@ -1,5 +1,4 @@
-﻿@*
-@page "/user-achievements"
+﻿@page "/scoreAchievements"
 @using Frontend.Helpers
 @using global::Helpers.Models
 @attribute [StreamRendering]
@@ -11,43 +10,70 @@
 <h1>Test Challenge Leaderboard</h1>
 <h3>Achieve the highest possible score</h3>
 
-@if (_user_achievements == null)
+<h2>Submit Score</h2>
+<div>
+    <label for="score">Score: </label>
+    <input id="score" type="number" @bind="score" />
+</div>
+
+@if (_new_score == null)
 {
-    <p>
-        <em>Loading...</em>
-    </p>
+<p>
+    <em>Loading...</em>
+</p>
 }
 else
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Scores</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var achievements in _user_achievements.GroupBy(a => a.Name))
-        {
-            @foreach (var achievement in achievements.OrderBy(x => x))
-            {
-                <tr>
-                    <td>@achievement.Name</td>
-                </tr>
-            }
-        }
-
+<table class="table">
+    <thead>
+    <tr>
+        <th>Select</th>
+        <th>User ID</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in _new_score)
+    {
+    <tr>
+        <td>
+            <input type="radio" name="selectedUser" value="@user.UserId" @onchange="@(e => selectedUserId = user.UserId)" />
+        </td>
+        
+        <td>@user.UserId</td>
+        <td>@user.Email</td>
+    </tr>
+    }
     </tbody>
-    </table>
+</table>
 }
 
+<button @onclick="SaveScore">Save</button>
 @code
 {
     private string apiUrl = $"/achievements/5cc030f2-377f-475b-a4fa-fd20cfa46ff1";
-    private TestChallengesInputModel[]? _new_score;
+    private UserViewModel[]? _new_score;
+    private int score;
+    private Guid selectedUserId;
 
     protected override async Task OnInitializedAsync()
     {
-        _new_score = await ApiHelper.GetFromApiAsync<PlayerAchievementsViewModel[]>("/user_achievements");
+        _new_score = await ApiHelper.GetFromApiAsync<UserViewModel[]>("/users");
+    }
+
+    private async Task SaveScore()
+    {
+        if (selectedUserId == Guid.Empty)
+        {
+            return;
+        }
+
+        var data = new
+        {
+            UserId = selectedUserId,
+            Score = score
+        };
+
+       bool success =  await ApiHelper.PostToApiAsync("/save_score", data);
     }
 }
-*@
