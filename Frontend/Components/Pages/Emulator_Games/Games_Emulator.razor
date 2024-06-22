@@ -1,60 +1,58 @@
 @page "/games"
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Games</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="../Components/Pages/Emulator_Games/Games.razor.css">
-</head>
-<body>
-<div class="container small">
-    <h1 class="text-center mt-3">Games</h1>
-    <!-- File Selection Form -->
-    <form id="gameForm">
-        <div class="form-group">
-            <label for="gameFile">Select game file:</label>
-            <input type="file" class="form-control-file" id="gameFile" accept=".nes,.sfc,.smc,.gb,.gbc,.gba,.gen,.bin">
-        </div>
-        <button type="submit" class="btn btn-primary">Load Game</button>
-    </form>
+@using System.Collections.Generic
 
-    <ul class="nav nav-tabs" id="emulatorTabs">
-        <li class="nav-item">
-            <button class="nav-link active" data-emulator="nes">NES</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-emulator="snes">SNES</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-emulator="gbc">GBC</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-emulator="gba">GBA</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-emulator="genesis">Genesis</button>
-        </li>
-    </ul>
+<h1 class="text-center mt-4 retro-title">Games Emulator</h1>
 
-    <div class="tab-content">
-        <div class="tab-pane fade show active">
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Game</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div id="game-container" class="game-container"></div>
         </div>
     </div>
-    <div id="emulatorContainer"></div>
+
+    <h2 class="text-center mt-5 retro-subtitle">Explore Games</h2>
+
+    <div class="row mt-4">
+        @foreach (var game in Games)
+        {
+        <div class="col-md-4 mb-4">
+            <div class="card border border-warning rounded shadow retro-card">
+                <img src="@game.ImageUrl" class="card-img-top rounded-top" alt="@game.Name">
+                <div class="card-body">
+                    <h5 class="card-title retro-card-title">@game.Name</h5>
+                    <p class="card-text retro-card-text">Description of the game goes here.</p>
+                    <a href="#" class="btn btn-primary btn-block retro-btn">Play Now</a>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
 </div>
-<script src="~/libs/nostalgist.js"></script>
-</body>
-</html>
+
+@code {
+// Mock data for games (replace with actual data)
+List<GameInfo> Games = new List<GameInfo>
+{
+new GameInfo { Name = "Mega Mountain", ImageUrl = "https://s2-techtudo.glbimg.com/dLHiEFov94ONVIVLP2V85FWh7hE=/0x0:695x390/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_08fbf48bc0524877943fe86e43087e7a/internal_photos/bs/2019/3/t/9vl0fdRyi9SvlPOe33yA/subway-surfers-mais-baixado-downloads-decada-2010-2019.jpg" },
+new GameInfo { Name = "Super Adventure", ImageUrl = "https://www.example.com/super_adventure.jpg" },
+new GameInfo { Name = "Fantasy Quest", ImageUrl = "https://www.example.com/fantasy_quest.jpg" }
+};
+
+public class GameInfo
+{
+public string Name { get; set; }
+public string ImageUrl { get; set; }
+}
+
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+if (firstRender)
+{
+// Carregar Emulator.js após o primeiro render da página
+await JSRuntime.InvokeVoidAsync("loadEmulatorJs");
+
+// Inicializar Emulator.js com o jogo específico
+await JSRuntime.InvokeVoidAsync("initializeEmulatorJs");
+}
+}
+}
