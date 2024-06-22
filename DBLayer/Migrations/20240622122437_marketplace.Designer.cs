@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240621222130_changedGame")]
-    partial class changedGame
+    [Migration("20240622122437_marketplace")]
+    partial class marketplace
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("genre_id");
 
-                    b.ToTable("GameGenre");
+                    b.ToTable("GameGenres");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.GamePlatform", b =>
@@ -48,7 +48,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("platform_id");
 
-                    b.ToTable("GamePlatform");
+                    b.ToTable("GamePlatforms");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.Genre", b =>
@@ -67,7 +67,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("genre_id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.MarketPlace_Game", b =>
@@ -95,7 +95,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("game_id");
 
-                    b.ToTable("MarketPlaceGame");
+                    b.ToTable("MarketPlaceGames");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.Order", b =>
@@ -115,7 +115,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("user_id");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.OrderItem", b =>
@@ -138,7 +138,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasIndex("order_id");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Marketplace.OrderReview", b =>
@@ -163,7 +163,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasIndex("reviewer_id");
 
-                    b.ToTable("OrderReview");
+                    b.ToTable("OrderReviews");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
@@ -191,9 +191,13 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<int>("debut_year")
                         .HasColumnType("integer");
 
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("platform_id");
 
-                    b.ToTable("Platform");
+                    b.ToTable("Platforms");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Role", b =>
