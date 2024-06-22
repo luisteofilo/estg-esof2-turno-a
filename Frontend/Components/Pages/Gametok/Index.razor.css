@@ -1,21 +1,23 @@
 .container {
     display: flex;
 }
+
 .content {
     flex-grow: 1;
     padding: 20px;
 }
-.challenge-details {
-    display: flex;
-}
+
 .challenge-video {
-    width: 70%;
-    height: 300px;
+    aspect-ratio: 16/9;
+    width: 100%;
     background-color: #FFDC9B;
 }
+
 .challenge-info {
     margin-left: 20px;
+    width: 100%;
 }
+
 .icon-button, .upload-button {
     display: block;
     margin: 10px 0;
@@ -26,16 +28,20 @@
     border-radius: 50px;
     font-weight: bold;
 }
+
 .caption, .description {
     margin-top: 20px;
 }
+
 .more-challenges {
     margin-top: 20px;
 }
+
 .challenges-list {
     display: flex;
     justify-content: space-between;
 }
+
 .challenge-item {
     width: 30%;
     height: 100px;
@@ -44,10 +50,30 @@
 
 .challenge-caption-box {
     background-color: #FDB42E;
-    padding: 0 100px 100px 5px;
     border-radius: 10px;
     font-weight: bold;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-}   
+    
+    padding: 0.5rem;
+    width: 100%;
+}
+
+
+
+.challenge-details {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 2fr 1fr;
+}
+
+
+.icon-button{
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.8rem;
+}
