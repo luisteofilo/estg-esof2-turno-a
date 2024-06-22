@@ -10,4 +10,5 @@ public class TestUserScore
     public long Score { get; set; }
     
     public User User { get; set; }
+    
 }
