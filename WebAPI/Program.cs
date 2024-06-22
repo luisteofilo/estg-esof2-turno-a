@@ -1,6 +1,7 @@
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
 using Helpers.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +109,49 @@ app.MapPost("/save_score", async context =>
         context.Response.StatusCode = StatusCodes.Status200OK;
         await context.Response.WriteAsync("Score saved successfully.");
     }).WithName("SaveScore")
+    .WithOpenApi();
+
+app.MapGet("/score_achievements/{score:long}", (long score) =>
+    {
+        var db = new ApplicationDbContext();
+        var achievements =  (from a in db.Achievements
+            where a.RequiredScore <= score
+            select new AchievementsViewModel()
+            {
+                IdAchievement = a.IdAchievement,
+                Name = a.Name
+            }).ToArray();
+        return achievements;
+    })
+    .WithName("GetScoreAchievements")
+    .WithOpenApi();
+
+app.MapPost("/player_achievements/{userId:Guid}/{achievementId:Guid}", async (Guid userId, Guid achievementId) =>
+    {
+        var db = new ApplicationDbContext();
+        // Verifica se já existe um registo com o mesmo UserId e AchievementId
+        var existingAchievement = await db.PlayerAchievements
+            .AnyAsync(pa => pa.UserId == userId && pa.AchievementId == achievementId);
+
+        if (existingAchievement)
+        {
+            return Results.BadRequest("Achievement already exists for this user.");
+        }
+
+        // Cria um novo registo
+        var newAchievement = new PlayerAchievement()
+        {
+            UserId = userId,
+            AchievementId = achievementId,
+            Unlocked = DateOnly.FromDateTime(DateTime.Now)
+        };
+
+        db.PlayerAchievements.Add(newAchievement);
+        await db.SaveChangesAsync();
+
+        return Results.Ok(new { message = "Achievement added successfully." });
+    })
+    .WithName("InsertPlayerAchievements")
     .WithOpenApi();
 
 app.Run();
