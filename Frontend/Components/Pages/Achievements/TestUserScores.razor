@@ -1,4 +1,5 @@
-﻿@page "/user-achievements"
+﻿@*
+@page "/user-achievements"
 @using Frontend.Helpers
 @using global::Helpers.Models
 @attribute [StreamRendering]
@@ -34,7 +35,7 @@ else
                 </tr>
             }
         }
-        
+
     </tbody>
     </table>
 }
@@ -49,3 +50,4 @@ else
         _new_score = await ApiHelper.GetFromApiAsync<PlayerAchievementsViewModel[]>("/user_achievements");
     }
 }
+*@

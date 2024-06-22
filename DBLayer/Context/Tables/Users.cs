@@ -12,6 +12,16 @@ public partial class ApplicationDbContext
             .HasMany(u => u.UserRoles)
             .WithOne(ur => ur.User)
             .HasForeignKey(ur => ur.UserId);
+        
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.PlayerAchievements)
+            .WithOne(ur => ur.User)
+            .HasForeignKey(ur => ur.UserId);
+        
+        /*modelBuilder.Entity<User>()
+            .HasMany(s => s.TestUserScores)
+            .WithOne(ur => ur.User)
+            .HasForeignKey(ur => ur.UserId);*/
 
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)

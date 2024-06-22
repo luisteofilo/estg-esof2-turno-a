@@ -90,6 +90,17 @@ app.MapGet("/users", () =>
     .WithName("GetUsers")
     .WithOpenApi();
 
+app.MapGet("/test", () =>
+    {
+        var db = new ApplicationDbContext();
+        return db.TestUserScores.Select(a => new PlayerAchievementsViewModel()
+        {
+            Description = a.Score.ToString()
+        }).ToArray();
+    })
+    .WithName("GetTest")
+    .WithOpenApi();
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
