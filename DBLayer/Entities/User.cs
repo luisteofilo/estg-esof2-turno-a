@@ -20,5 +20,7 @@ public class User
     //Novo parametro 
     public ICollection<PlayerAchievement> PlayerAchievements { get; set; }
     
+    public ICollection<TestUserScore> TestUserScores { get; set; }
+    
 
 }

@@ -46,6 +46,7 @@ public partial class ApplicationDbContext : DbContext
     //Para os achievements
     public DbSet<Achievement> Achievements { get; set; }
     public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
+    public DbSet<TestUserScore> TestUserScores { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
