@@ -12,6 +12,36 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <InputText id="name" class="form-control" @bind-Value="newMod.Name" />
+        </div>
+    
+        <div class="form-group">
+            <label for="game">Game:</label>
+            <InputText id="game" class="form-control" @bind-Value="newMod.Game" />
+        </div>
+    
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <InputTextArea id="description" class="form-control" @bind-Value="newMod.Description" />
+        </div>
+    
+        <div class="form-group">
+            <label for="releaseDate">Release Date:</label>
+            <InputDate id="releaseDate" class="form-control" @bind-Value="newMod.ReleaseDate" />
+        </div>
+    
+        <div class="form-group">
+            <label for="author">Author:</label>
+            <InputText id="author" class="form-control" @bind-Value="newMod.Author" />
+        </div>
+    
+        <div class="form-group">
+            <label for="version">Version:</label>
+            <InputText id="version" class="form-control" @bind-Value="newMod.Version" />
+        </div>
+
     <button type="submit" class="btn btn-success">Submit</button>
 </EditForm>
 
