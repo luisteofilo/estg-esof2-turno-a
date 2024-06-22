@@ -4,86 +4,117 @@
 @inject HttpClient Http
 @rendermode InteractiveServer
 
+
 <h3>Games</h3>
+
+@if (_showSuccessMessage)
+{
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    Game created successfully.
+    <button type="button" class="btn-close" @onclick="CloseSuccessMessage" aria-label="Close"></button>
+</div>
+}
 
 @if (_games == null)
 {
-<p><em>Loading...</em></p>
+    <p><em>Loading...</em></p>
 }
 else
 {
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGame">Add Game</button>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Url Image</th>
-        <th>Release Date</th>
-        <th>Developer</th>
-        <th>Publisher</th>
-        <th>Price</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var game in _games)
-    {
-    <tr>
-        <td>@game.Name</td>
-        <td>@game.Url_Image</td>
-        <td>@game.ReleaseDate.ToShortDateString()</td>
-        <td>@game.Developer</td>
-        <td>@game.Publisher</td>
-        <td>@game.Price.ToString("C")</td>
-        <td>
-            <button class="btn btn-secondary" @onclick="() => EditGame(game)">Edit</button>
-            <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
-        </td>
-    </tr>
-    }
-    </tbody>
-</table>
+    <button type="button" class="btn btn-primary addbutton" data-bs-toggle="modal" data-bs-target="#addGame">Add Game</button>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Url Image</th>
+            <th>Release Date</th>
+            <th>Developer</th>
+            <th>Publisher</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var game in _games)
+        {
+        <tr>
+            <td>@game.Name</td>
+            <td>@game.Url_Image</td>
+            <td>@game.ReleaseDate.ToShortDateString()</td>
+            <td>@game.Developer</td>
+            <td>@game.Publisher</td>
+            <td>@game.Price.ToString("C")</td>
+            <td>
+                <button class="btn btn-secondary" @onclick="() => EditGame(game)">Edit</button>
+                <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
 }
 
-<div class="modal fade" id="addGame" tabindex="-1" aria-labelledby="addGameLabel" aria-hidden="true">
+<div class="modal fade" id="addGame" tabindex="-1" aria-labelledby="addGameLabel" aria-hidden="true" >
     <div class="modal-dialog custom-modal-dialog">
         <div class="modal-content">
+            
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="addGameLabel">Add Game</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body">
                 <EditForm Model="newGameDto" OnValidSubmit="HandleValidSubmit">
+                    <DataAnnotationsValidator />
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <InputText id="gameName" class="form-control" @bind-Value="newGameDto.Name" placeholder="Name"/>
+                        <div class="col-md-6 has-validation">
+                            
+                            <div class="form-floating">
+                                <InputText id="gameName" class="form-control" @bind-Value="newGameDto.Name" placeholder="Name" required></InputText>
+                                <label for="floatingTextarea">Name</label>
                             </div>
-                            <div class="form-group">
-                                <InputDate id="releaseDate" class="form-control" @bind-Value="newGameDto.ReleaseDate" />
+                            <ValidationMessage For="@(() => newGameDto.Name)" />
+                            
+                            <div class="form-floating">
+                                <InputDate id="releaseDate" class="form-control" @bind-Value="newGameDto.ReleaseDate" required></InputDate>
+                                <label for="floatingTextarea">Release Date</label>
+                                <ValidationMessage For="@(() => newGameDto.ReleaseDate)" />
                             </div>
-                            <div class="form-group">
-                                <InputText id="developer" class="form-control" @bind-Value="newGameDto.Developer" placeholder="Developer Name"/>
+
+                            <div class="form-floating">
+                                <InputText id="developer" class="form-control" @bind-Value="newGameDto.Developer" placeholder="Developer Name" required></InputText>
+                                <label for="floatingTextarea">Developer Name</label>
+                                <ValidationMessage For="@(() => newGameDto.Developer)" />
                             </div>
                         </div>
+
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <InputText id="publisher" class="form-control" @bind-Value="newGameDto.Publisher" placeholder="Publisher Name"/>
+                            <div class="form-floating">
+                                <InputText id="publisher" class="form-control" @bind-Value="newGameDto.Publisher" placeholder="Publisher Name" required></InputText>
+                                <label for="floatingTextarea">Publisher Name</label>
+                                <ValidationMessage For="@(() => newGameDto.Publisher)" />
                             </div>
-                            <div class="form-group">
-                                <InputNumber id="price" class="form-control" @bind-Value="newGameDto.Price" placeholder="Price"/>
+                            
+                            <div class="form-floating">
+                                <InputNumber id="price" class="form-control" @bind-Value="newGameDto.Price" placeholder="Price" required></InputNumber>
+                                <label for="floatingTextarea">Price</label>
+                                <ValidationMessage For="@(() => newGameDto.Price)" />
                             </div>
-                            <div class="form-group">
-                                <InputTextArea id="description" class="form-control" @bind-Value="newGameDto.Description" placeholder="description"/>
+                            
+                            <div class="form-floating">
+                                <InputTextArea id="description" class="form-control" @bind-Value="newGameDto.Description" placeholder="Description" required></InputTextArea>
+                                <label for="floatingTextarea">Description</label>
+                                <ValidationMessage For="@(() => newGameDto.Description)" />
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
+
+                    <div class="form-group is-invalid">
                         <label for="fileInput">Game Picture:</label>
-                        <InputFile id="fileInput" OnChange="HandleFileSelected" />
+                        <InputFile id="fileInput" OnChange="HandleFileSelected"/>
+                        <ValidationMessage For="@(() => newGameDto.Url_Image)" />
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <h4>Consoles</h4>
@@ -100,9 +131,10 @@ else
                                     }
                                 }
                             </div>
+                            <ValidationMessage For="@(() => newGameDto.Consoles)" />
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <h4>Categories</h4>
@@ -119,9 +151,10 @@ else
                                     }
                                 }
                             </div>
+                            <ValidationMessage For="@(() => newGameDto.Categories)" />
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <h4>Genres</h4>
@@ -138,12 +171,15 @@ else
                                     }
                                 }
                             </div>
+                            <ValidationMessage For="@(() => newGameDto.Genres)" />
                         </div>
                     </div>
+
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Add Game</button>
+                        <button type="submit" class="btn btn-primary" @onclick="ValidateForm">Add Game</button>
                     </div>
                 </EditForm>
+                
             </div>
         </div>
     </div>
@@ -152,10 +188,13 @@ else
 @code {
     private List<GameDto>? _games;
     private GameDto newGameDto = new GameDto();
-
+    private bool _showSuccessMessage = false;
+    
     List<SelectableItem>? availableConsoles;
     List<SelectableItem>? availableCategories;
     List<SelectableItem>? availableGenres;
+
+    private bool isValidForm = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -172,7 +211,11 @@ else
 
     private async Task HandleValidSubmit()
     {
-        
+        if (!isValidForm)
+        {
+            return;
+        }
+
         newGameDto.ReleaseDate = newGameDto.ReleaseDate.ToUniversalTime();
         
         if (availableConsoles != null)
@@ -187,8 +230,16 @@ else
         {
             _games?.Add(await response.Content.ReadFromJsonAsync<GameDto>());
             StateHasChanged();
+            _showSuccessMessage = true;
         }
     }
+    
+    
+    private void CloseSuccessMessage()
+    {
+        _showSuccessMessage = false;
+    }
+    
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
@@ -197,6 +248,18 @@ else
         {
             newGameDto.Url_Image = file.Name;
         }
+    }
+
+    private void ValidateForm()
+    {
+        isValidForm = !string.IsNullOrEmpty(newGameDto.Name) &&
+                      !string.IsNullOrEmpty(newGameDto.Developer) &&
+                      !string.IsNullOrEmpty(newGameDto.Publisher) &&
+                      newGameDto.ReleaseDate != default &&
+                      newGameDto.Price > 0 &&
+                      (availableConsoles?.Any(c => c.IsChecked) == true ||
+                       availableCategories?.Any(c => c.IsChecked) == true ||
+                       availableGenres?.Any(g => g.IsChecked) == true);
     }
     
     private async Task EditGame(GameDto game)
@@ -220,4 +283,3 @@ else
         public bool IsChecked { get; set; }
     }
 }
-

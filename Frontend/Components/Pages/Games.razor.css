@@ -3,17 +3,16 @@
     width: 80%;
 }
 
-h4 {
-    font-weight: bold;
-    margin-top: 20px;
+.addbutton {
+    margin-bottom: 8px;
 }
 
-.form-group label {
+h4 {
     font-weight: bold;
+    margin-top:20px;
 }
-.custom-file-input {
-    cursor: pointer;
+
+.form-floating {
+    margin-bottom: 20px;
 }
-.custom-file-label::after {
-    content: "Browse";
-}
+
