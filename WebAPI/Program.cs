@@ -56,5 +56,5 @@ app.MapGet("/games/{gameId:guid}", (Guid GameId) =>
     .WithName("GetGamesById")
     .WithOpenApi();
 
-app.MapFavoriteRoutes();
+app.MapFavoriteController();
 app.Run();

@@ -3,9 +3,9 @@ using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-public static class FavoriteRoutes
+public static class FavoriteController
 {
-    public static void MapFavoriteRoutes(this WebApplication app)
+    public static void MapFavoriteController(this WebApplication app)
     {
         app.MapGet("/favorites", () =>
         {
