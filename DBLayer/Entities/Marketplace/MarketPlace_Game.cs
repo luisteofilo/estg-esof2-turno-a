@@ -35,5 +35,4 @@ public class MarketPlace_Game{
 		gameReviews = new List<OrderReview>();
 		orderItems = new List<OrderItem>();
 	}
-	
 }

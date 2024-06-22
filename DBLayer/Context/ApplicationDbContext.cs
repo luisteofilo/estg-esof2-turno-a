@@ -29,7 +29,7 @@ public partial class ApplicationDbContext : DbContext
         return optionsBuilder.Options;
     })();
     
-    public ApplicationDbContext()
+    public ApplicationDbContext()   
         : base(DefaultOptions)
     {
     }
@@ -45,14 +45,14 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     
-    public DbSet<MarketPlace_Game> MarketPlaceGame { get; set; }
-    public DbSet<GameGenre> GameGenre { get; set; }
-    public DbSet<GamePlatform> GamePlatform { get; set; }
-    public DbSet<Genre> Genre { get; set; }
-    public DbSet<Order> Order { get; set; }
-    public DbSet<OrderItem> OrderItem { get; set; }
-    public DbSet<Platform> Platform { get; set; }
-    public DbSet<OrderReview> OrderReview { get; set; }
+    public DbSet<MarketPlace_Game> MarketPlaceGames { get; set; }
+    public DbSet<GameGenre> GameGenres { get; set; }
+    public DbSet<GamePlatform> GamePlatforms { get; set; }
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Platform> Platforms { get; set; }
+    public DbSet<OrderReview> OrderReviews { get; set; }
 
 
     

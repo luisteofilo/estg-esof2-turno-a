@@ -1,4 +1,5 @@
 ﻿using ESOF.WebApp.DBLayer.Context;
+using ESOF.WebApp.WebAPI.DtoClasses.Response;
 using ESOF.WebApp.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,8 @@ public class PlatformController : ControllerBase {
   public PlatformController() {
     _platformService = new PlatformService(new ApplicationDbContext());
   }
-  //[HttpGet("index")]
- // public ActionResult<List<>
+  [HttpGet("index")] 
+  public ActionResult<List<ResponsePlatformDto>> GetAllPlatforms() {
+    return _platformService.GetAllPlatforms();
+  }
 }
