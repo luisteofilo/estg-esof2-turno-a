@@ -1,4 +1,5 @@
 using ESOF.WebApp.DBLayer.Context;
+using ESOF.WebApp.DBLayer.Entities;
 using Helpers.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -88,6 +89,33 @@ app.MapGet("/users", () =>
         }).ToArray();
     })
     .WithName("GetUsers")
+    .WithOpenApi();
+
+app.MapPost("/save_score", async (HttpContext context) =>
+    {
+        try
+        {
+            var request = await context.Request.ReadFromJsonAsync<ScoreViewModel>();
+            var db = new ApplicationDbContext();
+
+            var scoreEntry = new TestUserScore
+            {
+                UserId = request.UserId,
+                Score = request.Score
+            };
+
+            db.TestUsersScores.Add(scoreEntry);
+            await db.SaveChangesAsync();
+        
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            await context.Response.WriteAsync("Score saved successfully.");
+        }
+        catch (Exception ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync($"An error occurred: {ex.Message}");
+        }
+    }).WithName("SaveScore")
     .WithOpenApi();
 
 app.Run();
