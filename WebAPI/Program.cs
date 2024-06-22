@@ -91,30 +91,22 @@ app.MapGet("/users", () =>
     .WithName("GetUsers")
     .WithOpenApi();
 
-app.MapPost("/save_score", async (HttpContext context) =>
+app.MapPost("/save_score", async context =>
     {
-        try
+        var request = await context.Request.ReadFromJsonAsync<ScoreViewModel>();
+        var db = new ApplicationDbContext();
+
+        var scoreEntry = new TestUserScore
         {
-            var request = await context.Request.ReadFromJsonAsync<ScoreViewModel>();
-            var db = new ApplicationDbContext();
+            UserId = request.UserId,
+            Score = request.Score
+        };
 
-            var scoreEntry = new TestUserScore
-            {
-                UserId = request.UserId,
-                Score = request.Score
-            };
-
-            db.TestUsersScores.Add(scoreEntry);
-            await db.SaveChangesAsync();
+        db.TestUserScores.Add(scoreEntry);
+        await db.SaveChangesAsync();
         
-            context.Response.StatusCode = StatusCodes.Status200OK;
-            await context.Response.WriteAsync("Score saved successfully.");
-        }
-        catch (Exception ex)
-        {
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await context.Response.WriteAsync($"An error occurred: {ex.Message}");
-        }
+        context.Response.StatusCode = StatusCodes.Status200OK;
+        await context.Response.WriteAsync("Score saved successfully.");
     }).WithName("SaveScore")
     .WithOpenApi();
 
