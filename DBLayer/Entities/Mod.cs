@@ -26,12 +26,7 @@ public class Mod
 
     public string Version { get; set; }  // Version of the mod
 
-    public bool IsApproved { get; set; }  // Whether the mod has been approved for public use
-
     public ICollection<ModTag> Tags { get; set; }  // Collection of tags for categorizing the mod
-
-    // You can also include properties for handling file storage:
-    public string FilePath { get; set; }  // Path to the file storage location
 
     [DataType(DataType.Url)]
     public string DownloadLink { get; set; }  // URL to download the mod

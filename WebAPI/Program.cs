@@ -62,8 +62,6 @@ app.MapGet("/mods", () =>
                 m.ReleaseDate,
                 m.Author,
                 m.Version,
-                m.IsApproved,
-                m.FilePath,
                 m.DownloadLink,
                 m.DownloadCount,
                 m.Rating,
@@ -80,6 +78,37 @@ app.MapGet("/tags", () =>
         return db.ModTags.Select(u => u);
     })
     .WithName("GetTags")
+    .WithOpenApi();
+
+app.MapGet("/mod/{modId:guid}", (Guid modId) =>
+    {
+        var db = new ApplicationDbContext();
+        var mod = db.Mods
+            .Include(m => m.Tags)  // Make sure to include tags
+            .Where(m => m.ModId == modId)
+            .Select(m => new {
+                m.ModId,
+                m.Name,
+                m.Game,
+                m.Description,
+                m.ReleaseDate,
+                m.Author,
+                m.Version,
+                m.DownloadLink,
+                m.DownloadCount,
+                m.Rating,
+                Tags = m.Tags.Select(t => new { t.TagId, t.Name, t.Description }).ToList()  // Project tags into a simpler format
+            })
+            .FirstOrDefault();
+
+        if (mod == null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(mod);
+    })
+    .WithName("GetModById")
     .WithOpenApi();
 
 app.MapPost("/mods", async (Mod mod) =>

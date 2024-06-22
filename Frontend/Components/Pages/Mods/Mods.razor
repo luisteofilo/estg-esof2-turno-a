@@ -38,10 +38,11 @@ else
             <tr>
                 <th>Name</th>
                 <th>Game</th>
-                <th>Description</th>
                 <th>Release Date</th>
                 <th>Author</th>
                 <th>Version</th>
+                <th>Rating</th>
+                <th>Download Count</th>
             </tr>
         </thead>
         <tbody>
@@ -50,12 +51,15 @@ else
             @foreach (var mod in filteredMods)
             {
                 <tr>
-                    <td>@mod.Name</td>
+                    <td><NavLink class="nav-link" href="@($"/mod/{mod.ModId}")">
+                        @mod.Name
+                    </NavLink></td>
                     <td>@mod.Game</td>
-                    <td>@mod.Description</td>
                     <td>@mod.ReleaseDate.ToString("yyyy-MM-dd")</td>
                     <td>@mod.Author</td>
                     <td>@mod.Version</td>
+                    <td>@mod.Rating</td>
+                    <td>@mod.DownloadCount</td>
                 </tr>
             }
         }
@@ -138,8 +142,6 @@ else
         public DateTime ReleaseDate { get; set; }
         public string Author { get; set; }
         public string Version { get; set; }
-        public bool IsApproved { get; set; }
-        public string FilePath { get; set; }
         public string DownloadLink { get; set; }
         public int DownloadCount { get; set; }
         public double Rating { get; set; }
