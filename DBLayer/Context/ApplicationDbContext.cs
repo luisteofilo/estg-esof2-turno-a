@@ -59,6 +59,23 @@ public partial class ApplicationDbContext : DbContext
         BuildUserRoles(modelBuilder);
         BuildMods(modelBuilder);
         BuildModTags(modelBuilder);
+        
+        modelBuilder.Entity<ModTag>().HasData(
+            new ModTag { TagId = Guid.NewGuid(), Name = "Graphics", Description = "Mods that enhance graphics, textures, or overall visual appeal." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Adventure", Description = "Mods that add new quests, missions, or enhance exploration." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Audio", Description = "Mods that enhance or change the game’s sound effects, music, and voice acting." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Exploration", Description = "Mods that expand the game world or add new areas to explore." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Characters", Description = "Mods that introduce new characters or alter existing ones." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Weapons and Armor", Description = "Mods that add new weapons, armor, or equipment." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Story", Description = "Mods that introduce new storylines, missions, or quests." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Immersion", Description = "Mods that increase the overall immersive experience of the game." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Quality of Life", Description = "Mods that improve the overall user experience with small but impactful changes." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Survival", Description = "Mods that add survival elements or make the game more challenging." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Multiplayer", Description = "Mods that add or enhance multiplayer capabilities." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Crafting", Description = "Mods that expand or enhance the crafting system in the game." }
+        );
+
         base.OnModelCreating(modelBuilder);
+        
     }
 }
