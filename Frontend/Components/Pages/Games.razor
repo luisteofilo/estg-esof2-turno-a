@@ -7,7 +7,7 @@
 
 <h3>Games</h3>
 
-@if (_showSuccessMessage)
+@if (_showSuccessMessageGame)
 {
 <div class="alert alert-success alert-dismissible fade show" role="alert">
     Game created successfully.
@@ -15,13 +15,31 @@
 </div>
 }
 
+@if (_showSuccessMessageDelete)
+{
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    Game deleted successfully.
+    <button type="button" class="btn-close" @onclick="CloseSuccessMessageDelete" aria-label="Close"></button>
+</div>
+}
+
+@if (_showSuccessMessageEdit)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Game edited successfully.
+        <button type="button" class="btn-close" @onclick="CloseSuccessMessageEdit" aria-label="Close"></button>
+    </div>
+}
+
+
 @if (_games == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <button type="button" class="btn btn-primary addbutton" data-bs-toggle="modal" data-bs-target="#addGame">Add Game</button>
+    <button type="button" class="btn btn-primary addbutton" data-bs-toggle="modal" data-bs-target="#addGame" @onclick="() => ModalGameOpen()">Add Game</button>
+    
     <table class="table">
         <thead>
         <tr>
@@ -45,7 +63,7 @@ else
             <td>@game.Publisher</td>
             <td>@game.Price.ToString("C")</td>
             <td>
-                <button class="btn btn-secondary" @onclick="() => EditGame(game)">Edit</button>
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editGame" @onclick="() => OpenEditModal(game)">Edit</button>
                 <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
             </td>
         </tr>
@@ -54,7 +72,9 @@ else
     </table>
 }
 
-<div class="modal fade" id="addGame" tabindex="-1" aria-labelledby="addGameLabel" aria-hidden="true" >
+@if (_modalGame)
+{
+    <div class="modal fade" id="addGame" tabindex="-1" aria-labelledby="addGameLabel" aria-hidden="true" >
     <div class="modal-dialog custom-modal-dialog">
         <div class="modal-content">
             
@@ -184,12 +204,18 @@ else
         </div>
     </div>
 </div>
+}
+
 
 @code {
     private List<GameDto>? _games;
     private GameDto newGameDto = new GameDto();
-    private bool _showSuccessMessage = false;
-    
+    private GameDto editingGameDto = new GameDto();
+    private bool _showSuccessMessageGame = false;
+    private bool _showSuccessMessageDelete = false;
+    private bool _showSuccessMessageEdit = false;
+    private bool _modalGame = false;
+
     List<SelectableItem>? availableConsoles;
     List<SelectableItem>? availableCategories;
     List<SelectableItem>? availableGenres;
@@ -199,7 +225,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         _games = await Http.GetFromJsonAsync<List<GameDto>>("games");
-        
+
         var consoles = await Http.GetFromJsonAsync<List<string>>("consoles");
         var categories = await Http.GetFromJsonAsync<List<string>>("categories");
         var genres = await Http.GetFromJsonAsync<List<string>>("genres");
@@ -217,7 +243,7 @@ else
         }
 
         newGameDto.ReleaseDate = newGameDto.ReleaseDate.ToUniversalTime();
-        
+
         if (availableConsoles != null)
             newGameDto.Consoles = availableConsoles.Where(c => c.IsChecked).Select(c => Enum.Parse<Consoles>(c.Name)).ToList();
         if (availableCategories != null)
@@ -229,17 +255,61 @@ else
         if (response.IsSuccessStatusCode)
         {
             _games?.Add(await response.Content.ReadFromJsonAsync<GameDto>());
+            _modalGame = false;
+            _showSuccessMessageGame = true;
             StateHasChanged();
-            _showSuccessMessage = true;
         }
     }
-    
+
+    private async Task HandleValidSubmitEdit()
+    {
+        if (!isValidForm)
+        {
+            return;
+        }
+
+        editingGameDto.ReleaseDate = editingGameDto.ReleaseDate.ToUniversalTime();
+
+        if (availableConsoles != null)
+            editingGameDto.Consoles = availableConsoles.Where(c => c.IsChecked).Select(c => Enum.Parse<Consoles>(c.Name)).ToList();
+        if (availableCategories != null)
+            editingGameDto.Categories = availableCategories.Where(c => c.IsChecked).Select(c => Enum.Parse<Category>(c.Name)).ToList();
+        if (availableGenres != null)
+            editingGameDto.Genres = availableGenres.Where(g => g.IsChecked).Select(g => Enum.Parse<Genre>(g.Name)).ToList();
+
+        var response = await Http.PutAsJsonAsync($"game/{editingGameDto.GameId}", editingGameDto);
+        if (response.IsSuccessStatusCode)
+        {
+            var updatedGame = await response.Content.ReadFromJsonAsync<GameDto>();
+            var index = _games?.FindIndex(g => g.GameId == updatedGame.GameId);
+            if (index != null && index >= 0)
+            {
+                _games[(int)index] = updatedGame;
+            }
+            StateHasChanged();
+            _showSuccessMessageEdit = true;
+        }
+    }
+
+    private void ModalGameOpen()
+    {
+        _modalGame = true;
+    }
     
     private void CloseSuccessMessage()
     {
-        _showSuccessMessage = false;
+        _showSuccessMessageGame = false;
     }
-    
+
+    private void CloseSuccessMessageDelete()
+    {
+        _showSuccessMessageDelete = false;
+    }
+
+    private void CloseSuccessMessageEdit()
+    {
+        _showSuccessMessageEdit = false;
+    }
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
@@ -247,6 +317,15 @@ else
         if (file != null)
         {
             newGameDto.Url_Image = file.Name;
+        }
+    }
+
+    private void HandleFileSelectedEdit(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            editingGameDto.Url_Image = file.Name;
         }
     }
 
@@ -261,10 +340,35 @@ else
                        availableCategories?.Any(c => c.IsChecked) == true ||
                        availableGenres?.Any(g => g.IsChecked) == true);
     }
-    
-    private async Task EditGame(GameDto game)
+
+    private void ValidateFormEdit()
     {
-        // Implementation depends on further details
+        isValidForm = !string.IsNullOrEmpty(editingGameDto.Name) &&
+                      !string.IsNullOrEmpty(editingGameDto.Developer) &&
+                      !string.IsNullOrEmpty(editingGameDto.Publisher) &&
+                      editingGameDto.ReleaseDate != default &&
+                      editingGameDto.Price > 0 &&
+                      (availableConsoles?.Any(c => c.IsChecked) == true ||
+                       availableCategories?.Any(c => c.IsChecked) == true ||
+                       availableGenres?.Any(g => g.IsChecked) == true);
+    }
+
+    private void OpenEditModal(GameDto game)
+    {
+        editingGameDto = game;
+        foreach (var console in availableConsoles)
+        {
+            console.IsChecked = game.Consoles.Contains(Enum.Parse<Consoles>(console.Name));
+        }
+        foreach (var category in availableCategories)
+        {
+            category.IsChecked = game.Categories.Contains(Enum.Parse<Category>(category.Name));
+        }
+        foreach (var genre in availableGenres)
+        {
+            genre.IsChecked = game.Genres.Contains(Enum.Parse<Genre>(genre.Name));
+        }
+        StateHasChanged();
     }
 
     private async Task DeleteGame(Guid id)
@@ -274,6 +378,7 @@ else
         {
             _games = _games?.Where(g => g.GameId != id).ToList();
             StateHasChanged();
+            _showSuccessMessageDelete = true;
         }
     }
 
