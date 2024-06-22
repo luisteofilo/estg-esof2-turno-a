@@ -12,7 +12,7 @@ public class Achievement
     [Required]
     public string Description { get; set; }
     [Required]
-    public int RequiredScore { get; set; }
+    public long RequiredScore { get; set; }
     
     public ICollection<PlayerAchievement> PlayerAchievements { get; set; }
 }
