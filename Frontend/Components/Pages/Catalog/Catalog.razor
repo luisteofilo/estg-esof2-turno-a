@@ -120,44 +120,47 @@ else
                 <h5 class="m-0">Filters</h5>
                 <button type="button" class="btn btn-orange" @onclick="ClearFilters">Clear
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="20" fill="currentColor">
-                        <path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path>
+                        <path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path>
                     </svg>
                 </button>
             </div>
-            <button type="button" class="btn btn-orange w-100" @onclick="ToggleGenreFilters">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor" class="filter-icon @((genreFiltersOpen) ? "rotate" : "")">
-                    <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
-                </svg> Genre
-            </button>
-            <div class="filtrosGenre filter-container @((genreFiltersOpen) ? "open" : "")">
-                @foreach (var genre in Enum.GetValues(typeof(ESOF.WebApp.DBLayer.Entities.Genre)).Cast<ESOF.WebApp.DBLayer.Entities.Genre>())
-                {
-                    <div class="form-check my-3 ms-4">
-                        <input class="form-check-input" type="checkbox" id="@("genre_" + genre)" checked="@selectedGenres.Contains(genre)" @onchange="(e => HandleGenreCheckboxChange(e, genre))" />
-                        <label class="form-check-label" for="@("genre_" + genre)">
-                            @genre
-                        </label>
-                    </div>
-                }
+            <div class="mb-3">
+                <button type="button" class="btn btn-orange w-100" @onclick="ToggleGenreFilters">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor" class="filter-icon @(genreFiltersOpen ? "rotate" : "")">
+                        <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
+                    </svg> Genre
+                </button>
+                <div class="filter-container @(genreFiltersOpen ? "open" : "")">
+                    @foreach (var genre in genreNames)
+                    {
+                        <div class="form-check my-3 ms-4">
+                            <input class="form-check-input" type="checkbox" id="@genre" @onclick="() => ToggleGenreFilter(genre)" />
+                            <label class="form-check-label" for="@genre">
+                                @genre
+                            </label>
+                        </div>
+                    }
+                </div>
             </div>
-            
-            <button type="button" class="btn btn-orange w-100" @onclick="ToggleConsoleFilters">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor" class="filter-icon @((consoleFiltersOpen) ? "rotate" : "")">
-                    <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
-                </svg> Console
-            </button>
-            <div class="filtrosConsole filter-container @((consoleFiltersOpen) ? "open" : "")">
-                @foreach (var console in Enum.GetValues(typeof(ESOF.WebApp.DBLayer.Entities.Consoles)).Cast<ESOF.WebApp.DBLayer.Entities.Consoles>())
-                {
-                    <div class="form-check my-3 ms-4">
-                        <input class="form-check-input" type="checkbox" id="@("console_" + console)" checked="@selectedConsoles.Contains(console)" @onchange="(e => HandleConsoleCheckboxChange(e, console))" />
-                        <label class="form-check-label" for="@("console_" + console)">
-                            @console
-                        </label>
-                    </div>
-                }
+        
+            <div class="mb-3">
+                <button type="button" class="btn btn-orange w-100" @onclick="ToggleConsoleFilters">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor" class="filter-icon @(consoleFiltersOpen ? "rotate" : "")">
+                        <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
+                    </svg> Console
+                </button>
+                <div class="filter-container @(consoleFiltersOpen ? "open" : "")">
+                    @foreach (var console in consoleNames)
+                    {
+                        <div class="form-check my-3 ms-4">
+                            <input class="form-check-input" type="checkbox" id="@console" @onclick="() => ToggleConsoleFilter(console)" />
+                            <label class="form-check-label" for="@console">
+                                @console
+                            </label>
+                        </div>
+                    }
+                </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -175,6 +178,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadFilters();
         _gamesCatalog = await ApiHelper.GetFromApiAsync<List<Game>>("games");
         
         if (_gamesCatalog != null)
@@ -261,9 +265,6 @@ else
         _alertTimer.Start();
     }
     
-    private IEnumerable<Game> FilteredGames => _gamesCatalog?.Where(game => string.IsNullOrEmpty(searchText) || game.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-    private IEnumerable<Game> FilteredFavorites => _gamesFavoritesById?.Where(fav => string.IsNullOrEmpty(searchText) || fav.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-    
     private bool genreFiltersOpen = false;
     private bool consoleFiltersOpen = false;
 
@@ -276,36 +277,64 @@ else
     {
         consoleFiltersOpen = !consoleFiltersOpen;
     }
+    
+    private HashSet<string> selectedGenres = new HashSet<string>();
+    private HashSet<string> selectedConsoles = new HashSet<string>();
+    
+    private List<string> consoleNames = new List<string>();
+    private List<string> genreNames = new List<string>();
+    
+    private async Task LoadFilters()
+    {
+        consoleNames = await ApiHelper.GetFromApiAsync<List<string>>("consoles");
+        genreNames = await ApiHelper.GetFromApiAsync<List<string>>("genres");
 
-    private HashSet<ESOF.WebApp.DBLayer.Entities.Genre> selectedGenres = new HashSet<ESOF.WebApp.DBLayer.Entities.Genre>();
-    private HashSet<ESOF.WebApp.DBLayer.Entities.Consoles> selectedConsoles = new HashSet<ESOF.WebApp.DBLayer.Entities.Consoles>();
+        // Verifique se os nomes foram carregados corretamente
+        Console.WriteLine($"Console Names: {string.Join(", ", consoleNames)}");
+        Console.WriteLine($"Genre Names: {string.Join(", ", genreNames)}");
+    }
+    
+    private IEnumerable<Game> FilteredGames =>
+        _gamesCatalog?.Where(game =>
+            (selectedGenres.Count == 0 || selectedGenres.Contains(game.Genre.ToString())) &&
+            (selectedConsoles.Count == 0 || selectedConsoles.Contains(game.Platform.ToString())) &&
+            (string.IsNullOrEmpty(searchText) || game.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
 
+    private IEnumerable<Game> FilteredFavorites =>
+        _gamesFavoritesById?.Where(fav =>
+            (selectedGenres.Count == 0 || selectedGenres.Contains(fav.Genre.ToString())) &&
+            (selectedConsoles.Count == 0 || selectedConsoles.Contains(fav.Platform.ToString())) &&
+            (string.IsNullOrEmpty(searchText) || fav.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+
+    
+    private void ToggleGenreFilter(string genre)
+    {
+        if (selectedGenres.Contains(genre))
+        {
+            selectedGenres.Remove(genre);
+        }
+        else
+        {
+            selectedGenres.Add(genre);
+        }
+    }
+
+    private void ToggleConsoleFilter(string console)
+    {
+        if (selectedConsoles.Contains(console))
+        {
+            selectedConsoles.Remove(console);
+        }
+        else
+        {
+            selectedConsoles.Add(console);
+        }
+    }
+
+    
     private void ClearFilters()
     {
         selectedGenres.Clear();
         selectedConsoles.Clear();
-    }
-    
-    private void HandleGenreCheckboxChange(ChangeEventArgs e, ESOF.WebApp.DBLayer.Entities.Genre genre)
-    {
-        if ((bool)e.Value)
-        {
-            selectedGenres.Add(genre);
-        }
-        else
-        {
-            selectedGenres.Remove(genre);
-        }
-    }
-    private void HandleConsoleCheckboxChange(ChangeEventArgs e, ESOF.WebApp.DBLayer.Entities.Consoles console)
-    {
-        if ((bool)e.Value)
-        {
-            selectedConsoles.Add(console);
-        }
-        else
-        {
-            selectedConsoles.Remove(console);
-        }
     }
 }
