@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <None Remove="Components\Pages\Achievements\index.razor.css" />
+      <None Remove="Components\Pages\Achievements\TestUserScores.css" />
     </ItemGroup>
 
 </Project>

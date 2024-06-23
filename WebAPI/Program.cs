@@ -121,7 +121,8 @@ app.MapGet("/score_achievements/{score:long}", (long score) =>
             select new AchievementsViewModel()
             {
                 IdAchievement = a.IdAchievement,
-                Name = a.Name
+                Name = a.Name,
+                Description = a.Description
             }).ToArray();
         return achievements;
     })
