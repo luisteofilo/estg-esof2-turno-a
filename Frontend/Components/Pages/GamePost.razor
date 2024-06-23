@@ -1,0 +1,113 @@
+﻿@page "/gamePost"
+@using Frontend.Helpers
+@attribute [StreamRendering]
+@inject ApiHelper ApiHelper
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #000;
+        }
+
+        .post {
+            background-color: #222;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+        }
+        .post-header img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+       
+        <div class="content">
+            <h2>Posts</h2>
+
+          
+                <div class="post">
+                    <div class="post-header">
+                        <div>
+                            <h2>title</h2>
+                            <div style="margin-left: auto">
+                                <button>🗑️</button>
+                                <button >🔄</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p>postText</p>
+                    <div class="post-footer">
+                        <div>
+                            <span>💬 commentsCount</span>
+                            <span>👍 LikesCount</span>
+                        </div>
+                    </div>
+                </div>
+            
+
+
+        </div>
+    </div>
+</body>
+</html>
+
+
+@code {
+    private Post[]? posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await ApiHelper.GetFromApiAsync<Post[]>("posts");
+    }
+
+    private class Post
+    {
+        public string PostId { get; set; }
+        public string postText { get; set; }
+        public string title { get; set; }
+        public string UserId { get; set; }  // FK for User
+        public string GameId { get; set; }  // FK for Game
+    }
+
+}

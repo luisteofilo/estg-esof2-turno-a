@@ -8,7 +8,7 @@ public class Post
     public Guid PostId { get; set; }
     
     [Required]
-    public string comment { get; set; }
+    public string postText { get; set; }
     
     [Required]
     public string title { get; set; }
