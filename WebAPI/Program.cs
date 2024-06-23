@@ -57,7 +57,8 @@ app.MapGet("/achievements", () =>
         return db.Achievements.Select(a => new AchievementsViewModel()
         {
             Name = a.Name,
-            Description = a.Description
+            Description = a.Description,
+            RequiredScore = a.RequiredScore
         }).ToArray();
     })
     .WithName("GetAchievements")
@@ -73,7 +74,8 @@ app.MapGet("/user_achievements/{userId:Guid}", (Guid userId) =>
             {
                 Name = a.Name,
                 Description = a.Description,
-                Unlocked = pa.Unlocked
+                Unlocked = pa.Unlocked,
+                AchievementId = pa.AchievementId
             }).ToArray();
         return user_achievements;
     })
@@ -92,22 +94,22 @@ app.MapGet("/users", () =>
     .WithName("GetUsers")
     .WithOpenApi();
 
-app.MapPost("/save_score", async context =>
+app.MapPost("/save_score/{userId:Guid}/{Score:long}", async (Guid userId, long score) =>
     {
-        var request = await context.Request.ReadFromJsonAsync<ScoreViewModel>();
+        //var request = await context.Request.ReadFromJsonAsync<ScoreViewModel>();
         var db = new ApplicationDbContext();
 
         var scoreEntry = new TestUserScore
         {
-            UserId = request.UserId,
-            Score = request.Score
+            UserId = userId,
+            Score = score
         };
 
         db.TestUserScores.Add(scoreEntry);
         await db.SaveChangesAsync();
-        
-        context.Response.StatusCode = StatusCodes.Status200OK;
-        await context.Response.WriteAsync("Score saved successfully.");
+        return Results.Ok(new { message = "Achievement added successfully." });
+        //context.Response.StatusCode = StatusCodes.Status200OK;
+        //await context.Response.WriteAsync("Score saved successfully.");
     }).WithName("SaveScore")
     .WithOpenApi();
 
