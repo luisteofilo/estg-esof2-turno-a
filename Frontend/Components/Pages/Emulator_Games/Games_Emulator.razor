@@ -1,5 +1,9 @@
 @page "/games"
 @using System.Collections.Generic
+@using System.Threading.Tasks
+@using Frontend.Helpers
+@using global::Helpers.Models
+@inject ApiHelper ApiHelper
 
 <h1 class="text-center mt-4 retro-title">Games Emulator</h1>
 
@@ -10,53 +14,116 @@
         </div>
     </div>
 
-    <h2 class="text-center mt-5 retro-subtitle">Explore Games</h2>
+    <div id="box">
+        <input type="file" id="input" />
+        Drag ROM file or click here
+    </div>
 
-     <div id="box">
-          <input type="file" id="input" />
-          Drag ROM file or click here
-        </div>
+    <h2 class="mt-5 retro-subtitle" style="text-align: left;">Explore Games:</h2>
+    
     <div class="row mt-4">
-        @foreach (var game in Games)
-        {
-        <div class="col-md-4 mb-4">
-            <div class="card border border-warning rounded shadow retro-card">
-                <img src="@game.ImageUrl" class="card-img-top rounded-top" alt="@game.Name">
-                <div class="card-body">
-                    <h5 class="card-title retro-card-title">@game.Name</h5>
-                    <p class="card-text retro-card-text">Description of the game goes here.</p>
-                    <a href="#" class="btn btn-primary btn-block retro-btn">Play Now</a>
-                </div>
+        <div class="col-md-12">
+            <div class="card-scroll-container">
+                @if (_games == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+                    <div class="card-deck">
+                        @if (_games != null && _games.Length > 0)
+                        {
+                            @foreach (var game in _games)
+                            {
+                                <div class="card retro-card">
+                                    <img class="card-img-top img-fluid" src="@game.UrlImage" alt="@game.Name">
+                                    <div class="card-body">
+                                        <h5 class="card-title retro-card-title">@game.Name</h5>
+                                        <a href="#" class="btn btn-primary btn-block retro-btn">Play Now</a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No games found.</p>
+                        }
+                    </div>
+
+                }
+
             </div>
         </div>
-        }
     </div>
 </div>
 
+<style>
+    .card-scroll-container {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .card {
+        width: 18rem;
+        display: inline-block;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        vertical-align: top;
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .retro-card {
+        border: 2px solid #ffc107;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+    }
+
+    .retro-card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .retro-card-text {
+        font-size: 1rem;
+    }
+
+    .retro-btn {
+        background-color: #343a40;
+        border-color: #343a40;
+    }
+
+    .retro-btn:hover {
+        background-color: #23272b;
+        border-color: #23272b;
+    }
+    
+     .card-img-top {
+         max-width: 100%;
+         height: auto;
+     }
+
+    .card {
+       
+        width: 15rem;
+      
+    }
+
+    .card-img-top {
+        width: 100%; 
+        height: 240px; 
+}
+</style>
+
 @code {
-// Mock data for games (replace with actual data)
-List<GameInfo> Games = new List<GameInfo>
-{
-new GameInfo { Name = "Mega Mountain", ImageUrl = "https://s2-techtudo.glbimg.com/dLHiEFov94ONVIVLP2V85FWh7hE=/0x0:695x390/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_08fbf48bc0524877943fe86e43087e7a/internal_photos/bs/2019/3/t/9vl0fdRyi9SvlPOe33yA/subway-surfers-mais-baixado-downloads-decada-2010-2019.jpg" },
-new GameInfo { Name = "Super Adventure", ImageUrl = "https://www.example.com/super_adventure.jpg" },
-new GameInfo { Name = "Fantasy Quest", ImageUrl = "https://www.example.com/fantasy_quest.jpg" }
-};
+private GamesViewModel[] _games;
 
-public class GameInfo
+protected override async Task OnInitializedAsync()
 {
-public string Name { get; set; }
-public string ImageUrl { get; set; }
-}
-
-protected override async Task OnAfterRenderAsync(bool firstRender)
-{
-if (firstRender)
-{
-// Carregar Emulator.js após o primeiro render da página
-await JSRuntime.InvokeVoidAsync("loadEmulatorJs");
-
-// Inicializar Emulator.js com o jogo específico
-await JSRuntime.InvokeVoidAsync("initializeEmulatorJs");
-}
+_games = await ApiHelper.GetFromApiAsync<GamesViewModel[]>("games");
 }
 }

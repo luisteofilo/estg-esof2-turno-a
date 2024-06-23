@@ -7,14 +7,18 @@ namespace ESOF.WebApp.DBLayer.Entities;
 public class Roms
 {
     [Key]
-    [ForeignKey("Game")]  
+    public Guid RomId { get; set; }
+
+    [ForeignKey("Game")]
     public Guid GameId { get; set; }
 
     [Required]
-    public Blob ROM { get; set; }
-    
-    [Required]
-    public string File_name{ get; set; }
+    public byte[] ROM { get; set; }
 
-    public Games Game { get; set; }  
+    [Required]
+    public string File_name { get; set; }
+
+    public Games Game { get; set; }
+
+    public ICollection<SaveStates> SaveStates { get; set;}
 }

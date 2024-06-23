@@ -1,4 +1,7 @@
 using ESOF.WebApp.DBLayer.Context;
+using ESOF.WebApp.DBLayer.Entities;
+using Helpers.Models;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,27 +26,24 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
 
-app.MapGet("/users/emails", () =>
+app.MapGet("/games", () =>
     {
         var db = new ApplicationDbContext();
-        return db.Users.Select(u => u.Email);
+        return db.Games.Select(g => new GamesViewModel(
+        ){
+            
+            GameId = g.GameId,
+            Name=g.Name,
+            Description = g.Description,
+            UrlImage= g.Url_Image,
+            Developer = g.Developer,
+            Publisher = g.Publisher
+                
+            
+        }).ToArray();
     })
-    .WithName("GetUsersNames")
+    .WithName("GetGames")
     .WithOpenApi();
 
 app.Run();

@@ -10,15 +10,14 @@ public class SaveStates
     public Guid SaveStateId { get; set; }
 
     [Required]
+    [ForeignKey("Rom")]
     public Guid RomId { get; set; }
-    
+
     [Required]
     public Guid UserId { get; set; }
-    
+
     [Required]
     public DateTime Date { get; set; }
 
-    public Games Game { get; set; } 
+    public Roms Rom { get; set; } 
 }
-
-

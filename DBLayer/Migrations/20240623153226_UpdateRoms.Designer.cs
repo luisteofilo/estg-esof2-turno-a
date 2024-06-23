@@ -3,6 +3,7 @@ using System;
 using ESOF.WebApp.DBLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240623153226_UpdateRoms")]
+    partial class UpdateRoms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,7 +114,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 {
                     b.Property<Guid>("RomId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("File_name")
                         .IsRequired()
@@ -130,28 +134,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsUnique();
 
                     b.ToTable("Roms");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.SaveStates", b =>
-                {
-                    b.Property<Guid>("SaveStateId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("RomId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("SaveStateId");
-
-                    b.HasIndex("RomId");
-
-                    b.ToTable("SaveStates");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
@@ -226,17 +208,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.SaveStates", b =>
-                {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Roms", "Rom")
-                        .WithMany("SaveStates")
-                        .HasForeignKey("RomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Rom");
-                });
-
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.UserRole", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Role", "Role")
@@ -272,11 +243,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("RolePermissions");
 
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Roms", b =>
-                {
-                    b.Navigation("SaveStates");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>

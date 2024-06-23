@@ -22,6 +22,7 @@ public partial class ApplicationDbContext : DbContext
             throw new InvalidOperationException(
                 "Database connection information not fully specified in environment variables.");
         }
+        
 
         var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
         optionsBuilder.UseNpgsql(connectionString);
@@ -43,6 +44,12 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    public DbSet<Games> Games { get; set; }
+    public DbSet<Roms> Roms { get; set; }
+    public DbSet<SaveStates> SaveStates { get; set; }
+    
+  
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -58,6 +65,9 @@ public partial class ApplicationDbContext : DbContext
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        BuildGames(modelBuilder);
+        BuildRoms(modelBuilder);
+        BuildSaveStates(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }
