@@ -1,0 +1,33 @@
+@page "/votes"
+@inject HttpClient Http
+@using ESOF.WebApp.DBLayer.Entities
+
+<h3>Jogo do Mês</h3>
+
+@if (gameOfTheMonth != null)
+{
+    <div>
+        <b>@gameOfTheMonth.Name</b>
+        <p>@gameOfTheMonth.Description</p>
+    </div>
+}
+else
+{
+    <p>Nenhum jogo foi selecionado este mês.</p>
+}
+
+@code {
+    private Game? gameOfTheMonth;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            gameOfTheMonth = await Http.GetFromJsonAsync<Game>("api/vote/GameOfTheMonth");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro ao carregar o jogo do mês: " + ex.Message);
+        }
+    }
+}

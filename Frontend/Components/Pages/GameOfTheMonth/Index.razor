@@ -1,0 +1,122 @@
+@page "/gameofthemonth"
+@using ESOF.WebApp.DBLayer.Entities
+@inject HttpClient Http
+
+<h3>Vote no Jogo do Mês</h3>
+
+@if (games == null)
+{
+    <p>Carregando...</p>
+}
+else if (!games.Any())
+{
+    <p>Nenhum jogo encontrado.</p>
+}
+else
+{
+    <ul>
+        @foreach (var game in games)
+        {
+            <li>
+                <b>@game.Name</b> - @game.Description
+                <button @onclick="@(async () => { Console.WriteLine($"Button clicked for game: {game.Name}"); await VoteForGame(game.GameId); })" disabled="@hasVoted">Votar</button> <!--Ainda não Funciona -->
+                @if (votePercentages.TryGetValue(game.GameId, out var percentage))
+                {
+                    <span>(@percentage%)</span>
+                }
+            </li>
+        }
+    </ul>
+}
+
+<p>@message</p>
+
+@code {
+    private List<Game>? games;
+    private string? message;
+    private Guid userId = Guid.NewGuid(); 
+    private bool hasVoted = false;
+    private Dictionary<Guid, double> votePercentages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Blazor Initialized"); // Linha de debug
+        try
+        {
+            games = await Http.GetFromJsonAsync<List<Game>>("api/game");
+            Console.WriteLine($"Jogos carregados: {games?.Count ?? 0}"); // Linha de debug
+            hasVoted = await CheckIfUserHasVoted();
+            if (games == null)
+            {
+                message = "Nenhum jogo foi retornado da API.";
+            }
+            else
+            {
+                await UpdateVotePercentages();
+            }
+        }
+        catch (Exception ex)
+        {
+            message = "Erro ao carregar os jogos: " + ex.Message;
+        }
+    }
+
+    private void OnVoteButtonClick(string gameName)
+    {
+        Console.WriteLine($"Button clicked for game: {gameName}");
+    }
+
+    private async Task<bool> CheckIfUserHasVoted()
+    {
+        Console.WriteLine("Verificar se o utilizador já votou..."); // Linha de debug
+        return await Http.GetFromJsonAsync<bool>($"api/vote/HasVoted/{userId}");
+    }
+
+    private async Task VoteForGame(Guid gameId)
+    {
+        Console.WriteLine($"Votar no jogo com ID: {gameId}"); // Linha de debug
+        try
+        {
+            var vote = new Vote { UserId = userId, GameId = gameId, VoteTime = DateTime.Now };
+            var response = await Http.PostAsJsonAsync("api/vote", vote);
+            Console.WriteLine($"Resposta da API: {response.StatusCode}"); // Linha de debug
+
+            if (response.IsSuccessStatusCode)
+            {
+                message = "Voto registado com sucesso!";
+                hasVoted = true;
+                await UpdateVotePercentages();
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Erro ao registar voto: {errorContent}"); // Linha de debug
+                message = errorContent.Contains("Já votou este mês.") ? "Já votou este mês." : "Erro ao registar voto.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao tentar registar o voto: {ex.Message}"); // Linha de debug
+            message = "Erro ao tentar registar o voto: " + ex.Message;
+        }
+
+        StateHasChanged(); // Atualiza o estado da UI
+    }
+
+    private async Task UpdateVotePercentages()
+    {
+        Console.WriteLine("Atualizar percentagens de votos..."); // Linha de debug
+        var voteCounts = await Http.GetFromJsonAsync<Dictionary<Guid, int>>("api/vote/Counts");
+        if (voteCounts != null)
+        {
+            var totalVotes = voteCounts.Values.Sum();
+            foreach (var game in games)
+            {
+                votePercentages[game.GameId] = voteCounts.TryGetValue(game.GameId, out var count) ? (double)count / totalVotes * 100 : 0;
+            }
+        }
+    }
+}
+
+
+
