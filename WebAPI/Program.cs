@@ -83,6 +83,16 @@ app.MapGet("/Games/{gameId}", async (string gameId) =>
     .WithName("GetGameName")
     .WithOpenApi();
 
+app.MapGet("/Users/{userid}", async (string userid) =>
+    {
+        var db = new ApplicationDbContext();
+        var user = await db.Users.FirstAsync(u => u.UserId.ToString() == userid);
+        
+        return  user;
+    })
+    .WithName("GetUserBuId")
+    .WithOpenApi();
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
