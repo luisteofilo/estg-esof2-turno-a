@@ -17,5 +17,9 @@ public class User
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
     
-    List<UserRole> FriendsUserRole = new List<UserRole>();
+    public ICollection<Friendship> FriendshipsInitiated { get; set; }
+    public ICollection<Friendship> FriendshipsReceived { get; set; }
+    public ICollection<Message> SentMessages { get; set; }
+    public ICollection<Message> ReceivedMessages { get; set; }
+    
 }
