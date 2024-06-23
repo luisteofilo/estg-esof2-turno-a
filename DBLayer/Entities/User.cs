@@ -12,7 +12,9 @@ public class User
     
     [Required]
     public byte[] PasswordHash { get; set; }
-    
+
+    [Required] public int tipo_user { get; set; }
+
     [Required]
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
