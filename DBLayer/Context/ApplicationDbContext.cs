@@ -31,7 +31,7 @@ public partial class ApplicationDbContext : DbContext
         : base(DefaultOptions)
     {
     }
-
+    
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
@@ -59,6 +59,16 @@ public partial class ApplicationDbContext : DbContext
         BuildUserRoles(modelBuilder);
         BuildMods(modelBuilder);
         BuildModTags(modelBuilder);
+        
+        // Configurar relacionamento muitos-para-muitos entre Mod e ModTag
+        modelBuilder.Entity<Mod>()
+            .HasMany(m => m.Tags)
+            .WithMany(t => t.Mods)
+            .UsingEntity<Dictionary<string, object>>(
+                "ModModTag",
+                j => j.HasOne<ModTag>().WithMany().HasForeignKey("TagId"),
+                j => j.HasOne<Mod>().WithMany().HasForeignKey("ModId"));
+        
         
         modelBuilder.Entity<ModTag>().HasData(
             new ModTag { TagId = Guid.NewGuid(), Name = "Graphics", Description = "Mods that enhance graphics, textures, or overall visual appeal." },

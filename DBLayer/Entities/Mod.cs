@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
@@ -26,7 +27,7 @@ public class Mod
 
     public string Version { get; set; }  // Version of the mod
 
-    public ICollection<ModTag> Tags { get; set; }  // Collection of tags for categorizing the mod
+  // Collection of tags for categorizing the mod
 
     [DataType(DataType.Url)]
     public string DownloadLink { get; set; }  // URL to download the mod
@@ -35,4 +36,7 @@ public class Mod
     public int DownloadCount { get; set; }  // How many times the mod has been downloaded
 
     public double Rating { get; set; }  // Average rating of the mod
+    
+    [JsonIgnore] // Ignore durante a serialização JSON
+    public ICollection<ModTag> Tags { get; set; }
 }

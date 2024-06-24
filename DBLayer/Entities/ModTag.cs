@@ -1,20 +1,22 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ESOF.WebApp.DBLayer.Entities;
-
-public class ModTag
+namespace ESOF.WebApp.DBLayer.Entities
 {
-    [Key]
-    public Guid TagId { get; set; }  // Unique identifier for the tag
+    public class ModTag
+    {
+        [Key]
+        public Guid TagId { get; set; } = Guid.NewGuid();  // Unique identifier for the tag
 
-    [Required, StringLength(100)]
-    public string Name { get; set; }  // Name of the tag, e.g., "Graphics", "UI", "Adventure"
+        [Required(ErrorMessage = "The Name field is required.")]
+        [StringLength(255)]
+        public string Name { get; set; } = string.Empty;  // Name of the tag
 
-    [StringLength(255)]
-    public string Description { get; set; }  // Optional: A brief description of what this tag generally encompasses
+        [Required(ErrorMessage = "The Description field is required.")]
+        [StringLength(4000)]
+        public string Description { get; set; } = string.Empty;  // Description of the tag
 
-    // Navigation properties
-    public ICollection<Mod> Mods { get; set; }  // Collection of mods associated with this tag
+        public ICollection<Mod> Mods { get; set; } = new List<Mod>();  // Collection of ModModTag for categorizing the tag
+    }
 }
