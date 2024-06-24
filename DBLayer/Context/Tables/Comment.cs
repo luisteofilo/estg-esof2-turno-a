@@ -9,18 +9,18 @@ public partial class ApplicationDbContext
     {
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.comment_id); 
+            modelBuilder.Entity<Comment>()
+                .HasKey(c => new { c.UserId, c.VideoId });
             
             entity.Property(e => e.comment).IsRequired();
             
-            entity.HasOne(e => e.video)
-                .WithMany(p => p.comments)
-                .HasForeignKey(e => e.video);
+            entity.HasOne(e => e.Video)
+                .WithMany(p => p.Comments)
+                .HasForeignKey(e => e.VideoId);
 
-            /*entity.HasOne(e => e.user)
-                .WithMany(p => p.comments) 
-                .HasForeignKey(e => e.user);*/
-            
+            // entity.HasOne(e => e.User)
+            //     .WithMany(p => p.Comments) 
+            //     .HasForeignKey(e => e.UserId);
         });
     }
 }

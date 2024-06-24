@@ -9,16 +9,16 @@ namespace ESOF.WebApp.DBLayer.Context;
         {
             modelBuilder.Entity<Like>(entity =>
             {
-                entity.HasKey(e => e.like_id); 
+                modelBuilder.Entity<Like>()
+                    .HasKey(c => new { c.UserId, c.VideoId });
             
-                entity.HasOne(e => e.video)
-                    .WithMany(p => p.likes)
-                    .HasForeignKey(e => e.video);
+                entity.HasOne(l => l.Video)
+                    .WithMany(v => v.Likes)
+                    .HasForeignKey(l => l.VideoId);
 
-                /*entity.HasOne(e => e.user)
-                    .WithMany(p => p.likes)
-                    .HasForeignKey(e => e.user);*/
-            
+                // entity.HasOne(e => e.User)
+                //     .WithMany(p => p.Likes)
+                //     .HasForeignKey(e => e.UserId);
             });
         }
     }

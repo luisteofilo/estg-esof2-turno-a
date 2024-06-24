@@ -5,15 +5,15 @@ namespace ESOF.WebApp.DBLayer.Entities;
 
 public class Comment
 {
-    [Key]
-    public Guid comment_id{ get; set; }
+    public Guid UserId { get; set; }
+    public User User { get; set; }
     
-    [ForeignKey("user_id")]
-    public User user{ get; set; }
+    public Guid VideoId { get; set; }
+    public Video Video { get; set; }
     
-    [ForeignKey("video_id")]
-    public Video video{ get; set; }
     
     [Required]
     public String comment{ get; set; }
+    
+    public DateTime created_at{ get; set; }
 }
