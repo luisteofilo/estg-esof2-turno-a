@@ -9,6 +9,15 @@
 
 <h1 class="text-center mt-4 retro-title">Games Emulator</h1>
 
+ <div id="top">
+            <h1>EmulatorJS Demo</h1>
+        </div>
+
+<div id = "box">
+            <input type="file" id = "input">
+            Drag ROM file or click here
+        </div>
+
 <div class="container mt-5">
     <div style="width: 100%; height: 700px; overflow: hidden;">
         <div id="game"></div>
@@ -32,7 +41,7 @@
                         <img class="card-img-top img-fluid" src="@game.UrlImage" alt="@game.Name">
                         <div class="card-body">
                             <h5 class="card-title retro-card-title">@game.Name</h5>
-                            <button class="btn btn-primary btn-block retro-btn" @onclick="() => PlayGame(game)">Play Now</button>
+                            <button class="btn btn-primary btn-block retro-btn" @onclick="() => PlayGame(game.GameId)">Play Now</button>
                         </div>
                     </div>
                     }
@@ -51,30 +60,27 @@ protected override async Task OnInitializedAsync()
 _games = await ApiHelper.GetFromApiAsync<GamesViewModel[]>("games");
 }
 
-private async Task PlayGame(GamesViewModel game)
+private async Task PlayGame(Guid gameId)
 {
+var game = _games.FirstOrDefault(g => g.GameId == gameId);
 if (game != null)
 {
-ConfigureEmulator(game.GameId); // Configura o emulador com o jogo selecionado
-await StartEmulator(); // Inicia o emulador após a configuração
+//var emulatorBaseUrl = "https://www.emulatorjs.com";
+//var romUrl = $"{emulatorBaseUrl}/roms/{gameId}.nes";
+
+// Define a variável global EJS_gameUrl
+//await JSRuntime.InvokeVoidAsync("eval", $"window.EJS_gameUrl = '{romUrl}';");
+
+// Define a variável global EJS_core
+////await JSRuntime.InvokeVoidAsync("eval", $"window.EJS_core = '{EJS_core}';");
+
+// Chama a função JavaScript para iniciar o jogo no Emulator JS
+//await JSRuntime.InvokeVoidAsync("startGame");
 }
 else
 {
 Console.WriteLine("Game not found.");
 }
-}
-
-private void ConfigureEmulator(Guid gameId)
-{
-var emulatorBaseUrl = "https://www.emulatorjs.com";
-var romUrl = $"{emulatorBaseUrl}/roms/{gameId}.nes"; // Constrói a URL da ROM dinamicamente
-JSRuntime.InvokeVoidAsync("eval", $"window.EJS_gameUrl = '{romUrl}';");
-}
-
-private async Task StartEmulator()
-{
-// Chama a função JavaScript para iniciar o jogo no Emulator JS
-await JSRuntime.InvokeVoidAsync("startGame");
 }
 }
 
@@ -120,26 +126,214 @@ await JSRuntime.InvokeVoidAsync("startGame");
     }
 </style>
 
-<script src="https://www.emulatorjs.com/loader.js"></script>
-<script>
-    // Configuração inicial do Emulator JS
-    var EJS_player = '#game';
-    var EJS_core = 'nes';  // Core do emulador definido
 
-    // Função para iniciar o jogo no Emulator JS
-    function startGame() {
-        // Verifica se EJS_gameUrl e EJS_core estão definidos antes de iniciar o jogo
-        if (EJS_gameUrl && EJS_core) {
-            EJS_loadROM(EJS_gameUrl, EJS_core);
+
+ <script>
+      console.log("Estou aqui no inicio");
+
+      let enableDebug = true;
+      let enableThreads = false;
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      if (urlParams.get("debug") == 1) {
+        enableDebug = true;
+        console.log("Debug is enabled");
+      } else {
+        console.log("Debug is disabled");
+      }
+
+      if (urlParams.get("threads") == 1) {
+        if (window.SharedArrayBuffer) {
+          enableThreads = true;
+          console.log("Threads are enabled");
         } else {
-            console.error('EJS_gameUrl ou EJS_core não estão definidos. Não é possível iniciar o jogo.');
+          console.warn(
+            "Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724"
+          );
+          console.log("Threads are disabled");
         }
-    }
+      } else {
+        console.log("Threads are disabled");
+      }
 
-    // Função para configurar o URL do jogo dinamicamente
-    function configureEmulator(gameId) {
-        var emulatorBaseUrl = "https://www.emulatorjs.com";
-        EJS_gameUrl = `${emulatorBaseUrl}/roms/${gameId}`;
-        startGame(); // Inicia o jogo após configurar o URL dinamicamente
-    }
-</script>
+      input.onchange = async () => {
+        const url = URL.createObjectURL(input.files[0]);
+        
+        const parts = input.files[0].name.split(".");
+        const file_name = input.files[0].name;
+        
+        console.log(parts);
+        console.log(file_name);
+        console.log(url);
+        
+
+        const core = await (async (ext) => {
+          if (["fds", "nes", "unif", "unf"].includes(ext)) return "nes";
+
+          if (
+            ["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(
+              ext
+            )
+          )
+            return "snes";
+
+          if (["z64", "n64"].includes(ext)) return "n64";
+
+          if (["pce"].includes(ext)) return "pce";
+
+          if (["ngp", "ngc"].includes(ext)) return "ngp";
+
+          if (["ws", "wsc"].includes(ext)) return "ws";
+
+          if (["col", "cv"].includes(ext)) return "coleco";
+
+          if (["d64"].includes(ext)) return "vice_x64sc";
+
+          if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
+
+          return await new Promise((resolve) => {
+            var coreValues = {
+              "Nintendo 64": "n64",
+              "Nintendo Game Boy": "gb",
+              "Nintendo Game Boy Advance": "gba",
+              "Nintendo DS": "nds",
+              "Nintendo Entertainment System": "nes",
+              "Super Nintendo Entertainment System": "snes",
+              PlayStation: "psx",
+              "Virtual Boy": "vb",
+              "Sega Mega Drive": "segaMD",
+              "Sega Master System": "segaMS",
+              "Sega CD": "segaCD",
+              "Atari Lynx": "lynx",
+              "Sega 32X": "sega32x",
+              "Atari Jaguar": "jaguar",
+              "Sega Game Gear": "segaGG",
+              "Sega Saturn": "segaSaturn",
+              "Atari 7800": "atari7800",
+              "Atari 2600": "atari2600",
+              "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
+              "NEC PC-FX": "pcfx",
+              "SNK NeoGeo Pocket (Color)": "ngp",
+              "Bandai WonderSwan (Color)": "ws",
+              ColecoVision: "coleco",
+              "Commodore 64": "vice_x64sc",
+              "Commodore 128": "vice_x128",
+              "Commodore VIC20": "vice_xvic",
+              "Commodore Plus/4": "vice_xplus4",
+              "Commodore PET": "vice_xpet",
+            };
+
+            const cores = Object.keys(coreValues)
+              .sort()
+              .reduce((obj, key) => {
+                obj[key] = coreValues[key];
+                return obj;
+              }, {});
+
+            const button = document.createElement("button");
+            const select = document.createElement("select");
+
+            for (const type in cores) {
+              const option = document.createElement("option");
+
+              option.value = cores[type];
+              option.textContent = type;
+              select.appendChild(option);
+            }
+
+            button.onclick = () => resolve(select[select.selectedIndex].value);
+            button.textContent = "Load game";
+            box.innerHTML = "";
+
+            box.appendChild(select);
+            box.appendChild(button);
+          });
+        })(parts.pop());
+
+        const div = document.createElement("div");
+        const sub = document.createElement("div");
+        const script = document.createElement("script");
+
+        sub.id = "game";
+        div.id = "display";
+
+        const top = document.getElementById("top");
+        top.remove();
+        box.remove();
+        div.appendChild(sub);
+        document.body.appendChild(div);
+
+        // Configurações do EmulatorJS
+        window.EJS_player = "#game";
+        window.EJS_gameName = parts.join(".");
+        window.EJS_biosUrl = "";
+        window.EJS_gameUrl = url;
+        window.EJS_core = core;
+        window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+        window.EJS_startOnLoaded = false;
+        window.EJS_DEBUG_XX = enableDebug;
+        window.EJS_disableDatabases = true;
+        window.EJS_threads = enableThreads;
+        window.EJS_fullscreenOnLoaded = false;
+        //window.EJS_loadStateURL = url; // Define a URL de carregamento do estado salvo
+
+        EJS_Buttons = {
+          playPause: true,
+          restart: true,
+          mute: true,
+          settings: false,
+          fullscreen: true,
+          saveState: true,
+          loadState: true,
+          screenRecord: true,
+          gamepad: true,
+          cheat: false,
+          volume: true,
+          saveSavFiles: true,
+          loadSavFiles: true,
+          quickSave: false,
+          quickLoad: false,
+          screenshot: true,
+          cacheManager: false,
+        };
+
+        script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+        document.body.appendChild(script);
+
+        // Mostrar controles de estado salvo
+        document.getElementById("controls").style.display = "flex";
+      };
+
+      /*  // Função para carregar estado salvo
+      document.getElementById("loadStateButton").onclick = () => {
+        document.getElementById("stateInput").click();
+      };
+
+      document.getElementById("stateInput").onchange = (event) => {
+        const stateFile = event.target.files[0]; // Obter o arquivo do evento
+        const reader = new FileReader();
+
+        // Definir o que acontece quando o arquivo é carregado
+        reader.onload = (event) => {
+          const stateData = event.target.result; // Obter os dados do arquivo
+          const fileName = stateFile.name; // Obter o nome do arquivo
+
+          console.log("Arquivo selecionado:", fileName);
+          console.log("Dados do arquivo:", stateData);
+
+          // Atribuir os dados do arquivo carregado à variável window.EJS_loadState
+          window.EJS_loadState = stateData;
+        };
+
+        // Ler o arquivo como um ArrayBuffer
+        reader.readAsArrayBuffer(stateFile);
+      };
+      */
+
+      // Load state apenas funciona com o jogo aberto (carregar primeeiro o jogo e depois o load-state)
+
+      box.ondragover = () => box.setAttribute("drag", true);
+      box.ondragleave = () => box.removeAttribute("drag");
+    </script>
+
+
