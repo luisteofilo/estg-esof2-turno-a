@@ -50,6 +50,6 @@ else
     Guid teste = new Guid("67814106-67f6-4f8d-8544-05ebd6da09d5");
     protected override async Task OnInitializedAsync()
     {
-        _user_achievements = await ApiHelper.GetFromApiAsync<PlayerAchievementsViewModel[]>($"/user_achievements/{teste}");
+        _user_achievements = await ApiHelper.GetFromApiAsync<PlayerAchievementsViewModel[]>($"/UserAchievements/{teste}");
     }
 }

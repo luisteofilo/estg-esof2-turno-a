@@ -64,7 +64,7 @@ app.MapGet("/achievements", () =>
     .WithName("GetAchievements")
     .WithOpenApi();
 
-app.MapGet("/user_achievements/{userId:Guid}", (Guid userId) =>
+app.MapGet("/UserAchievements/{userId:Guid}", (Guid userId) =>
     {
         var db = new ApplicationDbContext();
         var user_achievements =  (from pa in db.PlayerAchievements
@@ -94,7 +94,7 @@ app.MapGet("/users", () =>
     .WithName("GetUsers")
     .WithOpenApi();
 
-app.MapPost("/save_score/{userId:Guid}/{Score:long}", async (Guid userId, long score) =>
+app.MapPost("/SaveScore/{userId:Guid}/{Score:long}", async (Guid userId, long score) =>
     {
         //var request = await context.Request.ReadFromJsonAsync<ScoreViewModel>();
         var db = new ApplicationDbContext();
@@ -113,7 +113,7 @@ app.MapPost("/save_score/{userId:Guid}/{Score:long}", async (Guid userId, long s
     }).WithName("SaveScore")
     .WithOpenApi();
 
-app.MapGet("/score_achievements/{score:long}", (long score) =>
+app.MapGet("/ScoreAchievements/{score:long}", (long score) =>
     {
         var db = new ApplicationDbContext();
         var achievements =  (from a in db.Achievements
@@ -129,7 +129,7 @@ app.MapGet("/score_achievements/{score:long}", (long score) =>
     .WithName("GetScoreAchievements")
     .WithOpenApi();
 
-app.MapPost("/player_achievements/{userId:Guid}/{achievementId:Guid}", async (Guid userId, Guid achievementId) =>
+app.MapPost("/PlayerAchievements/{userId:Guid}/{achievementId:Guid}", async (Guid userId, Guid achievementId) =>
     {
         var db = new ApplicationDbContext();
         // Verifica se já existe um registo com o mesmo UserId e AchievementId
