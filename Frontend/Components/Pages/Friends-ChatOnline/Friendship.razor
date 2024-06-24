@@ -1,0 +1,133 @@
+@page "/friends"
+@using ESOF.WebApp.DBLayer.Entities
+@inject Frontend.Services.FriendService FriendService
+@inject NavigationManager NavigationManager
+
+<h3>Friends</h3>
+
+<!-- Search Bar -->
+<input type="text" @bind="searchEmail" placeholder="Search by email" />
+<button @onclick="SearchFriend">Search</button>
+
+@if (searchResult != null)
+{
+    <div>
+        <h4>Search Result</h4>
+        <p>@searchResult.Email</p>
+        <button @onclick="SendFriendRequest">Send Friend Request</button>
+    </div>
+}
+else if (searchPerformed)
+{
+    <p>User not found</p>
+}
+
+<!-- Friends Table -->
+@if (friends != null && friends.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var friendship in friends)
+            {
+                var friend = friendship?.User2;
+                if (friend != null)
+                {
+                    <tr>
+                        <td>@friend.Email</td>
+                        <td>
+                            @if ((FriendshipStatus)friendship.Status == FriendshipStatus.Pending)
+                            {
+                                <button @onclick="@(() => AcceptFriendRequest(friendship))">Accept</button>
+                            }
+                            @if ((FriendshipStatus)friendship.Status != FriendshipStatus.Removed)
+                            {
+                                <button @onclick="@(() => RemoveFriend(friendship))">Remove</button>
+                            }
+                            @if ((FriendshipStatus)friendship.Status == FriendshipStatus.Accepted)
+                            {
+                                <button @onclick="@(() => SendMessage(friendship))">Send Message</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No friends found.</p>
+}
+
+@code {
+    private List<ESOF.WebApp.DBLayer.Entities.Friendship> friends = new List<ESOF.WebApp.DBLayer.Entities.Friendship>();
+    private string searchEmail;
+    private ESOF.WebApp.DBLayer.Entities.User searchResult;
+    private bool searchPerformed = false;
+    private string currentUserId = "coloque_o_user_id_aqui"; // Defina o ID do usuário aqui
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentUserId = await FriendService.GetCurrentUserIdAsync();
+        friends = await FriendService.GetFriendsAsync(currentUserId);
+    }
+
+    private async Task SearchFriend()
+    {
+        searchPerformed = true;
+        searchResult = await FriendService.SearchFriendByEmailAsync(searchEmail);
+    }
+
+    private async Task SendFriendRequest()
+    {
+        var friendship = new ESOF.WebApp.DBLayer.Entities.Friendship
+        {
+            UserId2 = searchResult?.UserId ?? Guid.Empty, // UserId1 será definido no serviço
+            CreatedAt = DateTime.UtcNow,
+            Status = ESOF.WebApp.DBLayer.Entities.FriendshipStatus.Pending // Pendente
+        };
+        if (friendship.UserId2 != Guid.Empty)
+        {
+            await FriendService.SendFriendRequestAsync(friendship, currentUserId);
+            searchResult = null;
+        }
+        else
+        {
+            // Handle case when UserId2 is not found
+        }
+    }
+
+    private async Task AcceptFriendRequest(ESOF.WebApp.DBLayer.Entities.Friendship friendship)
+    {
+        friendship.Status = ESOF.WebApp.DBLayer.Entities.FriendshipStatus.Accepted; // Aceito
+        await FriendService.AcceptFriendRequestAsync(friendship, currentUserId);
+        friends = await FriendService.GetFriendsAsync(currentUserId);
+    }
+
+    private async Task RemoveFriend(ESOF.WebApp.DBLayer.Entities.Friendship friendship)
+    {
+        friendship.Status = ESOF.WebApp.DBLayer.Entities.FriendshipStatus.Removed; // Removido
+        await FriendService.RemoveFriendAsync(friendship, currentUserId);
+        friends = await FriendService.GetFriendsAsync(currentUserId);
+    }
+
+    private void SendMessage(ESOF.WebApp.DBLayer.Entities.Friendship friendship)
+    {
+        var friendId = friendship?.User2?.UserId;
+        if (friendId != null)
+        {
+            NavigationManager.NavigateTo($"/messages/{friendId}");
+        }
+        else
+        {
+            // Handle case when friendId is null
+        }
+    }
+}

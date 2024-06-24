@@ -1,5 +1,6 @@
 using Frontend.Components;
 using Frontend.Helpers;
+using Frontend.Services;
 using Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Configure HttpClient with base address from environment variables
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(EnvFileHelper.GetString("API_URL")) });
+
+// Add the FriendService to the dependency injection container
+builder.Services.AddScoped<FriendService>();
+
+// Add the ApiHelper to the dependency injection container
 builder.Services.AddScoped<ApiHelper>();
 
 var app = builder.Build();
