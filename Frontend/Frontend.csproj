@@ -29,6 +29,26 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\FicheirosJS\Nostalgist.js" />
       <_ContentIncludedByDefault Remove="wwwroot\FicheirosJS\Scripts.js" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\af-FR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ar-AR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ben-BEN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\de-GER.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\el-GR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\en.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\es-ES.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\hi-HI.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\it-IT.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ja-JA.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\jv-JV.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ko-KO.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\pt-BR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\retroarch.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ru-RU.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\tr-TR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\vi-VN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\zh-CN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\minify\package.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\version.json" />
     </ItemGroup>
 
 </Project>

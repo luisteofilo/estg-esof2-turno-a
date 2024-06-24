@@ -1,12 +1,11 @@
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
 using Helpers.Models;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -26,28 +25,46 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-
+// Define endpoints
 app.MapGet("/games", () =>
     {
         var db = new ApplicationDbContext();
-        return db.Games.Select(g => new GamesViewModel(
-        ){
-            
+        return db.Games.Select(g => new GamesViewModel
+        {
             GameId = g.GameId,
-            Name=g.Name,
+            Name = g.Name,
             Description = g.Description,
-            UrlImage= g.Url_Image,
+            UrlImage = g.Url_Image,
             Developer = g.Developer,
             Publisher = g.Publisher
-                
-            
         }).ToArray();
     })
     .WithName("GetGames")
     .WithOpenApi();
 
+app.MapGet("/games/{GameID:guid}", async (Guid GameID) =>
+    {
+        var db = new ApplicationDbContext();
+        var roms = await db.Roms
+            .Where(r => r.GameId == GameID)
+            .Select(r => new RomsViewModel
+            {
+                RomId = r.RomId,
+                GameId = r.GameId,
+                ROM = r.ROM,
+                File_name = r.File_name
+            })
+            .ToArrayAsync();
+
+        return Results.Ok(roms);
+    })
+    .WithName("GetRoms")
+    .WithOpenApi();
+
+// Run the app
 app.Run();
 
+// WeatherForecast record (if needed)
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
