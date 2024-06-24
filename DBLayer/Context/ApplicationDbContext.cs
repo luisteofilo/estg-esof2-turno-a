@@ -43,6 +43,17 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    
+    // Para os Challenges
+    public DbSet<Challenge> Challenges { get; set; }
+    public DbSet<UserChallenge> UserChallenges { get; set; }
+    
+    // Para os Teams, Competitions e associações relacionadas
+    public DbSet<Team> Teams { get; set; }
+    public DbSet<Competition> Competitions { get; set; }
+    public DbSet<CompetitionResult> CompetitionResults { get; set; }
+    public DbSet<TeamMember> TeamMembers { get; set; }
+    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -58,6 +69,20 @@ public partial class ApplicationDbContext : DbContext
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        
+        // Para as Teams
+        BuildTeam(modelBuilder);
+        BuildTeamCompetition(modelBuilder);
+        BuildTeamMember(modelBuilder);
+
+        // Para os Challenges
+        BuildChallenge(modelBuilder);
+        BuildUserChallenge(modelBuilder);
+
+        // Para as Competitions
+        BuildCompetition(modelBuilder);
+        BuildCompetitionResult(modelBuilder);
+        
         base.OnModelCreating(modelBuilder);
     }
 }

@@ -20,5 +20,29 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<User>()
             .Property(p => p.UserId)
             .HasDefaultValueSql("gen_random_uuid()");
+
+        // Relação entre User e Team (CreatedTeams)
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.CreatedTeams)
+            .WithOne(t => t.CreatedByUser)
+            .HasForeignKey(t => t.CreatedByUserId);
+
+        // Relação entre User e TeamMember
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.TeamMembers)
+            .WithOne(tm => tm.User)
+            .HasForeignKey(tm => tm.UserId);
+
+        // Relação entre User e UserChallenge
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.UserChallenges)
+            .WithOne(uc => uc.User)
+            .HasForeignKey(uc => uc.UserId);
+        
+        // Relação entre User e CompetitionResult
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.CompetitionResults)
+            .WithOne(cr => cr.User)
+            .HasForeignKey(cr => cr.UserId);
     }
 }
