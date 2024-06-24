@@ -45,7 +45,7 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<RolePermission> RolePermissions { get; set; }
     
     public DbSet<Game> Game { get; set; }
-    public DbSet<Challenge> Challenge { get; set; }
+    public DbSet<VideoQuests> VideoQuests { get; set; }
     public DbSet<Comment> Comment { get; set; }
     public DbSet<Like> Like { get; set; }
     public DbSet<Video> Video { get; set; }
@@ -66,7 +66,7 @@ public partial class ApplicationDbContext : DbContext
         BuildUserRoles(modelBuilder);
         
         BuildGame(modelBuilder);
-        BuildChallenge(modelBuilder);
+        BuildVideoQuest(modelBuilder);
         BuildComment(modelBuilder);
         BuildLike(modelBuilder);
         BuildVideo(modelBuilder);

@@ -9,16 +9,15 @@ public partial class ApplicationDbContext
     {
         modelBuilder.Entity<Game>(entity =>
         {
-            entity.HasKey(e => e.game_id); 
-            
-            entity.Property(e => e.name).IsRequired();
-            
-            entity.Property(e => e.console).IsRequired();
-            
-            entity.HasMany(e => e.challenges)
-                .WithOne(c => c.game )
-                .HasForeignKey(e => e.challenge_id);
-            
+            entity.HasKey(e => e.GameId); 
+    
+            entity.Property(e => e.Name).IsRequired();
+    
+            entity.Property(e => e.Console).IsRequired();
+    
+            entity.HasMany(e => e.Challenges)
+                .WithOne(c => c.Game)
+                .HasForeignKey(c => c.GameId);
         });
     }
 }

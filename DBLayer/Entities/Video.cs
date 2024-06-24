@@ -6,18 +6,17 @@ namespace ESOF.WebApp.DBLayer.Entities;
 public class Video
 {
     [Key]
-    public Guid video_id{ get; set; }
+    public Guid VideoId{ get; set; }
     
-    [ForeignKey("challenge_id")]
-    public Challenge challenge{ get; set; }
+    public Guid ChallengeId { get; set; }
+    public VideoQuests VideoQuests{ get; set; }
     
-    [ForeignKey("user_id")]
-    public User user{ get; set; }
+    public Guid UserId { get; set; }
+    public User User { get; set; }
     
     [Required]
     public String caption{ get; set; }
     
-    public ICollection<Like> likes { get; set; }
-    
-    public ICollection<Comment> comments { get; set; }
+    public ICollection<Like> Likes { get; set; }
+    public ICollection<Comment> Comments { get; set; }
 }

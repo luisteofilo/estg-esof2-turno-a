@@ -9,22 +9,25 @@ public partial class ApplicationDbContext
     {
         modelBuilder.Entity<Video>(entity =>
         {
-            entity.HasKey(e => e.video_id); 
+            entity.HasKey(e => e.VideoId); 
             
             entity.Property(e => e.caption).IsRequired();
             
-            entity.HasOne(e => e.challenge)
-                .WithMany(p => p.videos)
-                .HasForeignKey(e => e.challenge);
-
-            /*entity.HasOne(e => e.user)
-                .WithMany(p => p.videos)
-                .HasForeignKey(e => e.user);*/
+            entity.HasOne(e => e.VideoQuests)
+                .WithMany(p => p.Videos)
+                .HasForeignKey(e => e.ChallengeId);
             
-            entity.HasMany(e => e.comments)
-                .WithOne(v => v.video )
-                .HasForeignKey(e => e.comment);
+            entity.HasMany(e => e.Comments)
+                .WithOne(v => v.Video )
+                .HasForeignKey(e => e.VideoId);
             
+            entity.HasMany(e => e.Likes)
+                .WithOne(v => v.Video )
+                .HasForeignKey(e => e.VideoId);
+            
+            // entity.HasOne(e => e.User)
+            //     .WithMany(p => p.Videos)
+            //     .HasForeignKey(e => e.UserId);
         });
     }
 }

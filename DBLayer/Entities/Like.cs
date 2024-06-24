@@ -5,14 +5,11 @@ namespace ESOF.WebApp.DBLayer.Entities;
 
 public class Like
 {
-    [Key]
-    public Guid like_id{ get; set; }
+    public Guid UserId { get; set; }
+    public User User { get; set; }
     
-    [ForeignKey("user_id")]
-    public User user{ get; set; }
-    
-    [ForeignKey("video_id")]
-    public Video video{ get; set; }
+    public Guid VideoId { get; set; }
+    public Video Video { get; set; }
     
     [Required]
     public DateTime created_at{ get; set; }

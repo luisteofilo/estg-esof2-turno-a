@@ -4,13 +4,13 @@ namespace ESOF.WebApp.DBLayer.Entities;
 public class Game
 {
     [Key]
-    public Guid game_id{ get; set; }
-    
+    public Guid GameId { get; set; }
+        
     [Required]
-    public String name{ get; set; }
-    
+    public string Name { get; set; }
+        
     [Required]
-    public String console{ get; set; }
-    
-    public ICollection<Challenge> challenges { get; set; }
+    public string Console { get; set; }
+        
+    public ICollection<VideoQuests> Challenges { get; set; }
 }
