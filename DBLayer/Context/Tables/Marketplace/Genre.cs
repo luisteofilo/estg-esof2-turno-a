@@ -8,6 +8,8 @@ namespace ESOF.WebApp.DBLayer.Context;
 public partial class ApplicationDbContext{
 	private void BuildGenre(ModelBuilder modelBuilder){
 		modelBuilder.Entity<Genre>(entity => {
+			entity.ToTable("Genres", schema: "marketplace");
+			
 			entity.HasKey(e => e.genre_id);
 
 			entity.Property(e => e.name).IsRequired();

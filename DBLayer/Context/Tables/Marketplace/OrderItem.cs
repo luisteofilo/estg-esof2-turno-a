@@ -8,6 +8,7 @@ namespace ESOF.WebApp.DBLayer.Context;
 public partial class ApplicationDbContext{
 	private void BuildOrderItem(ModelBuilder modelBuilder){
 		modelBuilder.Entity<OrderItem>(entity => {
+			entity.ToTable("OrderItems", schema: "marketplace");
 			
 			entity.HasKey(e => e.order_id);
 			

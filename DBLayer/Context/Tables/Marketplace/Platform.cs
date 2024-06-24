@@ -7,6 +7,7 @@ namespace ESOF.WebApp.DBLayer.Context;
 public partial class ApplicationDbContext{
 	private void BuildPlatform(ModelBuilder modelBuilder){
 		modelBuilder.Entity<Platform>(entity => {
+			entity.ToTable("Platforms", schema: "marketplace");
 			
 			entity.HasKey(e => e.platform_id);
 			

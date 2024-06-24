@@ -8,6 +8,8 @@ namespace ESOF.WebApp.DBLayer.Context;
 public partial class ApplicationDbContext{
 	private void BuildMarketPlace_Game(ModelBuilder modelBuilder){
 		modelBuilder.Entity<MarketPlace_Game>(entity => {
+			entity.ToTable("Games", schema: "marketplace");
+			
 			entity.HasKey(e => e.game_id);
 
 			entity.Property(e => e.name).IsRequired();

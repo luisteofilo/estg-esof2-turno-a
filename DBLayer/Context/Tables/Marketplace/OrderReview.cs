@@ -8,6 +8,7 @@ namespace ESOF.WebApp.DBLayer.Context;
 public partial class ApplicationDbContext{
 	private void BuildReview(ModelBuilder modelBuilder){
 		modelBuilder.Entity<OrderReview>(entity => {
+			entity.ToTable("OrderReviews", schema: "marketplace");
 			
 			entity.HasKey(e => e.review_id);
 			
