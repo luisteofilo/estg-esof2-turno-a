@@ -19,7 +19,8 @@ else
         {
             <li>
                 <b>@game.Name</b> - @game.Description
-                <button @onclick="@(async () => { Console.WriteLine($"Button clicked for game: {game.Name}"); await VoteForGame(game.GameId); })" disabled="@hasVoted">Votar</button> <!--Ainda não Funciona -->
+                <button @onclick="@(async () => await VoteForGame(userId, game.GameId))" disabled="@hasVoted">Votar</button>
+
                 @if (votePercentages.TryGetValue(game.GameId, out var percentage))
                 {
                     <span>(@percentage%)</span>
@@ -34,17 +35,15 @@ else
 @code {
     private List<Game>? games;
     private string? message;
-    private Guid userId = Guid.NewGuid(); 
+    private Guid userId = Guid.NewGuid();
     private bool hasVoted = false;
     private Dictionary<Guid, double> votePercentages = new();
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("Blazor Initialized"); // Linha de debug
         try
         {
             games = await Http.GetFromJsonAsync<List<Game>>("api/game");
-            Console.WriteLine($"Jogos carregados: {games?.Count ?? 0}"); // Linha de debug
             hasVoted = await CheckIfUserHasVoted();
             if (games == null)
             {
@@ -61,51 +60,52 @@ else
         }
     }
 
-    private void OnVoteButtonClick(string gameName)
-    {
-        Console.WriteLine($"Button clicked for game: {gameName}");
-    }
-
     private async Task<bool> CheckIfUserHasVoted()
     {
-        Console.WriteLine("Verificar se o utilizador já votou..."); // Linha de debug
         return await Http.GetFromJsonAsync<bool>($"api/vote/HasVoted/{userId}");
     }
 
-    private async Task VoteForGame(Guid gameId)
+    private async Task VoteForGame(Guid userId, Guid gameId)
     {
-        Console.WriteLine($"Votar no jogo com ID: {gameId}"); // Linha de debug
+        Console.WriteLine($"Votar no jogo com ID: {gameId} e utilizador com ID: {userId}"); // Linha de debug
         try
         {
+            // Verifica se o usuário já votou neste mês
+            if (await CheckIfUserHasVoted())
+            {
+                message = "Você já votou neste mês.";
+                return;
+            }
+
             var vote = new Vote { UserId = userId, GameId = gameId, VoteTime = DateTime.Now };
             var response = await Http.PostAsJsonAsync("api/vote", vote);
             Console.WriteLine($"Resposta da API: {response.StatusCode}"); // Linha de debug
 
             if (response.IsSuccessStatusCode)
             {
-                message = "Voto registado com sucesso!";
+                message = "Voto registrado com sucesso!";
                 hasVoted = true;
                 await UpdateVotePercentages();
             }
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Erro ao registar voto: {errorContent}"); // Linha de debug
-                message = errorContent.Contains("Já votou este mês.") ? "Já votou este mês." : "Erro ao registar voto.";
+                Console.WriteLine($"Erro ao registrar voto: {errorContent}"); // Linha de debug
+                message = errorContent.Contains("Já votou este mês.") ? "Já votou este mês." : "Erro ao registrar voto.";
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao tentar registar o voto: {ex.Message}"); // Linha de debug
-            message = "Erro ao tentar registar o voto: " + ex.Message;
+            Console.WriteLine($"Erro ao tentar registrar o voto: {ex.Message}"); // Linha de debug
+            message = "Erro ao tentar registrar o voto: " + ex.Message;
         }
 
         StateHasChanged(); // Atualiza o estado da UI
     }
 
+
     private async Task UpdateVotePercentages()
     {
-        Console.WriteLine("Atualizar percentagens de votos..."); // Linha de debug
         var voteCounts = await Http.GetFromJsonAsync<Dictionary<Guid, int>>("api/vote/Counts");
         if (voteCounts != null)
         {
@@ -117,6 +117,8 @@ else
         }
     }
 }
+
+
 
 
 

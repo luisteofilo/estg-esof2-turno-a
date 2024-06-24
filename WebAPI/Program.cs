@@ -1,5 +1,6 @@
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
+using ESOF.WebApp.WebAPI.Services; // Certifique-se de adicionar este using
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -12,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register VoteService
+builder.Services.AddScoped<VoteService>(); // Adicione esta linha para registrar o VoteService
 
 // Add controllers
 builder.Services.AddControllers();
@@ -65,6 +69,8 @@ app.MapGet("/weatherforecast", () =>
     })
     .WithName("GetWeatherForecast")
     .WithOpenApi();
+
+
 
 app.Run();
 

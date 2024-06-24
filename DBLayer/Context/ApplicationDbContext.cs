@@ -46,12 +46,12 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Game> Games { get; set; }
     public DbSet<Vote> Votes { get; set; }
 
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //    base.OnConfiguring(optionsBuilder);
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
 
 
-    //}
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -60,8 +60,9 @@ public partial class ApplicationDbContext : DbContext
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
-        base.OnModelCreating(modelBuilder);
-        BuildGames(modelBuilder);
+        BuildGames(modelBuilder); 
         BuildVotes(modelBuilder);
+        base.OnModelCreating(modelBuilder);
+        
     }
 }

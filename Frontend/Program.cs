@@ -1,7 +1,9 @@
 using Frontend.Components;
 using Frontend.Helpers;
+using Frontend.Services;
 using Helpers;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +13,11 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Configure HttpClient with API base URL
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5295/") }); // Ensure this URL is correct
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5295/") });
+
 
 builder.Services.AddScoped<ApiHelper>();
+builder.Services.AddScoped<VoteService>();
 
 var app = builder.Build();
 

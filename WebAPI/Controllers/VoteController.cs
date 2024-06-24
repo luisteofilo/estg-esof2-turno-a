@@ -22,25 +22,32 @@ public class VoteController : ControllerBase
     {
         try
         {
-            var existingVote = _context.Votes
-                .FirstOrDefault(v => v.UserId == vote.UserId && v.VoteTime.Month == DateTime.Now.Month && v.VoteTime.Year == DateTime.Now.Year);
+            // Verifica se o usuário já votou neste mês
+            var existingVote = await _context.Votes
+                .FirstOrDefaultAsync(v => v.UserId == vote.UserId && 
+                                          v.VoteTime.Month == DateTime.Now.Month && 
+                                          v.VoteTime.Year == DateTime.Now.Year);
 
             if (existingVote != null)
             {
                 return BadRequest("Já votou este mês.");
             }
 
+            // Adiciona o novo voto
             vote.VoteTime = DateTime.Now;
             _context.Votes.Add(vote);
             await _context.SaveChangesAsync();
+
             return Ok();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao registar voto: {ex.Message}"); // Linha de debug
+            Console.WriteLine($"Erro ao registrar voto: {ex.Message}");
             return StatusCode(500, "Erro interno no servidor.");
         }
     }
+
+
 
 
     [HttpGet("GameOfTheMonth")]
@@ -83,3 +90,8 @@ public class VoteController : ControllerBase
         return Ok(voteCounts);
     }
 }
+
+
+
+
+
