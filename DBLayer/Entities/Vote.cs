@@ -5,21 +5,8 @@ namespace ESOF.WebApp.DBLayer.Entities;
 
 public class Vote
 {
-    [Key]
-    public Guid VoteId { get; set; }
-    
-    [Required]
+    public Guid VoteId { get; set; } // Pode ser omitido na solicitação de criação
     public Guid UserId { get; set; }
-    
-    [ForeignKey(nameof(UserId))]
-    public User User { get; set; }
-    
-    [Required]
     public Guid GameId { get; set; }
-    
-    [ForeignKey(nameof(GameId))]
-    public Game Game { get; set; }
-    
-    [Required]
     public DateTime VoteTime { get; set; }
 }

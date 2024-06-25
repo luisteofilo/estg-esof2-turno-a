@@ -113,7 +113,7 @@ else
 
         StateHasChanged();
     }
-
+    
     private async Task UpdateVotePercentages()
     {
         var voteCounts = await Http.GetFromJsonAsync<Dictionary<Guid, int>>("api/vote/Counts");
