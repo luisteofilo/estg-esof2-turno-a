@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace ESOF.WebApp.WebAPI.Controllers;
+namespace ESOF.WebApp.WebAPI.Controllers.Marketplace;
 
 public class GenreController : ControllerBase{
 	

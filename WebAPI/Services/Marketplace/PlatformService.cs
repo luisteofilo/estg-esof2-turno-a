@@ -5,7 +5,7 @@ using ESOF.WebApp.WebAPI.DtoClasses.Response;
 using ESOF.WebApp.WebAPI.DtoClasses.Update;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESOF.WebApp.WebAPI.Services;
+namespace ESOF.WebApp.WebAPI.Services.Marketplace;
 
 public class PlatformService
 {
