@@ -1,6 +1,5 @@
 @page "/reporting"
 @using Frontend.Helpers
-@using ESOF.WebApp.DBLayer.Entities
 @attribute [StreamRendering]
 @inject ApiHelper ApiHelper
 
@@ -64,7 +63,16 @@ else
             <div class="menuFilters mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="m-0">Filters</h5>
-                    <button type="button" class="btn btn-danger">Clear</button>
+                    <button type="button" class="btn btn-danger" @onclick="ClearFilters">Clear</button>
+                </div>
+                <div class="dropdownFilters">
+                    <select @onchange="FilterGames" class="form-select mb-3">
+                        <option value="">Select Genre</option>
+                        @foreach (var genre in _genres)
+                        {
+                            <option value="@genre">@genre</option>
+                        }
+                    </select>
                 </div>
             </div>
         </div>
@@ -73,9 +81,47 @@ else
 
 @code {
     private List<Game>? _games;
+    private List<Game>? _allGames;
+    private List<string> _genres = new List<string>();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        _games = await ApiHelper.GetFromApiAsync<List<Game>>("api/gamereport/order?orderBy=name");
+        // Dados Temporários
+        _games = new List<Game>
+        {
+            new Game { Name = "Game 1", Genre = "Action", Platform = "PC", ReleaseDate = DateTime.Parse("2021-01-01") },
+            new Game { Name = "Game 2", Genre = "Adventure", Platform = "PS4", ReleaseDate = DateTime.Parse("2022-05-15") },
+            new Game { Name = "Game 3", Genre = "RPG", Platform = "Xbox One", ReleaseDate = DateTime.Parse("2020-11-10") },
+            new Game { Name = "Game 4", Genre = "Strategy", Platform = "PC", ReleaseDate = DateTime.Parse("2019-09-01") }
+        };
+
+        _allGames = _games;
+        _genres = _games.Select(g => g.Genre).Distinct().ToList();
+    }
+
+    private void ClearFilters()
+    {
+        _games = _allGames;
+    }
+
+    private void FilterGames(ChangeEventArgs e)
+    {
+        var selectedGenre = e.Value.ToString();
+        if (!string.IsNullOrEmpty(selectedGenre))
+        {
+            _games = _allGames.Where(g => g.Genre == selectedGenre).ToList();
+        }
+        else
+        {
+            _games = _allGames;
+        }
+    }
+
+    public class Game
+    {
+        public string Name { get; set; }
+        public string Genre { get; set; }
+        public string Platform { get; set; }
+        public DateTime ReleaseDate { get; set; }
     }
 }

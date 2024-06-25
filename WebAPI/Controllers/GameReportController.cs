@@ -19,7 +19,7 @@ namespace ESOF.WebApp.WebAPI.Controllers
         [HttpGet("order")]
         public async Task<ActionResult<IEnumerable<Game>>> GetOrderedGames(string orderBy = "name")
         {
-            IQueryable<Game> query = (IQueryable<Game>)_context.Games;
+            IQueryable<Game> query = _context.Games.AsQueryable();
 
             switch (orderBy.ToLower())
             {
