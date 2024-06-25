@@ -20,21 +20,28 @@ public class VoteController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Vote([FromBody] Vote vote)
     {
+        var today = DateTime.Now;
+        var lastDayOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+        var firstVotingDay = lastDayOfMonth.AddDays(-4);
+
+        if (today < firstVotingDay)
+        {
+            return BadRequest("A votação só está disponível nos últimos 5 dias do mês.");
+        }
+
         try
         {
-            // Verifica se o usuário já votou neste mês
             var existingVote = await _context.Votes
                 .FirstOrDefaultAsync(v => v.UserId == vote.UserId && 
-                                          v.VoteTime.Month == DateTime.Now.Month && 
-                                          v.VoteTime.Year == DateTime.Now.Year);
+                                          v.VoteTime.Month == today.Month && 
+                                          v.VoteTime.Year == today.Year);
 
             if (existingVote != null)
             {
-                return BadRequest("Já votou este mês.");
+                return BadRequest("Você já votou este mês.");
             }
 
-            // Adiciona o novo voto
-            vote.VoteTime = DateTime.Now;
+            vote.VoteTime = today;
             _context.Votes.Add(vote);
             await _context.SaveChangesAsync();
 
@@ -46,28 +53,35 @@ public class VoteController : ControllerBase
             return StatusCode(500, "Erro interno no servidor.");
         }
     }
-
-
-
-
+    
     [HttpGet("GameOfTheMonth")]
     public async Task<ActionResult<Game>> GetGameOfTheMonth()
     {
-        var gameOfTheMonth = await _context.Votes
-            .Where(v => v.VoteTime.Month == DateTime.Now.Month && v.VoteTime.Year == DateTime.Now.Year)
-            .GroupBy(v => v.GameId)
-            .OrderByDescending(g => g.Count())
-            .Select(g => g.Key)
-            .FirstOrDefaultAsync();
-
-        if (gameOfTheMonth == default)
+        try
         {
-            return NotFound("Nenhum voto foi registado este mês.");
-        }
+            var gameOfTheMonthId = await _context.Votes
+                .Where(v => v.VoteTime.Month == DateTime.Now.Month && v.VoteTime.Year == DateTime.Now.Year)
+                .GroupBy(v => v.GameId)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefaultAsync();
 
-        var game = await _context.Games.FindAsync(gameOfTheMonth);
-        return Ok(game);
+            if (gameOfTheMonthId == default)
+            {
+                return NotFound("Nenhum voto foi registado este mês.");
+            }
+
+            var game = await _context.Games.FindAsync(gameOfTheMonthId);
+            return Ok(game);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao procurar jogo do mês: {ex.Message}");
+            return StatusCode(500, "Erro interno no servidor.");
+        }
     }
+
+
 
     [HttpGet("HasVoted/{userId}")]
     public async Task<ActionResult<bool>> HasVoted(Guid userId)

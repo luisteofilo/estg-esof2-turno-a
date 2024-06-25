@@ -62,16 +62,24 @@ namespace ESOF.WebApp.WebAPI.Services
                 .ToDictionaryAsync(g => g.GameId, g => g.Percentage);
         }
         
-        public async Task<Guid?> GetGameOfTheMonthAsync()
+        public async Task<Game?> GetGameOfTheMonthAsync()
         {
-            var percentages = await GetVotePercentagesAsync();
-            if (percentages.Count == 0) return null;
+            var gameOfTheMonthId = await _context.Votes
+                .Where(v => v.VoteTime.Month == DateTime.Now.Month && v.VoteTime.Year == DateTime.Now.Year)
+                .GroupBy(v => v.GameId)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefaultAsync();
 
-            var gameOfTheMonthId = percentages.OrderByDescending(p => p.Value).First().Key;
-            return gameOfTheMonthId;
+            if (gameOfTheMonthId == Guid.Empty)
+            {
+                return null;
+            }
+
+            var game = await _context.Games.FindAsync(gameOfTheMonthId);
+            return game;
         }
-
-
-
+        
+        
     }
 }

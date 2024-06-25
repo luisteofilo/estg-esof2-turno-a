@@ -38,6 +38,7 @@ else
     private Guid userId = Guid.NewGuid();
     private bool hasVoted = false;
     private Dictionary<Guid, double> votePercentages = new();
+    private bool isVotingPeriod = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,6 +46,7 @@ else
         {
             games = await Http.GetFromJsonAsync<List<Game>>("api/game");
             hasVoted = await CheckIfUserHasVoted();
+            isVotingPeriod = IsVotingPeriod();
             if (games == null)
             {
                 message = "Nenhum jogo foi retornado da API.";
@@ -60,6 +62,14 @@ else
         }
     }
 
+    private bool IsVotingPeriod()
+    {
+        var today = DateTime.Now;
+        var lastDayOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+        var firstVotingDay = lastDayOfMonth.AddDays(-4);
+        return today >= firstVotingDay;
+    }
+
     private async Task<bool> CheckIfUserHasVoted()
     {
         return await Http.GetFromJsonAsync<bool>($"api/vote/HasVoted/{userId}");
@@ -67,10 +77,14 @@ else
 
     private async Task VoteForGame(Guid userId, Guid gameId)
     {
-        Console.WriteLine($"Votar no jogo com ID: {gameId} e utilizador com ID: {userId}"); // Linha de debug
+        if (!isVotingPeriod)
+        {
+            message = "A votação só está disponível nos últimos 5 dias do mês.";
+            return;
+        }
+
         try
         {
-            // Verifica se o usuário já votou neste mês
             if (await CheckIfUserHasVoted())
             {
                 message = "Você já votou neste mês.";
@@ -79,7 +93,6 @@ else
 
             var vote = new Vote { UserId = userId, GameId = gameId, VoteTime = DateTime.Now };
             var response = await Http.PostAsJsonAsync("api/vote", vote);
-            Console.WriteLine($"Resposta da API: {response.StatusCode}"); // Linha de debug
 
             if (response.IsSuccessStatusCode)
             {
@@ -90,19 +103,16 @@ else
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Erro ao registrar voto: {errorContent}"); // Linha de debug
                 message = errorContent.Contains("Já votou este mês.") ? "Já votou este mês." : "Erro ao registrar voto.";
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao tentar registrar o voto: {ex.Message}"); // Linha de debug
             message = "Erro ao tentar registrar o voto: " + ex.Message;
         }
 
-        StateHasChanged(); // Atualiza o estado da UI
+        StateHasChanged();
     }
-
 
     private async Task UpdateVotePercentages()
     {
@@ -117,6 +127,7 @@ else
         }
     }
 }
+
 
 
 
