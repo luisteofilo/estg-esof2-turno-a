@@ -1,13 +1,14 @@
 
-
-
-    
     console.log("Estou aqui no inicio");
 
     let enableDebug = true;
     let enableThreads = false;
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
+    
+    console.log(`Query string é ${queryString}`);
+    console.log(`URL Params é ${urlParams}`);
+    
     if (urlParams.get("debug") == 1) {
         enableDebug = true;
         console.log("Debug is enabled");
@@ -31,13 +32,15 @@
 
     input.onchange = async () => {
         const url = URL.createObjectURL(input.files[0]);
-
+        console.log(`O URL é ${url}`);
         const parts = input.files[0].name.split(".");
         const file_name = input.files[0].name;
 
+        //let blob = await fetch(url).then(r => r.blob());
+        
         console.log(parts);
         console.log(file_name);
-        console.log(url);
+        //console.log(blob);
 
         const core = await (async (ext) => {
             if (["fds", "nes", "unif", "unf"].includes(ext)) return "nes";
@@ -173,37 +176,13 @@
         // Mostrar controles de estado salvo
         document.getElementById("controls").style.display = "flex";
     };
-
-    /*  // Função para carregar estado salvo
-    document.getElementById("loadStateButton").onclick = () => {
-    document.getElementById("stateInput").click();
-};
-
-    document.getElementById("stateInput").onchange = (event) => {
-    const stateFile = event.target.files[0]; // Obter o arquivo do evento
-    const reader = new FileReader();
-
-    // Definir o que acontece quando o arquivo é carregado
-    reader.onload = (event) => {
-    const stateData = event.target.result; // Obter os dados do arquivo
-    const fileName = stateFile.name; // Obter o nome do arquivo
-
-    console.log("Arquivo selecionado:", fileName);
-    console.log("Dados do arquivo:", stateData);
-
-    // Atribuir os dados do arquivo carregado à variável window.EJS_loadState
-    window.EJS_loadState = stateData;
-};
-
-    // Ler o arquivo como um ArrayBuffer
-    reader.readAsArrayBuffer(stateFile);
-};
-    */
-
-    // Load state apenas funciona com o jogo aberto (carregar primeiero o jogo e depois o load-state)
+    
 
     box.ondragover = () => box.setAttribute("drag", true);
     box.ondragleave = () => box.removeAttribute("drag");
+
+
+
 
 
  

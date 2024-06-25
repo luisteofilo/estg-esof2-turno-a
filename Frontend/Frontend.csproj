@@ -13,6 +13,7 @@
       </Content>
       <Content Remove="Components\Pages\games.cshtml" />
       <Content Remove="Components\Pages\Emulator_Games\data\**" />
+      <Content Remove="Components\Pages\Emulator_Games\Emulator_Games\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,6 +27,7 @@
     <ItemGroup>
       <Compile Remove="Components\Pages\games.cshtml.cs" />
       <Compile Remove="Components\Pages\Emulator_Games\data\**" />
+      <Compile Remove="Components\Pages\Emulator_Games\Emulator_Games\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -71,14 +73,31 @@
       <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\zh-CN.json" />
       <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\minify\package.json" />
       <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\version.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\Final_Fantasy.nes" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\mario.nes" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\Metal_Gear.nes" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\Mortal_Kombat_4.nes" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\Super_Tank_(Battle_City_Pirate).nes" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="Components\Pages\Emulator_Games\data\**" />
+      <EmbeddedResource Remove="Components\Pages\Emulator_Games\Emulator_Games\**" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="Components\Pages\Emulator_Games\data\**" />
+      <None Remove="Components\Pages\Emulator_Games\Emulator_Games\**" />
+      <None Remove="Components\Pages\Emulator_Games\efv.js" />
+      <None Remove="Components\Pages\Emulator_Games\Games_Emulator.css" />
+      <None Remove="Components\Pages\Emulator_Games\Games_Emulator.js" />
+      <None Include="wwwroot\Games_Emulator\Script\Games_Emulator.js" />
+      <None Include="wwwroot\Games_Emulator\Style\Games_Emulator.css" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Components\Pages\Emulator_Games\Testing\" />
+      <Folder Include="wwwroot\Games_Emulator\" />
     </ItemGroup>
 
 </Project>
