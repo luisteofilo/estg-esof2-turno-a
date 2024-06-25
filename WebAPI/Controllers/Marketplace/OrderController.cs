@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.WebAPI.Controllers.Marketplace
 {
-    [Route("api/[controller]")]
+    [Route("api/marketplace/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
     {

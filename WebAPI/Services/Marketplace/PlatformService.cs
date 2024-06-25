@@ -3,6 +3,8 @@ using ESOF.WebApp.DBLayer.Entities;
 using ESOF.WebApp.WebAPI.DtoClasses;
 using ESOF.WebApp.WebAPI.DtoClasses.Response;
 using ESOF.WebApp.WebAPI.DtoClasses.Update;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.WebAPI.Services.Marketplace;
@@ -81,48 +83,33 @@ public class PlatformService
         }
     }
 
-    public ResponsePlatformDto UpdatePlatform(Guid id, UpdatePlatformDto updatePlatformDto)
-    {
-        var platform = _context.Platforms.Find(id);
+    public async Task<ResponsePlatformDto> UpdatePlatform(Guid id, UpdatePlatformDto updatePlatformDto) {
+        var platform = await _context.Platforms.FindAsync(id);
 
-        if (platform == null)
-        {
-            throw new ArgumentException("Platform not found.");
+        if (platform == null) {
+            throw new Exception("Platform not found.");
         }
 
         platform.debut_year = updatePlatformDto.debut_year ?? platform.debut_year;
+        platform.name = updatePlatformDto.name;
+        
+        await _context.SaveChangesAsync();
 
-        _context.SaveChanges();
-
-        return new ResponsePlatformDto
-        {
+        return new ResponsePlatformDto {
             id = platform.platform_id,
             name = platform.name,
             debut_year = platform.debut_year
         };
     }
 
-    public void DeletePlatform(Guid id)
-    {
-        using (var transaction = _context.Database.BeginTransaction())
-        {
-            try
-            {
-                var platform = _context.Platforms.Find(id);
+    public async Task DeletePlatform(Guid id) {
+        var platform = await _context.Platforms.FindAsync(id);
 
-                if (platform == null)
-                {
-                    throw new ArgumentException("Platform not found.");
-                }
-
-                _context.SaveChanges();
-                transaction.Commit();
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw ex;
-            }
+        if (platform == null) {
+            throw new Exception("Platform not found.");
         }
+
+        _context.Platforms.Remove(platform);
+        await _context.SaveChangesAsync();
     }
 }
