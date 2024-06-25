@@ -119,9 +119,7 @@ else
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="m-0">Filters</h5>
                 <button type="button" class="btn btn-orange" @onclick="ClearFilters">Clear
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="20" fill="currentColor">
-                        <path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="20" fill="currentColor"><path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path></svg>
                 </button>
             </div>
             <div class="mb-3">
@@ -134,7 +132,7 @@ else
                     @foreach (var genre in genreNames)
                     {
                         <div class="form-check my-3 ms-4">
-                            <input class="form-check-input" type="checkbox" id="@genre" @onclick="() => ToggleGenreFilter(genre)" />
+                            <input class="form-check-input" type="checkbox" id="@genre" @onclick="() => ToggleGenreFilter(genre)" checked="@selectedGenres.Contains(genre)" />
                             <label class="form-check-label" for="@genre">
                                 @genre
                             </label>
@@ -153,7 +151,7 @@ else
                     @foreach (var console in consoleNames)
                     {
                         <div class="form-check my-3 ms-4">
-                            <input class="form-check-input" type="checkbox" id="@console" @onclick="() => ToggleConsoleFilter(console)" />
+                            <input class="form-check-input" type="checkbox" id="@console" @onclick="() => ToggleConsoleFilter(console)" checked="@selectedConsoles.Contains(console)" />
                             <label class="form-check-label" for="@console">
                                 @console
                             </label>
@@ -170,7 +168,7 @@ else
     private List<Game>? _gamesCatalog;
     private List<Game> _gamesFavorites = new List<Game>();
     private List<Game>? _gamesFavoritesById;
-    private Guid userId = Guid.Parse("4b7970ba-b06a-40d9-a440-4c40704dab23");
+    private Guid userId = Guid.Parse("0236150e-d075-4c98-af8e-527bc758c100");// troca para o id de um user existente
     private string? _alertMessage;
     private string _alertClass = string.Empty;
     private System.Timers.Timer? _alertTimer;
@@ -183,7 +181,7 @@ else
         
         if (_gamesCatalog != null)
         {
-            _gamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>($"favorites/{userId}");
+            _gamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>($"favorites/user/{userId}");
             _gamesFavoritesById = _gamesCatalog.Where(game => _gamesFavorites.Any(fav => fav.GameId == game.GameId)).ToList();
         }
     }
@@ -294,6 +292,7 @@ else
         Console.WriteLine($"Genre Names: {string.Join(", ", genreNames)}");
     }
     
+    
     private IEnumerable<Game> FilteredGames =>
         _gamesCatalog?.Where(game =>
             (selectedGenres.Count == 0 || selectedGenres.Contains(game.Genre.ToString())) &&
@@ -305,7 +304,7 @@ else
             (selectedGenres.Count == 0 || selectedGenres.Contains(fav.Genre.ToString())) &&
             (selectedConsoles.Count == 0 || selectedConsoles.Contains(fav.Platform.ToString())) &&
             (string.IsNullOrEmpty(searchText) || fav.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
-
+    
     
     private void ToggleGenreFilter(string genre)
     {

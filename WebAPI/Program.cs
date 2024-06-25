@@ -75,5 +75,21 @@ app.MapGet("/games/{gameId:guid}", async (Guid GameId) =>
     .WithName("GetGamesById")
     .WithOpenApi();
 
+app.MapGet("/consoles", () =>
+    {
+        var consoles = Enum.GetNames(typeof(Consoles)).ToList();
+        return consoles;
+    })
+    .WithName("GetConsoles")
+    .WithOpenApi();
+
+app.MapGet("/genres", () =>
+    {
+        var genres = Enum.GetNames(typeof(Genre)).ToList();
+        return genres;
+    })
+    .WithName("GetGenres")
+    .WithOpenApi();
+
 app.MapFavoriteController();
 app.Run();
