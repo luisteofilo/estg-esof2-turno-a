@@ -75,7 +75,7 @@ public class ReviewService(ApplicationDbContext db)
     
     public async Task<IEnumerable<Review>> GetGameReviews(ReviewViewModel model)
     {
-        var reviews = db.Reviews.Where(r => r.GameId == model.GameId);
+        var reviews = db.Reviews.Where(g => g.GameId == model.GameId);
         if (!reviews.Any())
         {
             throw new Exception("This game does not have reviews");
@@ -84,34 +84,24 @@ public class ReviewService(ApplicationDbContext db)
         return reviews.ToList();
     }
     
-}
+    public async Task<IEnumerable<Review>> GetUserReviews(ReviewViewModel model)
+    {
+        var reviews = db.Reviews.Where(r => r.UserId == model.UserId);
+        if (!reviews.Any())
+        {
+            throw new Exception("This user does not have reviews");
+        }
 
-/*
-public async Task<Review> ViewSpecificReview(ViewSpecificReviewModel model)
-{
-    return await db.Reviews
-        .Include(r => r.User)
-        .Include(r => r.Game)
-        .FirstOrDefaultAsync(r => r.ReviewId == model.ReviewId);
+        return reviews.ToList();
+    }
+
+    public async Task<Review> GetReviewById(ReviewViewModel model)
+    {
+        var review = db.Reviews.FirstOrDefault(r => r.ReviewId == model.ReviewId);
+        if (review == null)
+        {
+            throw new Exception($"Review with ID {model.ReviewId} not found");
+        }
+        return review;
+    }
 }
-*/
-    
-    /*
-    public async Task<IEnumerable<Review>> ViewReviewGame(ViewReviewGameModel model)
-    {
-        return await db.Reviews
-            .Include(r => r.User)
-            .Where(r => r.GameId == model.GameId)
-            .ToListAsync();
-    }
-    */
-    
-    /*
-    public async Task<IEnumerable<Review>> ViewReviewUser(ViewReviewGameModel model)
-    {
-        return await db.Reviews
-            .Include(r => r.User)
-            .Where(r => r.UserId == model.UserId)
-            .ToListAsync();
-    }
-    */
