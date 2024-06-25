@@ -40,7 +40,7 @@ else
     {
         try
         {
-            gameReplay = await ApiHelper.GetFromApiAsync<GameReplayViewModel>($"api/gamereplays/{id}");
+            gameReplay = await ApiHelper.GetFromApiAsync<GameReplayViewModel>($"gamereplays/{id}");
         }
         catch (Exception ex)
         {

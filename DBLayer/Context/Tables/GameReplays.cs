@@ -32,5 +32,10 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<GameReplay>()
             .Property(gr => gr.VideoData)
             .HasColumnType("bytea"); // Type to store binary data
+        
+        modelBuilder.Entity<GameReplay>()
+            .HasOne(g => g.User)
+            .WithMany(u => u.UserGameReplays)
+            .HasForeignKey(g => g.UserId);
     }
 }

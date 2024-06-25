@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESOF.WebApp.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class GameReplaysController : ControllerBase
 {
         
@@ -49,11 +49,11 @@ public class GameReplaysController : ControllerBase
      }
 
      [HttpPost]
-     public async Task<IActionResult> CreateGameReplay([Required][FromForm] string title, [Required] IFormFile videoFile)
+     public async Task<IActionResult> CreateGameReplay([Required][FromForm] string title, [Required] IFormFile videoFile, [Required][FromForm] Guid UserID)
      {
-         if (videoFile == null || string.IsNullOrEmpty(title))
+         if (videoFile == null || string.IsNullOrEmpty(title) || string.IsNullOrEmpty(UserID.ToString()))
          {
-             return BadRequest("Title and video file are required.");
+             return BadRequest("Title, video file and UserID are required.");
          }
         
          var db = new ApplicationDbContext();
@@ -79,7 +79,8 @@ public class GameReplaysController : ControllerBase
              Title = title,
              UploadDate = DateTime.UtcNow,
              VideoData = videoData,
-             FilePath = filePath
+             FilePath = filePath,
+             UserId = UserID
          };
 
          db.GameReplays.Add(gameReplay);

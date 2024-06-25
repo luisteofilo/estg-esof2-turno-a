@@ -16,4 +16,11 @@ public class User
     [Required]
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
+    
+    public ICollection<GameReplay> UserGameReplays { get; set; }
+
+    public User()
+    {
+        UserGameReplays = new List<GameReplay>();
+    }
 }

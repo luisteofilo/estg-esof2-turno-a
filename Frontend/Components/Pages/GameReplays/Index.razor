@@ -61,7 +61,8 @@ else
         @foreach (var replay in _gameReplays)
         {
             <div class="video-item" @onclick="() => NavigateToReplay(replay.Id)">
-                <h3>@replay.Title</h3>    
+                <h3>@replay.Title</h3>
+                <h3>@replay.UploadDate</h3>
             </div>
         }
     </div>
@@ -74,6 +75,16 @@ else
     private string? uploadError;
     private string? uploadResult;
     private bool isUploading = false;
+    private Guid UserID = UserState.LoggedInUserId ?? Guid.Empty;
+    
+    private readonly List<string> validVideoMimeTypes = new List<string>
+    {
+        "video/mp4",
+        "video/x-msvideo",
+        "video/x-matroska",
+        "video/webm",
+        "video/ogg"
+    };
 
     private async Task UploadFile()
     {
@@ -85,6 +96,14 @@ else
         {
             try
             {
+                if (!validVideoMimeTypes.Contains(selectedFile.ContentType))
+                {
+                    uploadError = "Invalid file type. Please select a valid video file.";
+                    Console.WriteLine("Invalid file type selected.");
+                    isUploading = false;
+                    return;
+                }
+                
                 Console.WriteLine($"Selected file: {selectedFile.Name}, size: {selectedFile.Size}");
                 Console.WriteLine("Preparing to upload file...");
                 
@@ -102,8 +121,9 @@ else
                 
                 content.Add(fileContent, "VideoFile", selectedFile.Name);
                 content.Add(new StringContent(videoTitle), "Title");
+                content.Add(new StringContent(UserID.ToString()), "UserID");
 
-                var response = await ApiHelper.PostToApiAsync("api/gamereplays", content);
+                var response = await ApiHelper.PostToApiAsync("gamereplays", content);
                 if (response.IsSuccessStatusCode)
                 {
                     uploadResult = "Video uploaded successfully!";
@@ -133,13 +153,20 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _gameReplays = await ApiHelper.GetFromApiAsync<GameReplayViewModel[]>("api/gamereplays");
+        _gameReplays = await ApiHelper.GetFromApiAsync<GameReplayViewModel[]>("gamereplays");
     }
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
         selectedFile = e.File;
         Console.WriteLine($"Selected file: {selectedFile.Name}, size: {selectedFile.Size}");
+        
+        if (!validVideoMimeTypes.Contains(selectedFile.ContentType))
+        {
+            uploadError = "Invalid file type. Please select a valid video file.";
+            selectedFile = null;
+            Console.WriteLine("Invalid file type selected.");
+        }
     }
 
     private void HandleException(Exception ex)
