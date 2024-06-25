@@ -142,38 +142,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                     stock = createGameDto.stock
                 };
 
-                if (createGameDto.genreIds != null && createGameDto.genreIds.Any())
-                {
-                    var genres = _context.GameGenres
-                        .Where(g => createGameDto.genreIds.Contains(g.genre_id))
-                        .ToList();
-                    game.gameGenres = genres;
-                }
-
-                if (createGameDto.platformIds != null && createGameDto.platformIds.Any())
-                {
-                    var platforms = _context.GamePlatforms
-                        .Where(p => createGameDto.platformIds.Contains(p.platform_id))
-                        .ToList();
-                    game.gamePlatforms = platforms;
-                }
-
-                if (createGameDto.reviewIds != null && createGameDto.reviewIds.Any())
-                {
-                    var reviews = _context.OrderReviews
-                        .Where(r => createGameDto.reviewIds.Contains(r.review_id))
-                        .ToList();
-                    game.gameReviews = reviews;
-                }
-
-                if (createGameDto.orderItemIds != null && createGameDto.orderItemIds.Any())
-                {
-                    var orderItems = _context.OrderItems
-                        .Where(oi => createGameDto.orderItemIds.Contains(oi.order_id))
-                        .ToList();
-                    game.orderItems = orderItems;
-                }
-
                 _context.MarketPlaceGames.Add(game);
                 _context.SaveChanges();
 

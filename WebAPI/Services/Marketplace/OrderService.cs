@@ -99,14 +99,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                     order_type = createOrderDto.order_type
                 };
 
-                if (createOrderDto.orderItemIds != null && createOrderDto.orderItemIds.Any())
-                {
-                    var orderItems = _context.OrderItems
-                        .Where(oi => createOrderDto.orderItemIds.Contains(oi.game_id))
-                        .ToList();
-                    order.orderItems = orderItems;
-                }
-
                 _context.Orders.Add(order);
                 _context.SaveChanges();
 

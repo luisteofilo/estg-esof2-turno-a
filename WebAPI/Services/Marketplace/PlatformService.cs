@@ -61,12 +61,6 @@ public class PlatformService
                 debut_year = createPlatformDto.debut_year
             };
 
-            if (createPlatformDto.gameIds != null && createPlatformDto.gameIds.Any())
-            {
-                var games = _context.GamePlatforms.Where(g => createPlatformDto.gameIds.Contains(g.game_id)).ToList();
-                platform.gamePlatform = games;
-            }
-
             _context.Platforms.Add(platform);
             _context.SaveChanges();
 
