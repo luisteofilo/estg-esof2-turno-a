@@ -8,7 +8,7 @@ namespace ESOF.WebApp.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GameReplaysController : ControllerBase
+public class ModsController : ControllerBase
 {
 
     [HttpGet]
@@ -83,15 +83,60 @@ public class GameReplaysController : ControllerBase
     [Route("/mods")]
     public async Task<IActionResult> AddMod([FromBody] Mod mod)
     {
-        var db = new ApplicationDbContext();
         if (mod == null)
         {
             return BadRequest("Mod is required.");
         }
 
-        db.Mods.Add(mod);
-        await db.SaveChangesAsync();
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        using (var db = new ApplicationDbContext())
+        {
+            db.Mods.Add(mod);
+            await db.SaveChangesAsync();
+        }
+
         return CreatedAtAction(nameof(GetModById), new { modId = mod.ModId }, mod);
+    }
+    
+    [HttpPost]
+    [Route("/tag/{modId:guid}")]
+    public async Task<IActionResult> AddTag(Guid modId, [FromBody] List<ModTag> tags)
+    {
+        if (tags == null || !tags.Any())
+        {
+            return BadRequest("At least one tag is required.");
+        }
+
+        using (var db = new ApplicationDbContext())
+        {
+            var mod = await db.Mods.Include(m => m.Tags).FirstOrDefaultAsync(m => m.ModId == modId);
+            if (mod == null)
+            {
+                return NotFound("Mod not found.");
+            }
+
+            foreach (var tag in tags)
+            {
+                var existingTag = await db.ModTags.FirstOrDefaultAsync(t => t.TagId == tag.TagId);
+                if (existingTag == null)
+                {
+                    return NotFound($"Tag with ID {tag.TagId} not found.");
+                }
+            
+                if (!mod.Tags.Any(t => t.TagId == existingTag.TagId))
+                {
+                    mod.Tags.Add(existingTag);
+                }
+            }
+
+            await db.SaveChangesAsync();
+        }
+
+        return NoContent();
     }
 }
 

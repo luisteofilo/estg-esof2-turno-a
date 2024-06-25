@@ -38,5 +38,5 @@ public class Mod
     public double Rating { get; set; }  // Average rating of the mod
     
     [JsonIgnore] // Ignore durante a serialização JSON
-    public ICollection<ModTag> Tags { get; set; }
+    public ICollection<ModTag> Tags { get; set; }  = new List<ModTag>();
 }

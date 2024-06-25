@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ESOF.WebApp.DBLayer.Entities
 {
@@ -17,6 +18,7 @@ namespace ESOF.WebApp.DBLayer.Entities
         [StringLength(4000)]
         public string Description { get; set; } = string.Empty;  // Description of the tag
 
+        [JsonIgnore]
         public ICollection<Mod> Mods { get; set; } = new List<Mod>();  // Collection of ModModTag for categorizing the tag
     }
 }
