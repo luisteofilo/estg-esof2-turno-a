@@ -7,6 +7,11 @@ public partial class ApplicationDbContext
 {
     private void BuildGames(ModelBuilder modelBuilder)
     {
+
+        modelBuilder.Entity<Game>(entity =>
+        {
+            entity.ToTable("Games", schema: "reviews");
+        });
         modelBuilder.Entity<Game>()
             .HasKey(g => g.GameId);
 

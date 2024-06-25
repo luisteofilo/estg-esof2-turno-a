@@ -35,7 +35,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("GameId");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", "reviews");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
@@ -99,7 +99,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", "reviews");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Role", b =>
