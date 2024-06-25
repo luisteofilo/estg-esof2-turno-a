@@ -7,7 +7,7 @@ public partial class ApplicationDbContext
 {
     public void BuildSpeedrunRuns(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<speedrunRun>(entity =>
+        modelBuilder.Entity<SpeedrunRun>(entity =>
         {
             entity.HasKey(e => e.runID);
             
@@ -17,7 +17,7 @@ public partial class ApplicationDbContext
             entity.Property(e => e.playerID).IsRequired();
 
             entity.HasOne(e => e.player)
-                .WithMany()
+                .WithMany(p => p.speedrunRuns)
                 .HasForeignKey(e => e.playerID);
 
             entity.Property(e => e.categoryID).IsRequired();
@@ -31,8 +31,6 @@ public partial class ApplicationDbContext
             entity.Property(e => e.SubmissionDate).IsRequired();
 
             entity.Property(e => e.verified).HasDefaultValue(false);
-
-            entity.Property(e => e.verifierID).IsRequired();
 
             entity.HasOne(e => e.verifier)
                 .WithMany(m => m.SpeedRuns)

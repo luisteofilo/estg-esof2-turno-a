@@ -20,5 +20,18 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<User>()
             .Property(p => p.UserId)
             .HasDefaultValueSql("gen_random_uuid()");
+        
+        // relação com a tabela SpeedrunRun
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.speedrunRuns)
+            .WithOne(r => r.player)
+            .HasForeignKey(r => r.playerID);
+        
+        // relação com a tabela SpeedrunModerator
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.speedrunModerators)
+            .WithOne(m => m.user)
+            .HasForeignKey(m => m.userID);
+            
     }
 }

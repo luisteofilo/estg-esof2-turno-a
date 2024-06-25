@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
-public class speedrunCategory
+public class SpeedrunCategory
 {
     [Key]
     public Guid categoryID { get; set; }
@@ -26,5 +26,5 @@ public class speedrunCategory
     [Required]
     public string categoryRules { get; set; }
     
-    public ICollection<speedrunRun> speedrunRuns { get; set; }
+    public ICollection<SpeedrunRun> speedrunRuns { get; set; }
 }

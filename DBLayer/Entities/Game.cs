@@ -21,6 +21,8 @@ public class Game{
     [Required]
     public int stock { get; set; }
     
-
+	public ICollection<SpeedrunCategory> speedrunCategories { get; set; }
+	
+	public ICollection<SpeedrunModerator> speedrunModerators { get; set; }
 
 }

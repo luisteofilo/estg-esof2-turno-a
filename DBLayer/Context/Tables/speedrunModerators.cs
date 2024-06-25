@@ -7,7 +7,7 @@ public partial class ApplicationDbContext
 {
     public void BuildSpeedrunModerators(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<speedrunModerator>(entity =>
+        modelBuilder.Entity<SpeedrunModerator>(entity =>
         {
             entity.HasKey(e => e.moderatorID);
             
@@ -17,13 +17,13 @@ public partial class ApplicationDbContext
             entity.Property(e => e.userID).IsRequired();
 
             entity.HasOne(e => e.user)
-                .WithMany()
+                .WithMany(u => u.speedrunModerators)
                 .HasForeignKey(e => e.userID);
 
             entity.Property(e => e.gameID).IsRequired();
 
             entity.HasOne(e => e.game)
-                .WithMany()
+                .WithMany(g => g.speedrunModerators)
                 .HasForeignKey(e => e.gameID);
 
             entity.Property(e => e.roleGivenDate).IsRequired();

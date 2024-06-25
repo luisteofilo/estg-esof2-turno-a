@@ -7,7 +7,7 @@ public partial class ApplicationDbContext
 {
     public void BuildSpeedrunCategories(ModelBuilder modelBuilder) 
     {
-        modelBuilder.Entity<speedrunCategory>(entity =>
+        modelBuilder.Entity<SpeedrunCategory>(entity =>
         {
             entity.HasKey(e => e.categoryID);
 
@@ -17,7 +17,7 @@ public partial class ApplicationDbContext
             entity.Property(e => e.gameID).IsRequired();
 
             entity.HasOne(e => e.Game)
-                .WithMany()
+                .WithMany(g => g.speedrunCategories)
                 .HasForeignKey(e => e.gameID);
 
             entity.Property(e => e.creationDate).IsRequired();

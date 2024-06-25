@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
-public class speedrunRun
+public class SpeedrunRun
 {
     [Key]
     public Guid runID { get; set; }
@@ -19,7 +19,7 @@ public class speedrunRun
     public Guid categoryID { get; set; }
     
     [ForeignKey("categoryID")]
-    public speedrunCategory category { get; set; }
+    public SpeedrunCategory category { get; set; }
     
     [Required]
     public int runTime { get; set; }
@@ -30,11 +30,10 @@ public class speedrunRun
     [DefaultValue("false")]
     public bool verified { get; set; }
     
-    [Required]
-    public Guid verifierID { get; set; }  
+    public Guid? verifierID { get; set; }  
     
     [ForeignKey("verifierID")]
-    public speedrunModerator verifier { get; set; }
+    public SpeedrunModerator verifier { get; set; }
     
     [Required]
     public string videoLink { get; set; }
