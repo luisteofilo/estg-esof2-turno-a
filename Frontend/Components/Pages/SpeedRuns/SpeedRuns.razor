@@ -1,0 +1,452 @@
+@page "/speedruns"
+
+@using Frontend.Helpers
+@using global::Helpers.Models
+@attribute [StreamRendering]
+@inject ApiHelper ApiHelper
+@rendermode InteractiveServer
+
+<PageTitle>Speed Runs</PageTitle>
+
+<style>
+    
+    
+
+:root {
+    --primary-color: #FDB42E;
+    --secondary-color: #FFCF76;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+.container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.selected {
+    background-color: #007bff;
+    color: white;
+}
+
+.modal-dialog {
+    max-width: 800px; /* Ajuste este valor conforme necessário */
+}
+
+.modal-content {
+    overflow: auto;
+}
+
+
+.filter {
+    margin-left: 80px;
+    margin-top: 120px;
+}
+
+.filter .btn {
+    width: 200px; /* Ajuste este valor conforme necessário */
+}
+
+.choices-select {
+    width: 100%; /* Ajuste este valor conforme necessário */
+}
+
+
+.main-content {
+    flex-grow: 1;
+    margin-left: 20px;
+}
+.leaderboard h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.custom-input {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+    
+</style>
+
+<div class="container">
+    <!-- Barra Lateral à direita -->
+    <div class="filter">
+            <form method="get">
+               
+                  <h3>Game</h3>
+                  <input type="text" class="custom-input" @oninput="SearchGame" @onkeydown="HandleKeyDown" placeholder="Search for a game" />
+                  
+                  <select class="form-control mt-3" @onchange="SelectGame">
+                      @if (_filteredGames == null)
+                      {
+                          <option>Loading games...</option>
+                      }
+                      else
+                      {
+                          <option value="">Select a game...</option>
+                          @foreach (var game in _filteredGames)
+                          {
+                              <option value="@game.GameID">@game.GameName</option>
+                          }
+                      }
+                  </select>
+                
+                  <br>
+                
+                  <h3>Category</h3>
+                  <input type="text" class="custom-input" placeholder="Search for a category..." @oninput="SearchCategory" />
+                  
+                  <select class="form-control mt-3" @onchange="SelectCategory">
+                      @if (_filteredCategories == null)
+                      {
+                          <option>Loading categories...</option>
+                      }
+                      else
+                      {
+                          <option value="">Select a category...</option>
+                          @foreach (var category in _filteredCategories)
+                          {
+                              <option value="@category.CategoryID">@category.CategoryName</option>
+                          }
+                      }
+                  </select>
+                
+                
+                
+            </form>
+        </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <div class="leaderboard">
+            <h1>Speedrun Leaderboard</h1>
+            <button class="btn btn-success mb-4" data-toggle="modal" data-target="#myModal">Add New Run</button>
+            <button class="btn btn-primary mb-4" data-toggle="modal" data-target="#adminModal">Manage Runs</button>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Game</th>
+                    <th>Category</th>
+                    <th>Time</th>
+                    <th>Date Achieved</th>
+                    <th>Video</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (_speedRuns != null)
+                {
+                    // Ordenar as runs por tempo e que sejam verificadas
+                    
+                    var orderedSpeedRuns = _speedRuns
+                        .Where(run => run.Verified)
+                        .OrderBy(run => run.RunTime)
+                        .ToList();
+
+
+                    for (int i = 0; i < orderedSpeedRuns.Count; i++)
+                    {
+                        var run = orderedSpeedRuns[i];
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>@run.PlayerName</td>
+                            <td>@run.GameName</td>
+                            <td>@run.CategoryName</td>
+                            <td>@run.RunTime</td>
+                            <td>@run.SubmissionDate.ToString("yyyy-MM-dd")</td>
+                            <td><a href="@run.VideoLink">Link</a></td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Inserir Nova Run -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Run</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="game">Game</label>
+                        <input type="text" name="game" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <input type="text" name="category" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time (hh:mm:ss)</label>
+                        <input type="text" name="time" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="videoLink">Video Link</label>
+                        <input type="url" name="videoLink" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Add Run</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="adminModalLabel" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminModalLabel">Manage Runs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Game</th>
+                        <th>Category</th>
+                        <th>Time</th>
+                        <th>Date Achieved</th>
+                        <th>Verified</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @if (_speedRuns != null)
+                        {
+                            for (int i = 0; i < _speedRuns.Count; i++)
+                            {
+                                if (!_speedRuns[i].Verified)
+                                {
+                                    var run = _speedRuns[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@run.PlayerID</td>
+                                        <td>@run.</td>
+                                        <td>@run.CategoryName</td>
+                                        <td>@run.RunTime</td>
+                                        <td>@run.SubmissionDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@(run.Verified ? "Yes" : "No")</td>
+                                        <td><button class="btn btn-success">Verify</button></td>
+                                    </tr> 
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+
+    <script>
+    window.onload = function() {
+        var choicesSelects = Array.from(document.querySelectorAll('.choices-select'));
+        choicesSelects.map(function(select) {
+            new Choices(select, {
+                itemSelectText: '',
+            });
+        });
+    };
+    
+    
+    </script>
+    
+    <script>
+    $(document).ready(function(){
+      $("#filterGames").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#ListGames li").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+      // Corrigir o ID do elemento aqui
+      $("#filterCategories").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#ListCategories li").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    $(document).ready(function(){
+        $("#ListGames li, #ListCategories li").on("click", function() {
+            $(this).toggleClass('selected');
+        });
+    });
+    </script>
+    
+
+
+
+
+
+@code {
+    private List<GameViewModel>? _games;
+    private List<GameViewModel>? _filteredGames;
+    private List<SpeedrunCategoryViewModel>? _categories;
+    private List<SpeedrunCategoryViewModel>? _filteredCategories;
+    private List<SpeedrunRunViewModel>? _speedRuns;
+    private string search = string.Empty;
+    private Guid selectedGameId;
+    private string userInput = string.Empty;
+    
+ 
+    private Guid userId = Guid.Parse("fec6d275-7eb3-4f27-a410-41634c52263d");
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _games = await ApiHelper.GetFromApiAsync<List<GameViewModel>>("games");
+        _filteredGames = _games;
+        //_categories = await ApiHelper.GetFromApiAsync<List<SpeedrunCategoryViewModel>>("speedRuns/categories");
+        //_speedRuns = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>("/speedRuns/runs/{8bb38d39-c58b-4eb4-a181-cbc3b918001e}");
+        
+        //de
+        
+    }
+    
+    private void SearchGame(ChangeEventArgs e)
+    {
+        search = e.Value.ToString();
+        
+        if (string.IsNullOrWhiteSpace(search))
+        {
+            _filteredGames = _games;
+        }
+        else
+        {
+            _filteredGames = _games?.Where(game => game.GameName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
+    
+    private void SearchCategory(ChangeEventArgs e)
+    {
+        search = e.Value.ToString();
+        
+        if (string.IsNullOrWhiteSpace(search))
+        {
+            _filteredCategories = _categories; 
+        }
+        else
+        {
+            _filteredCategories = _categories?.Where(category => category.CategoryName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
+    
+    private async Task SelectCategory(ChangeEventArgs e)
+    {
+        
+        if (e.Value.ToString() == "")
+        {
+            if (_speedRuns != null)
+                _speedRuns.Clear();
+            return;
+        }
+        
+        var selectedCategoryId = Guid.Parse(e.Value.ToString());
+
+        _speedRuns = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>($"speedRuns/runs/{selectedCategoryId}");
+
+        StateHasChanged();
+    }
+    
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+         
+        }
+    }
+
+    private async Task SelectGame(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "")
+        {
+            if (_categories != null)
+                _categories.Clear();
+                if (_speedRuns != null)     
+                    _speedRuns.Clear();
+            return;
+        }
+        
+        selectedGameId = Guid.Parse(e.Value.ToString());
+        
+        _categories = await ApiHelper.GetFromApiAsync<List<SpeedrunCategoryViewModel>>($"speedRuns/categories/{selectedGameId}");
+        _filteredCategories = _categories;
+        
+        if (_speedRuns != null)
+            _speedRuns.Clear();
+        
+        StateHasChanged();
+       
+    }
+    
+}
