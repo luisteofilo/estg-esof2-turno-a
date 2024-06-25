@@ -37,8 +37,8 @@
 /* CSS styles for the square shapes */
 .square {
     display: inline-block;
-    width: 30px; /* Adjust width as needed */
-    height: 30px; /* Adjust height as needed */
+    width: 40px; /* Adjust width as needed */
+    height: 40px; /* Adjust height as needed */
     text-align: center;
     line-height: 30px; /* Center the text vertically */
     font-weight: bold;
@@ -61,8 +61,8 @@
 /* CSS styles for the circle shapes */
 .circle {
     display: inline-block;
-    width: 30px; /* Adjust width as needed */
-    height: 30px; /* Adjust height as needed */
+    width: 40px; /* Adjust width as needed */
+    height: 40px; /* Adjust height as needed */
     text-align: center;
     line-height: 30px; /* Center the text vertically */
     font-weight: bold;
