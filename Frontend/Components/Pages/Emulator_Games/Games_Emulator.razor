@@ -65,52 +65,51 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Carrega a lista de jogos ao inicializar a página
         _games = await ApiHelper.GetFromApiAsync<GamesViewModel[]>("games");
-        
     }
+
     private async Task PlayGame(Guid gameId)
     {
+        
         var game = _games.FirstOrDefault(g => g.GameId == gameId);
         if (game != null)
         {
-
             var gameID = game.GameId;
-            // ativar função js e passar paramentros do request para dentro da função
+           
             var navigation = Navigation;
-            var request_game = await Http.GetAsync($"http://${navigation}/games/${gameID}");
-            if (request_game != null)
+            var request_game = await Http.GetAsync($"http://${navigation}/games/{gameID}");
+            
+            if (request_game.IsSuccessStatusCode)
             {
+                
                 var content = await request_game.Content.ReadAsStringAsync();
+                
                 var gamesList = JsonSerializer.Deserialize<List<RomsViewModel>>(content);
                 
-                
-                // variables to the emulator
-                var url_cs = gamesList[0].ROM;
-                var name_cs = gamesList[0].File_name;
-                
-
-                // Invoke JAVA SCRIPT
-                
-                await JSRuntime.InvokeVoidAsync("emulator_trigger", url_cs, name_cs);
-                
+                // Verifica se há dados na lista
+                if (gamesList.Count > 0)
+                {
+                    // Pega os dados do primeiro item da lista (posição 0)
+                    var url_cs = gamesList[0].ROM;
+                    var name_cs = gamesList[0].File_name;
+                    
+                    
+                    await JSRuntime.InvokeVoidAsync("emulator_trigger", url_cs, name_cs);
+                }
+                else
+                {
+                    Console.WriteLine("No ROMs found for the game.");
+                }
             }
             else
             {
-                Console.WriteLine("Game not found.");
+                Console.WriteLine("Failed to fetch game details.");
             }
-
         }
         else
         {
             Console.WriteLine("Game not found.");
         }
     }
-   
 }
-
-<script src="Games_Emulator/Script/Games_Emulator.js"></script>
-
-
-
-
-
