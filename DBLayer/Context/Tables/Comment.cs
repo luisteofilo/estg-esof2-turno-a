@@ -9,6 +9,8 @@ public partial class ApplicationDbContext
     {
         modelBuilder.Entity<Comment>(entity =>
         {
+            entity.ToTable("Comments", schema: "gametok");
+            
             modelBuilder.Entity<Comment>()
                 .HasKey(c => new { c.UserId, c.VideoId });
             

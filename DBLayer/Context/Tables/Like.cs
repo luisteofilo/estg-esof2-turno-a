@@ -9,6 +9,8 @@ namespace ESOF.WebApp.DBLayer.Context;
         {
             modelBuilder.Entity<Like>(entity =>
             {
+                entity.ToTable("Likes", schema: "gametok");
+                
                 modelBuilder.Entity<Like>()
                     .HasKey(c => new { c.UserId, c.VideoId });
             

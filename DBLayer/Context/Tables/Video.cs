@@ -9,9 +9,13 @@ public partial class ApplicationDbContext
     {
         modelBuilder.Entity<Video>(entity =>
         {
+            entity.ToTable("Videos", schema: "gametok");
+            
             entity.HasKey(e => e.VideoId); 
             
-            entity.Property(e => e.caption).IsRequired();
+            entity.Property(e => e.Caption).IsRequired();
+            
+            entity.Property(e => e.ViewCount).HasDefaultValue(0);
             
             entity.HasOne(e => e.VideoQuests)
                 .WithMany(p => p.Videos)

@@ -9,6 +9,8 @@ public partial class ApplicationDbContext
     {
         modelBuilder.Entity<Game>(entity =>
         {
+            entity.ToTable("Games", schema: "gametok");
+            
             entity.HasKey(e => e.GameId); 
     
             entity.Property(e => e.Name).IsRequired();
