@@ -14,10 +14,19 @@ namespace Frontend.Services
         
         public async Task<string> GetCurrentUserIdAsync()
         {
-            var response = await _httpClient.GetAsync("api/userid");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            try
+            {
+                var response = await _httpClient.GetAsync("api/userid");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Erro ao obter o ID do usuário: {ex.Message}");
+                throw;
+            }
         }
+
 
         public async Task<List<Friendship>> GetFriendsAsync(string userId)
         {

@@ -15,6 +15,13 @@ namespace Frontend.Services
             _httpClient = httpClient;
         }
 
+        public async Task<string> GetCurrentUserIdAsync()
+        {
+            var response = await _httpClient.GetAsync("api/userid");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
         public async Task<List<Friendship>> GetFriendsAsync(string userId)
         {
             _httpClient.DefaultRequestHeaders.Remove("X-User-Id");

@@ -71,12 +71,19 @@ else
     private string searchEmail;
     private ESOF.WebApp.DBLayer.Entities.User searchResult;
     private bool searchPerformed = false;
-    private string currentUserId = "coloque_o_user_id_aqui"; // Defina o ID do usuário aqui
+    private string currentUserId = "b3e09754-8a49-41e8-a601-17fc29cd4985";
 
     protected override async Task OnInitializedAsync()
     {
-        currentUserId = await FriendService.GetCurrentUserIdAsync();
-        friends = await FriendService.GetFriendsAsync(currentUserId);
+        try
+        {
+            // currentUserId = await FriendService.GetCurrentUserIdAsync(); // Comente esta linha para usar o ID estático
+            friends = await FriendService.GetFriendsAsync(currentUserId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao inicializar: {ex.Message}");
+        }
     }
 
     private async Task SearchFriend()

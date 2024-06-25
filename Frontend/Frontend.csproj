@@ -12,6 +12,7 @@
         <Link>.dockerignore</Link>
       </Content>
       <Content Remove="Components\Pages\Friendship.cshtml" />
+      <Content Remove="Components\Services\http-client.env.json" />
     </ItemGroup>
 
     <ItemGroup>

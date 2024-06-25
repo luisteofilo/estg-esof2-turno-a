@@ -38,18 +38,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/api/userid", async (ApplicationDbContext db) =>
+app.MapGet("/api/userid", () =>
 {
     try
     {
-        var user = await db.Users.FirstOrDefaultAsync();
-        if (user == null)
-        {
-            Console.WriteLine("No users found in the database.");
-            return Results.NotFound("No users found in the database.");
-        }
-
-        return Results.Ok(user.UserId);
+        // Definindo um ID de usuário estático para teste
+        var userId = "b3e09754-8a49-41e8-a601-17fc29cd4985";
+        return Results.Ok(userId);
     }
     catch (Exception ex)
     {
@@ -59,6 +54,8 @@ app.MapGet("/api/userid", async (ApplicationDbContext db) =>
         return Results.Problem("An error occurred while processing your request.");
     }
 }).WithName("GetUserId").WithOpenApi();
+
+
 
 app.MapGet("/api/friends/{userId}", async (Guid userId, ApplicationDbContext db) =>
 {
