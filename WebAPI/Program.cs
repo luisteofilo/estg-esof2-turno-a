@@ -40,18 +40,37 @@ app.MapGet("/users", () =>
     .WithName("GetUsers")
     .WithOpenApi();
 
-app.MapGet("/games", () =>
+app.MapGet("/games", async () =>
     {
         var db = new ApplicationDbContext();
-        return db.Games;
+        var games = await db.Games
+            .Select(g => new 
+            {
+                g.GameId,
+                g.Name,
+                g.Genre,
+                g.Platform
+            })
+            .ToListAsync();
+        return games;
     })
     .WithName("GetGames")
     .WithOpenApi();
 
-app.MapGet("/games/{gameId:guid}", (Guid GameId) =>
+app.MapGet("/games/{gameId:guid}", async (Guid GameId) =>
     {
         var db = new ApplicationDbContext();
-        return db.Games.Find(GameId);
+        var game = await db.Games
+            .Where(g => g.GameId == GameId)
+            .Select(g => new 
+            {
+                g.GameId,
+                g.Name,
+                g.Genre,
+                g.Platform
+            })
+            .FirstOrDefaultAsync();
+        return game;
     })
     .WithName("GetGamesById")
     .WithOpenApi();

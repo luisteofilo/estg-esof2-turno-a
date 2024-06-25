@@ -16,6 +16,7 @@ namespace ESOF.WebApp.DBLayer.Entities
         [Required]
         public string Platform { get; set; }
 
+        // Navigation properties
         public ICollection<Favorite> Favorites { get; set; }
     }
 }
