@@ -21,24 +21,13 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             try
             {
                 return _context.OrderReviews
-                    .Include(or => or.MarketPlaceGame)
                     .Include(or => or.Reviewer)
                     .Select(review => new ResponseOrderReviewDto
                     {
-                        review_id = review.review_id,
-                        game_id = review.game_id,
+                        order_id = review.order_id,
                         reviewer_id = review.reviewer_id,
                         rating = review.rating,
-                        review = review.review,
-                        game = new ResponseMKP_GameDto
-                        {
-                            id = review.MarketPlaceGame.game_id,
-                            name = review.MarketPlaceGame.name,
-                            description = review.MarketPlaceGame.description,
-                            release_date = review.MarketPlaceGame.release_date,
-                            price = review.MarketPlaceGame.price,
-                            stock = review.MarketPlaceGame.stock
-                        }
+                        review = review.review
                     }).ToList();
             }
             catch (Exception ex)
@@ -47,12 +36,11 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             }
         }
 
-        public ResponseOrderReviewDto GetReviewById(Guid review_id)
+        public ResponseOrderReviewDto GetReviewById(Guid orderId, Guid reviewerId)
         {
             var review = _context.OrderReviews
-                .Include(or => or.MarketPlaceGame)
                 .Include(or => or.Reviewer)
-                .FirstOrDefault(or => or.review_id == review_id);
+                .FirstOrDefault(or => or.order_id == orderId && or.reviewer_id == reviewerId);
 
             if (review == null)
             {
@@ -61,34 +49,24 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
 
             return new ResponseOrderReviewDto
             {
-                review_id = review.review_id,
-                game_id = review.game_id,
+                order_id = review.order_id,
                 reviewer_id = review.reviewer_id,
                 rating = review.rating,
-                review = review.review,
-                game = new ResponseMKP_GameDto
-                {
-                    id = review.MarketPlaceGame.game_id,
-                    name = review.MarketPlaceGame.name,
-                    description = review.MarketPlaceGame.description,
-                    release_date = review.MarketPlaceGame.release_date,
-                    price = review.MarketPlaceGame.price,
-                    stock = review.MarketPlaceGame.stock
-                }
+                review = review.review
             };
         }
 
-        public ResponseOrderReviewDto CreateReview(CreateOrderReviewDto createReviewDto, Guid game_id, Guid reviewer_id)
+        public ResponseOrderReviewDto CreateReview(CreateOrderReviewDto createReviewDto, Guid orderId, Guid reviewerId)
         {
             try
             {
-                var game = _context.MarketPlaceGames.Find(game_id);
-                if (game == null)
+                var order = _context.Orders.Find(orderId);
+                if (order == null)
                 {
-                    throw new ArgumentException("Game not found.");
+                    throw new ArgumentException("Order not found.");
                 }
 
-                var reviewer = _context.Users.Find(reviewer_id);
+                var reviewer = _context.Users.Find(reviewerId);
                 if (reviewer == null)
                 {
                     throw new ArgumentException("Reviewer not found.");
@@ -96,9 +74,8 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
 
                 var review = new OrderReview
                 {
-                    review_id = Guid.NewGuid(),
-                    game_id = game_id,
-                    reviewer_id = reviewer_id,
+                    order_id = orderId,
+                    reviewer_id = reviewerId,
                     rating = createReviewDto.rating,
                     review = createReviewDto.review
                 };
@@ -108,20 +85,10 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
 
                 return new ResponseOrderReviewDto
                 {
-                    review_id = review.review_id,
-                    game_id = review.game_id,
+                    order_id = orderId,
                     reviewer_id = review.reviewer_id,
                     rating = review.rating,
-                    review = review.review,
-                    game = new ResponseMKP_GameDto
-                    {
-                        id = game.game_id,
-                        name = game.name,
-                        description = game.description,
-                        release_date = game.release_date,
-                        price = game.price,
-                        stock = game.stock
-                    }
+                    review = review.review
                 };
             }
             catch (DbUpdateException ex)
@@ -130,12 +97,11 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             }
         }
 
-        public ResponseOrderReviewDto UpdateReview(Guid review_id, UpdateOrderReviewDto updateReviewDtoDto)
+        public ResponseOrderReviewDto UpdateReview(Guid orderId, Guid reviewerId, UpdateOrderReviewDto updateReviewDtoDto)
         {
             var review = _context.OrderReviews
-                .Include(or => or.MarketPlaceGame)
                 .Include(or => or.Reviewer)
-                .FirstOrDefault(or => or.review_id == review_id);
+                .FirstOrDefault(or => or.order_id == orderId && or.reviewer_id == reviewerId);
 
             if (review == null)
             {
@@ -149,47 +115,25 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
 
             return new ResponseOrderReviewDto
             {
-                review_id = review.review_id,
-                game_id = review.game_id,
+                order_id = orderId,
                 reviewer_id = review.reviewer_id,
                 rating = review.rating,
-                review = review.review,
-                game = new ResponseMKP_GameDto
-                {
-                    id = review.MarketPlaceGame.game_id,
-                    name = review.MarketPlaceGame.name,
-                    description = review.MarketPlaceGame.description,
-                    release_date = review.MarketPlaceGame.release_date,
-                    price = review.MarketPlaceGame.price,
-                    stock = review.MarketPlaceGame.stock
-                }
+                review = review.review
             };
         }
 
-        public void DeleteReview(Guid review_id)
+        public void DeleteReview(Guid orderId, Guid reviewerId)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            var review = _context.OrderReviews
+                .FirstOrDefault(or => or.order_id == orderId && or.reviewer_id == reviewerId);
+
+            if (review == null)
             {
-                try
-                {
-                    var review = _context.OrderReviews
-                        .FirstOrDefault(or => or.review_id == review_id);
-
-                    if (review == null)
-                    {
-                        throw new ArgumentException("Review not found.");
-                    }
-
-                    _context.OrderReviews.Remove(review);
-                    _context.SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw ex;
-                }
+                throw new ArgumentException("Review not found.");
             }
+
+            _context.OrderReviews.Remove(review);
+            _context.SaveChanges();
         }
     }
 }

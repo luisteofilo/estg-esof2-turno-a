@@ -4,9 +4,6 @@ using ESOF.WebApp.WebAPI.DtoClasses;
 using ESOF.WebApp.WebAPI.DtoClasses.Response;
 using ESOF.WebApp.WebAPI.DtoClasses.Update;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ESOF.WebApp.WebAPI.Services.Marketplace
 {
@@ -28,7 +25,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                         .ThenInclude(gg => gg.genre)
                     .Include(g => g.gamePlatforms)
                         .ThenInclude(gp => gp.platform)
-                    .Include(g => g.gameReviews)
                     .Include(g => g.orderItems)
                     .Select(game => new ResponseMKP_GameDto
                     {
@@ -40,7 +36,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                         stock = game.stock,
                         genre_ids = game.gameGenres.Select(gg => gg.genre_id).ToList(),
                         platform_ids = game.gamePlatforms.Select(gp => gp.platform_id).ToList(),
-                        review_ids = game.gameReviews.Select(gr => gr.review_id).ToList(),
                         order_ids = game.orderItems.Select(oi => oi.order_id).ToList(),
                         genres = game.gameGenres.Select(gg => new ResponseGenreDto
                         {
@@ -52,13 +47,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                             id = gp.platform_id,
                             name = gp.platform.name,
                             debut_year = gp.platform.debut_year
-                        }).ToList(),
-                        reviews = game.gameReviews.Select(gr => new ResponseOrderReviewDto
-                        {
-                            review_id = gr.review_id,
-                            rating = gr.rating,
-                            review = gr.review,
-                            reviewer_id = gr.reviewer_id
                         }).ToList(),
                         orders = game.orderItems.Select(oi => new ResponseOrderItemDto
                         {
@@ -81,7 +69,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                     .ThenInclude(gg => gg.genre)
                 .Include(g => g.gamePlatforms)
                     .ThenInclude(gp => gp.platform)
-                .Include(g => g.gameReviews)
                 .Include(g => g.orderItems)
                 .FirstOrDefault(g => g.game_id == id);
 
@@ -100,7 +87,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                 stock = game.stock,
                 genre_ids = game.gameGenres.Select(gg => gg.genre_id).ToList(),
                 platform_ids = game.gamePlatforms.Select(gp => gp.platform_id).ToList(),
-                review_ids = game.gameReviews.Select(gr => gr.review_id).ToList(),
                 order_ids = game.orderItems.Select(oi => oi.order_id).ToList(),
                 genres = game.gameGenres.Select(gg => new ResponseGenreDto
                 {
@@ -112,13 +98,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                     id = gp.platform_id,
                     name = gp.platform.name,
                     debut_year = gp.platform.debut_year
-                }).ToList(),
-                reviews = game.gameReviews.Select(gr => new ResponseOrderReviewDto
-                {
-                    review_id = gr.review_id,
-                    rating = gr.rating,
-                    review = gr.review,
-                    reviewer_id = gr.reviewer_id
                 }).ToList(),
                 orders = game.orderItems.Select(oi => new ResponseOrderItemDto
                 {
@@ -155,7 +134,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                     stock = game.stock,
                     genre_ids = game.gameGenres.Select(gg => gg.genre_id).ToList(),
                     platform_ids = game.gamePlatforms.Select(gp => gp.platform_id).ToList(),
-                    review_ids = game.gameReviews.Select(gr => gr.review_id).ToList(),
                     order_ids = game.orderItems.Select(oi => oi.order_id).ToList(),
                     genres = game.gameGenres.Select(gg => new ResponseGenreDto
                     {
@@ -167,13 +145,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                         id = gp.platform_id,
                         name = gp.platform.name,
                         debut_year = gp.platform.debut_year
-                    }).ToList(),
-                    reviews = game.gameReviews.Select(gr => new ResponseOrderReviewDto
-                    {
-                        review_id = gr.review_id,
-                        rating = gr.rating,
-                        review = gr.review,
-                        reviewer_id = gr.reviewer_id
                     }).ToList(),
                     orders = game.orderItems.Select(oi => new ResponseOrderItemDto
                     {
@@ -194,7 +165,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             var game = _context.MarketPlaceGames
                 .Include(g => g.gameGenres)
                 .Include(g => g.gamePlatforms)
-                .Include(g => g.gameReviews)
                 .Include(g => g.orderItems)
                 .FirstOrDefault(g => g.game_id == id);
 
@@ -225,14 +195,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                 game.gamePlatforms = platforms;
             }
 
-            if (updateGameDto.gameReviews != null)
-            {
-                var reviews = _context.OrderReviews
-                    .Where(gr => updateGameDto.gameReviews.Contains(gr.review_id))
-                    .ToList();
-                game.gameReviews = reviews;
-            }
-
             if (updateGameDto.orderItems != null)
             {
                 var orderItems = _context.OrderItems
@@ -253,7 +215,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                 stock = game.stock,
                 genre_ids = game.gameGenres.Select(gg => gg.genre_id).ToList(),
                 platform_ids = game.gamePlatforms.Select(gp => gp.platform_id).ToList(),
-                review_ids = game.gameReviews.Select(gr => gr.review_id).ToList(),
                 order_ids = game.orderItems.Select(oi => oi.order_id).ToList(),
                 genres = game.gameGenres.Select(gg => new ResponseGenreDto
                 {
@@ -265,13 +226,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                     id = gp.platform_id,
                     name = gp.platform.name,
                     debut_year = gp.platform.debut_year
-                }).ToList(),
-                reviews = game.gameReviews.Select(gr => new ResponseOrderReviewDto
-                {
-                    review_id = gr.review_id,
-                    rating = gr.rating,
-                    review = gr.review,
-                    reviewer_id = gr.reviewer_id
                 }).ToList(),
                 orders = game.orderItems.Select(oi => new ResponseOrderItemDto
                 {

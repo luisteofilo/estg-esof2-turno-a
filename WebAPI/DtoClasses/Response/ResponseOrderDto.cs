@@ -9,5 +9,5 @@ public class ResponseOrderDto{
 	
 	//Full Data
 	public List<ResponseOrderItemDto> items{ get; set; }
-	
+	public List<ResponseOrderReviewDto> reviews{ get; set; }
 }

@@ -22,7 +22,7 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             {
                 return _context.Orders
                     .Include(o => o.orderItems)
-                    .ThenInclude(oi => oi.MarketPlaceGame)
+                    .Include(o => o.reviews)
                     .Select(order => new ResponseOrderDto
                     {
                         order_id = order.order_id,
@@ -43,6 +43,13 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                                 price = oi.MarketPlaceGame.price,
                                 stock = oi.MarketPlaceGame.stock
                             }
+                        }).ToList(),
+                        reviews = order.reviews.Select(or => new ResponseOrderReviewDto
+                        {
+                            order_id = or.order_id,
+                            reviewer_id = or.reviewer_id,
+                            rating = or.rating,
+                            review = or.review
                         }).ToList()
                     }).ToList();
             }
@@ -56,7 +63,7 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
         {
             var order = _context.Orders
                 .Include(o => o.orderItems)
-                .ThenInclude(oi => oi.MarketPlaceGame)
+                .ThenInclude(oi => oi.MarketPlaceGame).Include(order => order.reviews)
                 .FirstOrDefault(o => o.order_id == id);
 
             if (order == null)
@@ -84,6 +91,13 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                         price = oi.MarketPlaceGame.price,
                         stock = oi.MarketPlaceGame.stock
                     }
+                }).ToList(),
+                reviews = order.reviews.Select(or => new ResponseOrderReviewDto
+                {
+                    order_id = or.order_id,
+                    reviewer_id = or.reviewer_id,
+                    rating = or.rating,
+                    review = or.review
                 }).ToList()
             };
         }
@@ -122,6 +136,13 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                             price = oi.MarketPlaceGame.price,
                             stock = oi.MarketPlaceGame.stock
                         }
+                    }).ToList(),
+                    reviews = order.reviews.Select(or => new ResponseOrderReviewDto
+                    {
+                        order_id = or.order_id,
+                        reviewer_id = or.reviewer_id,
+                        rating = or.rating,
+                        review = or.review
                     }).ToList()
                 };
             }
@@ -134,7 +155,8 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
         public ResponseOrderDto UpdateOrder(Guid id, UpdateOrderDto updateOrderDto)
         {
             var order = _context.Orders
-                .Include(o => o.orderItems)
+                .Include(o => o.orderItems).ThenInclude(orderItem => orderItem.MarketPlaceGame)
+                .Include(o => o.reviews)
                 .FirstOrDefault(o => o.order_id == id);
 
             if (order == null)
@@ -150,6 +172,7 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             {
                 var orderItems = _context.OrderItems
                     .Where(oi => updateOrderDto.orderItems.Contains(oi.game_id))
+                    .Include(orderItem => orderItem.MarketPlaceGame)
                     .ToList();
                 order.orderItems = orderItems;
             }
@@ -176,35 +199,30 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                         price = oi.MarketPlaceGame.price,
                         stock = oi.MarketPlaceGame.stock
                     }
+                }).ToList(),
+                reviews = order.reviews.Select(or => new ResponseOrderReviewDto
+                {
+                    order_id = or.order_id,
+                    reviewer_id = or.reviewer_id,
+                    rating = or.rating,
+                    review = or.review
                 }).ToList()
             };
         }
 
         public void DeleteOrder(Guid id)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            var order = _context.Orders
+                .Include(o => o.orderItems)
+                .FirstOrDefault(o => o.order_id == id);
+
+            if (order == null)
             {
-                try
-                {
-                    var order = _context.Orders
-                        .Include(o => o.orderItems)
-                        .FirstOrDefault(o => o.order_id == id);
-
-                    if (order == null)
-                    {
-                        throw new ArgumentException("Order not found.");
-                    }
-
-                    _context.Orders.Remove(order);
-                    _context.SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw ex;
-                }
+                throw new ArgumentException("Order not found.");
             }
+
+            _context.Orders.Remove(order);
+            _context.SaveChanges();
         }
     }
 }

@@ -10,17 +10,13 @@ public partial class ApplicationDbContext{
 		modelBuilder.Entity<OrderReview>(entity => {
 			entity.ToTable("OrderReviews", schema: "marketplace");
 			
-			entity.HasKey(e => e.review_id);
+			entity.HasKey(e => e.order_id);
 			
-			entity.HasKey(e => e.game_id);
+			entity.HasKey(e => e.reviewer_id);
 
 			entity.Property(e => e.rating).IsRequired();
 			
 			entity.Property(e => e.review).IsRequired();
-			
-			entity.HasOne(e => e.MarketPlaceGame)
-				.WithMany(g => g.gameReviews)
-				.HasForeignKey(e => e.game_id);
 
 			entity.HasOne(e => e.Reviewer)
 				.WithMany(u => u.UserOrderReviews)

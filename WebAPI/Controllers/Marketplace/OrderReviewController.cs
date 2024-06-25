@@ -17,19 +17,19 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace {
         }
         
         [HttpGet("{id:guid}")]
-        public ActionResult<ResponseOrderReviewDto> GetReviewById(Guid id) {
-            return _orderReviewService.GetReviewById(id);
+        public ActionResult<ResponseOrderReviewDto> GetReviewById(Guid orderId, Guid reviewerId) {
+            return _orderReviewService.GetReviewById(orderId, reviewerId);
         }
         
         [HttpPost("add")]
-        public ActionResult<ResponseOrderReviewDto> CreateReview(CreateOrderReviewDto orderReview, Guid gameId, Guid reviewerId) {
-            return _orderReviewService.CreateReview(orderReview, gameId, reviewerId);
+        public ActionResult<ResponseOrderReviewDto> CreateReview(CreateOrderReviewDto orderReview, Guid orderId, Guid reviewerId) {
+            return _orderReviewService.CreateReview(orderReview, orderId, reviewerId);
         }
         
         [HttpPost("update")]
-        public ActionResult<ResponseOrderReviewDto> UpdateOrderReview(Guid reviewId, UpdateOrderReviewDto orderReview) {
+        public ActionResult<ResponseOrderReviewDto> UpdateOrderReview(Guid orderId, Guid reviewerId, UpdateOrderReviewDto orderReview) {
             try {
-                return _orderReviewService.UpdateReview(reviewId, orderReview);
+                return _orderReviewService.UpdateReview(orderId, reviewerId, orderReview);
             }
             catch (Exception e) {
                 return NotFound();
@@ -37,9 +37,9 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace {
         }
         
         [HttpDelete("delete")]
-        public IActionResult DeleteReview(Guid reviewId) {
+        public IActionResult DeleteReview(Guid orderId, Guid reviewerId) {
             try {
-                _orderReviewService.DeleteReview(reviewId);
+                _orderReviewService.DeleteReview(orderId, reviewerId);
                 return NoContent();
             }
             catch (Exception e) {

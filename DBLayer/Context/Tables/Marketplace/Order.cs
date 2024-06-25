@@ -22,6 +22,9 @@ public partial class ApplicationDbContext{
 				.WithOne(oi => oi.order)
 				.HasForeignKey(e => e.order_id);
 			
+			entity.HasMany(e => e.reviews)
+				.WithOne(or => or.order)
+				.HasForeignKey(e => e.order_id);
 		});
 	}
 }

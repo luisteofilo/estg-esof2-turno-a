@@ -30,10 +30,6 @@ public partial class ApplicationDbContext{
 				.WithOne(p => p.MarketPlaceGame )
 				.HasForeignKey(e => e.game_id);
 			
-			entity.HasMany(e => e.gameReviews)
-				.WithOne(gr => gr.MarketPlaceGame )
-				.HasForeignKey(e => e.game_id);
-			
 			entity.HasMany(e => e.orderItems)
 				.WithOne(oi => oi.MarketPlaceGame )
 				.HasForeignKey(e => e.game_id);
