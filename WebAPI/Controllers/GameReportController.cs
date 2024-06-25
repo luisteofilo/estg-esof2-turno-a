@@ -17,9 +17,34 @@ namespace ESOF.WebApp.WebAPI.Controllers
         }
 
         [HttpGet("order")]
-        public async Task<ActionResult<IEnumerable<Game>>> GetOrderedGames(string orderBy = "name")
+        public async Task<ActionResult<IEnumerable<Game>>> GetOrderedGames(
+            string orderBy = "name", 
+            string? name = null, 
+            string? genre = null, 
+            string? platform = null, 
+            DateTime? releaseDate = null)
         {
             IQueryable<Game> query = _context.Games.AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(g => g.Name.Contains(name));
+            }
+
+            if (!string.IsNullOrEmpty(genre))
+            {
+                query = query.Where(g => g.Genre == genre);
+            }
+
+            if (!string.IsNullOrEmpty(platform))
+            {
+                query = query.Where(g => g.Platform == platform);
+            }
+
+            if (releaseDate.HasValue)
+            {
+                query = query.Where(g => g.ReleaseDate.Date == releaseDate.Value.Date);
+            }
 
             switch (orderBy.ToLower())
             {

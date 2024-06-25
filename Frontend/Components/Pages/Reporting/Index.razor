@@ -4,76 +4,64 @@
 @inject ApiHelper ApiHelper
 
 <PageTitle>Game Reporting</PageTitle>
-<div class="col-md-10 offset-md-1 mb-5">
+<div class="col-md-10 offset-md-1 mb-5 text-center">
     <h1>Game Reporting</h1>
 </div>
 
 @if (_games == null)
 {
-    <p class="col-md-10 offset-md-1 mb-5">
+    <p class="col-md-10 offset-md-1 mb-5 text-center">
         <em>Loading...</em>
     </p>
 }
 else
 {
-    <div class="row">
-        <div class="col-10">
-            <ul class="nav nav-underline mb-3" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Games</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="fav-tab" data-bs-toggle="tab" data-bs-target="#fav-tab-pane" type="button" role="tab" aria-controls="fav-tab-pane" aria-selected="false">Favorites</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <div class="cardsGames row">
-                        @foreach (var game in _games)
-                        {
-                            <div class="col-md-3 mb-4">
-                                <div class="card position-relative">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@game.Name</h5>
-                                        <p class="card-text">@game.Genre - @game.Platform</p>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="fav-tab-pane" role="tabpanel" aria-labelledby="fav-tab" tabindex="0">
-                    <div class="cardsGames row">
-                        @foreach (var game in _games)
-                        {
-                            <div class="col-md-3 mb-4">
-                                <div class="card position-relative">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@game.Name</h5>
-                                        <p class="card-text">@game.Genre - @game.Platform</p>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-2">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
             <div class="menuFilters mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="m-0">Filters</h5>
                     <button type="button" class="btn btn-danger" @onclick="ClearFilters">Clear</button>
                 </div>
                 <div class="dropdownFilters">
-                    <select @onchange="FilterGames" class="form-select mb-3">
+                    <input type="text" @bind="NameFilter" class="form-control mb-3" placeholder="Search by Name" />
+                    <select @bind="GenreFilter" class="form-select mb-3">
                         <option value="">Select Genre</option>
                         @foreach (var genre in _genres)
                         {
                             <option value="@genre">@genre</option>
                         }
                     </select>
+                    <select @bind="PlatformFilter" class="form-select mb-3">
+                        <option value="">Select Platform</option>
+                        @foreach (var platform in _platforms)
+                        {
+                            <option value="@platform">@platform</option>
+                        }
+                    </select>
+                    <input type="date" @bind="ReleaseDateFilter" class="form-control mb-3" />
+                    <button type="button" class="btn btn-primary" @onclick="ApplyFilters">Apply Filters</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10 offset-md-1 mb-5 text-center">
+        <h2>Games:</h2>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="cardsGames row">
+                @foreach (var game in _games)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card position-relative">
+                            <div class="card-body">
+                                <h5 class="card-title">@game.Name</h5>
+                                <p class="card-text">@game.Genre - @game.Platform</p>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -83,8 +71,13 @@ else
     private List<Game>? _games;
     private List<Game>? _allGames;
     private List<string> _genres = new List<string>();
+    private List<string> _platforms = new List<string>();
+    private string NameFilter { get; set; }
+    private string GenreFilter { get; set; }
+    private string PlatformFilter { get; set; }
+    private DateTime? ReleaseDateFilter { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         // Dados Temporários
         _games = new List<Game>
@@ -97,24 +90,52 @@ else
 
         _allGames = _games;
         _genres = _games.Select(g => g.Genre).Distinct().ToList();
+        _platforms = _games.Select(g => g.Platform).Distinct().ToList();
+
+        // Dados da API (quando estiver pronto a usar)
+        // _allGames = await ApiHelper.GetFromApiAsync<List<Game>>("api/gamereport/order");
+        // _games = _allGames;
+        // _genres = _allGames.Select(g => g.Genre).Distinct().ToList();
+        // _platforms = _allGames.Select(g => g.Platform).Distinct().ToList();
+    }
+
+    private async Task ApplyFilters()
+    {
+        // API pronto para uso
+        // _games = await ApiHelper.GetFromApiAsync<List<Game>>($"api/gamereport/order?name={NameFilter}&genre={GenreFilter}&platform={PlatformFilter}&releaseDate={ReleaseDateFilter?.ToString("yyyy-MM-dd")}");
+
+        _games = _allGames;
+
+        if (!string.IsNullOrEmpty(GenreFilter))
+        {
+            _games = _games.Where(g => g.Genre == GenreFilter).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(PlatformFilter))
+        {
+            _games = _games.Where(g => g.Platform == PlatformFilter).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(NameFilter))
+        {
+            _games = _games.Where(g => g.Name.Contains(NameFilter, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (ReleaseDateFilter.HasValue)
+        {
+            _games = _games.Where(g => g.ReleaseDate.Date == ReleaseDateFilter.Value.Date).ToList();
+        }
+
+        StateHasChanged();
     }
 
     private void ClearFilters()
     {
-        _games = _allGames;
-    }
-
-    private void FilterGames(ChangeEventArgs e)
-    {
-        var selectedGenre = e.Value.ToString();
-        if (!string.IsNullOrEmpty(selectedGenre))
-        {
-            _games = _allGames.Where(g => g.Genre == selectedGenre).ToList();
-        }
-        else
-        {
-            _games = _allGames;
-        }
+        NameFilter = string.Empty;
+        GenreFilter = string.Empty;
+        PlatformFilter = string.Empty;
+        ReleaseDateFilter = null;
+        ApplyFilters();
     }
 
     public class Game
