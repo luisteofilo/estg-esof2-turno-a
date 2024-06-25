@@ -238,28 +238,16 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
 
         public void DeleteGame(Guid id)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            var game = _context.MarketPlaceGames
+                .FirstOrDefault(g => g.game_id == id);
+
+            if (game == null)
             {
-                try
-                {
-                    var game = _context.MarketPlaceGames
-                        .FirstOrDefault(g => g.game_id == id);
-
-                    if (game == null)
-                    {
-                        throw new ArgumentException("Game not found.");
-                    }
-
-                    _context.MarketPlaceGames.Remove(game);
-                    _context.SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw ex;
-                }
+                throw new ArgumentException("Game not found.");
             }
+
+            _context.MarketPlaceGames.Remove(game);
+            _context.SaveChanges();
         }
     }
 }

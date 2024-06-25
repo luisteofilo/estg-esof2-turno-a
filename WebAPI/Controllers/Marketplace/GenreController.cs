@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESOF.WebApp.WebAPI.Controllers.Marketplace
 {
-    [Route("api/marketplace/[controller]")]
+    [Route("marketplace/[controller]")]
     [ApiController]
     public class GenreController : ControllerBase
     {
@@ -23,17 +23,17 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace
             return _genreService.GetGenreById(id);
         }
         
-        [HttpPost("add")]
+        [HttpPost]
         public ActionResult<ResponseGenreDto> CreatePlatform(CreateGenreDto genre) {
             return _genreService.CreateGenre(genre);
         }
         
-        [HttpPost("update")]
+        [HttpPatch]
         public ActionResult<ResponseGenreDto> UpdatePlatform(Guid id, UpdateGenreDto genre) {
             return _genreService.UpdateGenre(id, genre);
         }
         
-        [HttpDelete("delete")]
+        [HttpDelete]
         public void DeletePlatform(Guid id) {
             _genreService.DeleteGenre(id);
         }

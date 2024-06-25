@@ -110,29 +110,17 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
 
         public void DeleteGenre(Guid id)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            var genre = _context.Genres
+                .Include(g => g.gameGenres)
+                .FirstOrDefault(g => g.genre_id == id);
+
+            if (genre == null)
             {
-                try
-                {
-                    var genre = _context.Genres
-                        .Include(g => g.gameGenres)
-                        .FirstOrDefault(g => g.genre_id == id);
-
-                    if (genre == null)
-                    {
-                        throw new ArgumentException("Genre not found.");
-                    }
-
-                    _context.Genres.Remove(genre);
-                    _context.SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw new Exception("An error occurred while deleting the genre.", ex);
-                }
+                throw new ArgumentException("Genre not found.");
             }
+
+            _context.Genres.Remove(genre);
+            _context.SaveChanges();
         }
     }
 }

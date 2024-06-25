@@ -16,19 +16,19 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             _context = context;
         }
 
-        public List<ResponseOrderItemDto> GetAllOrderItems()
+        public List<ResponseOrderItemDto> GetOrderItems(Guid orderId)
         {
             try
             {
                 return _context.OrderItems
                     .Include(oi => oi.MarketPlaceGame)
                     .Include(oi => oi.order)
+                    .Where(o => o.order_id == orderId)
                     .Select(orderItem => new ResponseOrderItemDto
                     {
                         order_id = orderItem.order_id,
                         game_id = orderItem.game_id,
                         amount = orderItem.amount,
-                        // Including minimal order details here to avoid deep nested objects
                     }).ToList();
             }
             catch (Exception ex)
@@ -54,7 +54,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                 order_id = orderItem.order_id,
                 game_id = orderItem.game_id,
                 amount = orderItem.amount,
-                // Including minimal order details here to avoid deep nested objects
             };
         }
 
@@ -89,7 +88,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                     order_id = orderItem.order_id,
                     game_id = orderItem.game_id,
                     amount = orderItem.amount,
-                    // Including minimal order details here to avoid deep nested objects
                 };
             }
             catch (DbUpdateException ex)
@@ -117,7 +115,6 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
                 order_id = orderItem.order_id,
                 game_id = orderItem.game_id,
                 amount = orderItem.amount,
-                // Including minimal order details here to avoid deep nested objects
             };
         }
 

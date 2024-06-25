@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESOF.WebApp.WebAPI.Controllers.Marketplace
 {
-    [Route("api/marketplace/[controller]")]
+    [Route("marketplace/[controller]")]
     [ApiController]
     public class PlatformController : ControllerBase {
         private readonly PlatformService _platformService = new(new ApplicationDbContext());
@@ -22,12 +22,12 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace
             return _platformService.GetPlatformById(id);
         }
         
-        [HttpPost("add")]
+        [HttpPost]
         public ActionResult<ResponsePlatformDto> CreatePlatform(CreatePlatformDto platform) {
             return _platformService.CreatePlatform(platform);
         }
         
-        [HttpPost("update")]
+        [HttpPatch]
         public async Task<ActionResult<ResponsePlatformDto>> UpdatePlatform(Guid id, UpdatePlatformDto platform) {
             try {
                 return await _platformService.UpdatePlatform(id, platform);;
@@ -37,7 +37,7 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace
             }
         }
         
-        [HttpDelete("delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeletePlatform(Guid id) {
             try {
                 await _platformService.DeletePlatform(id);

@@ -6,7 +6,7 @@ using ESOF.WebApp.WebAPI.Services.Marketplace;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESOF.WebApp.WebAPI.Controllers.Marketplace {
-    [Route("api/marketplace/[controller]")]
+    [Route("marketplace/[controller]")]
     [ApiController]
     public class GameController : ControllerBase {
         private readonly GameService _gameService = new(new ApplicationDbContext());
@@ -21,12 +21,12 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace {
             return _gameService.GetGameById(id);
         }
 
-        [HttpPost("add")]
+        [HttpPost]
         public ActionResult<ResponseMKP_GameDto> CreateGame(CreateMKP_GameDto game) {
             return _gameService.CreateGame(game);
         }
 
-        [HttpPost("update")]
+        [HttpPatch]
         public ActionResult<ResponseMKP_GameDto> UpdateGame(Guid id, UpdateMKP_GameDto game) {
             try {
                 return _gameService.UpdateGame(id, game);
@@ -36,7 +36,7 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace {
             }
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete]
         public IActionResult DeleteGame(Guid id) {
             try {
                 _gameService.DeleteGame(id);

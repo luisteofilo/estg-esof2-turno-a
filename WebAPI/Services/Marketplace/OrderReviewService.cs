@@ -16,12 +16,13 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             _context = context;
         }
 
-        public List<ResponseOrderReviewDto> GetAllReviews()
+        public List<ResponseOrderReviewDto> GetOrderReviews(Guid orderId)
         {
             try
             {
                 return _context.OrderReviews
                     .Include(or => or.Reviewer)
+                    .Where(o => o.order_id == orderId)
                     .Select(review => new ResponseOrderReviewDto
                     {
                         order_id = review.order_id,
