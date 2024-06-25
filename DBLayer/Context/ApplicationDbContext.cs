@@ -3,62 +3,79 @@ using ESOF.WebApp.DBLayer.Entities;
 using Helpers;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESOF.WebApp.DBLayer.Context;
-
-public partial class ApplicationDbContext : DbContext
+namespace ESOF.WebApp.DBLayer.Context
 {
-    // TODO: Add tables for 'Games'
-    private static readonly DbContextOptions DefaultOptions = new Func<DbContextOptions>(() =>
+    public partial class ApplicationDbContext : DbContext
     {
-        var optionsBuilder = new DbContextOptionsBuilder();
-        var db = EnvFileHelper.GetString("POSTGRES_DB");
-        var user = EnvFileHelper.GetString("POSTGRES_USER");
-        var password = EnvFileHelper.GetString("POSTGRES_PASSWORD");
-        var port = EnvFileHelper.GetString("POSTGRES_PORT");
-        var host = EnvFileHelper.GetString("POSTGRES_HOST");
-
-        if (string.IsNullOrEmpty(db) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password) ||
-            string.IsNullOrEmpty(port) || string.IsNullOrEmpty(host))
+        private static readonly DbContextOptions DefaultOptions = new Func<DbContextOptions>(() =>
         {
-            throw new InvalidOperationException(
-                "Database connection information not fully specified in environment variables.");
+            var optionsBuilder = new DbContextOptionsBuilder();
+            var db = EnvFileHelper.GetString("POSTGRES_DB");
+            var user = EnvFileHelper.GetString("POSTGRES_USER");
+            var password = EnvFileHelper.GetString("POSTGRES_PASSWORD");
+            var port = EnvFileHelper.GetString("POSTGRES_PORT");
+            var host = EnvFileHelper.GetString("POSTGRES_HOST");
+
+            if (string.IsNullOrEmpty(db) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password) ||
+                string.IsNullOrEmpty(port) || string.IsNullOrEmpty(host))
+            {
+                throw new InvalidOperationException(
+                    "Database connection information not fully specified in environment variables.");
+            }
+
+            var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
+            optionsBuilder.UseNpgsql(connectionString);
+            return optionsBuilder.Options;
+        })();
+        
+        public ApplicationDbContext()
+            : base(DefaultOptions)
+        {
         }
 
-        var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
-        optionsBuilder.UseNpgsql(connectionString);
-        return optionsBuilder.Options;
-    })();
-    
-    public ApplicationDbContext()
-        : base(DefaultOptions)
-    {
-    }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+        
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<Game> Games { get; set; }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
-    
-    public DbSet<User> Users { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<Permission> Permissions { get; set; }
-    public DbSet<UserRole> UserRoles { get; set; }
-    public DbSet<RolePermission> RolePermissions { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+        }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            BuildUsers(modelBuilder);
+            BuildRoles(modelBuilder);
+            BuildPermissions(modelBuilder);
+            BuildRolePermissions(modelBuilder);
+            BuildUserRoles(modelBuilder);
+            BuildGames(modelBuilder); 
+            base.OnModelCreating(modelBuilder);
+        }
 
+        private void BuildGames(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Game>()
+                .HasIndex(g => g.Name)
+                .IsUnique();
 
-    }
+            modelBuilder.Entity<Game>()
+                .HasIndex(g => g.Genre);
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        BuildUsers(modelBuilder);
-        BuildRoles(modelBuilder);
-        BuildPermissions(modelBuilder);
-        BuildRolePermissions(modelBuilder);
-        BuildUserRoles(modelBuilder);
-        base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Game>()
+                .HasIndex(g => g.Platform);
+
+            modelBuilder.Entity<Game>()
+                .Property(p => p.GameId)
+                .HasDefaultValueSql("gen_random_uuid()");
+        }
     }
 }
