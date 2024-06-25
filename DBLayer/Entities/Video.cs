@@ -15,7 +15,9 @@ public class Video
     public User User { get; set; }
     
     [Required]
-    public String caption{ get; set; }
+    public String Caption{ get; set; }
+    
+    public int ViewCount { get; set; }
     
     public ICollection<Like> Likes { get; set; }
     public ICollection<Comment> Comments { get; set; }
