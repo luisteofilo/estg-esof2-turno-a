@@ -7,6 +7,7 @@ namespace ESOF.WebApp.DBLayer.Context;
 
 public partial class ApplicationDbContext : DbContext
 {
+    // TODO: Add tables for 'Games'
     private static readonly DbContextOptions DefaultOptions = new Func<DbContextOptions>(() =>
     {
         var optionsBuilder = new DbContextOptionsBuilder();
