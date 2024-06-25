@@ -3,9 +3,7 @@
         <a class="navbar-brand" href="">Frontend</a>
     </div>
 </div>
-
 <input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
-
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
         <div class="nav-item px-3">
@@ -13,19 +11,23 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
             </NavLink>
         </div>
-
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="reporting">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
+                    <path d="M3 0a1 1 0 0 1 1 1v13.5a.5.5 0 0 1-1 0V1a1 1 0 0 1 1-1zM9 5a1 1 0 0 1 1 1v8.5a.5.5 0 0 1-1 0V6a1 1 0 0 1 1-1zM15 10a1 1 0 0 1 1 1v3.5a.5.5 0 0 1-1 0V11a1 1 0 0 1 1-1z"/>
+                </svg> Reporting
+            </NavLink>
+        </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="weather">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="users">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">

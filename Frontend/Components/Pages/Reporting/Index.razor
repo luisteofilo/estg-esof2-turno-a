@@ -1,0 +1,81 @@
+@page "/reporting"
+@using Frontend.Helpers
+@using ESOF.WebApp.DBLayer.Entities
+@attribute [StreamRendering]
+@inject ApiHelper ApiHelper
+
+<PageTitle>Game Reporting</PageTitle>
+<div class="col-md-10 offset-md-1 mb-5">
+    <h1>Game Reporting</h1>
+</div>
+
+@if (_games == null)
+{
+    <p class="col-md-10 offset-md-1 mb-5">
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="row">
+        <div class="col-10">
+            <ul class="nav nav-underline mb-3" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Games</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="fav-tab" data-bs-toggle="tab" data-bs-target="#fav-tab-pane" type="button" role="tab" aria-controls="fav-tab-pane" aria-selected="false">Favorites</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                    <div class="cardsGames row">
+                        @foreach (var game in _games)
+                        {
+                            <div class="col-md-3 mb-4">
+                                <div class="card position-relative">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@game.Name</h5>
+                                        <p class="card-text">@game.Genre - @game.Platform</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="fav-tab-pane" role="tabpanel" aria-labelledby="fav-tab" tabindex="0">
+                    <div class="cardsGames row">
+                        @foreach (var game in _games)
+                        {
+                            <div class="col-md-3 mb-4">
+                                <div class="card position-relative">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@game.Name</h5>
+                                        <p class="card-text">@game.Genre - @game.Platform</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="menuFilters mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="m-0">Filters</h5>
+                    <button type="button" class="btn btn-danger">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Game>? _games;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _games = await ApiHelper.GetFromApiAsync<List<Game>>("api/gamereport/order?orderBy=name");
+    }
+}
