@@ -10,7 +10,6 @@ body {
 h1 {
     color: #2c3e50;
     font-size: 2.5rem;
-    margin-bottom: 20px;
     text-align: center;
 }
 
@@ -97,26 +96,30 @@ p {
 /* Video */
 .video-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    justify-content: center; /* Centers items horizontally */
+    gap: 20px; /* Adds space between items */
+    padding: 20px; /* Adds padding around the container */
 }
 
 .video-item {
-    flex: 1 1 calc(33.333% - 20px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #fff;
+    background-color: white; /* Background color of the item */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    padding: 20px; /* Padding inside the item */
+    text-align: center; /* Centers text inside the item */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    width: 250px; /* Width of the item */
+    transition: transform 0.2s; /* Adds a transition effect */
+}
+
+.video-item:hover {
+    transform: translateY(-5px); /* Moves item slightly up on hover */
 }
 
 .video-item h3 {
     font-size: 1.2em;
-    margin-bottom: 10px;
+    margin: 0; /* Resets margin for the h3 element */
+    color: #333; /* Text color */
 }
 
-.video-item video {
-    width: 100%;
-    height: auto;
-}

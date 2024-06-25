@@ -1,14 +1,16 @@
 @page "/gamereplays"
 @using Frontend.Helpers
+@using Frontend.ViewModels
 @attribute [StreamRendering]
 @rendermode InteractiveServer
 @inject ApiHelper ApiHelper
+@inject NavigationManager Navigation
 
 <PageTitle>Game Replays</PageTitle>
 
 <h1>Game Replays</h1>
 
-<p>This component demonstrates uploading and displaying videos from Endpoint to DB.</p>
+<p></p>
 
 @if (!string.IsNullOrEmpty(uploadError))
 {
@@ -58,13 +60,8 @@ else
     <div class="video-container">
         @foreach (var replay in _gameReplays)
         {
-            <div class="video-item">
-                <h3>@replay.Title</h3>
-                <video width="640" height="480" controls>
-                    <source src="data:video/mp4;base64,@Convert.ToBase64String(replay.VideoData)" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <p>Uploaded on: @replay.UploadDate.ToString("yyyy-MM-dd")</p>
+            <div class="video-item" @onclick="() => NavigateToReplay(replay.Id)">
+                <h3>@replay.Title</h3>    
             </div>
         }
     </div>
@@ -73,7 +70,7 @@ else
 @code {
     private string videoTitle = string.Empty;
     private IBrowserFile? selectedFile;
-    private List<GameReplay>? _gameReplays;
+    private GameReplayViewModel[]? _gameReplays;
     private string? uploadError;
     private string? uploadResult;
     private bool isUploading = false;
@@ -92,7 +89,7 @@ else
                 Console.WriteLine("Preparing to upload file...");
                 
                 var content = new MultipartFormDataContent();
-                using var memoryStream = new MemoryStream();
+                var memoryStream = new MemoryStream();
                 await selectedFile.OpenReadStream(maxAllowedSize: 1073741824).CopyToAsync(memoryStream); // 1GB limit
                 
                 Console.WriteLine($"MemoryStream length after reading file: {memoryStream.Length}");
@@ -106,12 +103,12 @@ else
                 content.Add(fileContent, "VideoFile", selectedFile.Name);
                 content.Add(new StringContent(videoTitle), "Title");
 
-                var response = await ApiHelper.PostToApiAsync("gamereplays", content);
+                var response = await ApiHelper.PostToApiAsync("api/gamereplays", content);
                 if (response.IsSuccessStatusCode)
                 {
                     uploadResult = "Video uploaded successfully!";
                     Console.WriteLine("Video uploaded successfully!");
-                    await LoadGameReplays();
+                    await OnInitializedAsync();
                 }
                 else
                 {
@@ -134,21 +131,9 @@ else
         isUploading = false; // Set uploading state to false
     }
 
-    private async Task LoadGameReplays()
-    {
-        try
-        {
-            _gameReplays = await ApiHelper.GetFromApiAsync<List<GameReplay>>("gamereplays");
-        }
-        catch (Exception ex)
-        {
-            HandleException(ex);
-        }
-    }
-
     protected override async Task OnInitializedAsync()
     {
-        await LoadGameReplays();
+        _gameReplays = await ApiHelper.GetFromApiAsync<GameReplayViewModel[]>("api/gamereplays");
     }
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
@@ -163,12 +148,8 @@ else
         Console.WriteLine($"Exception: {ex.Message}");
     }
 
-    public class GameReplay
+    private void NavigateToReplay(Guid id)
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public DateTime UploadDate { get; set; }
-        public byte[] VideoData { get; set; }
-        public string FilePath { get; set; }
+        Navigation.NavigateTo($"/gamereplays/{id}");
     }
 }
