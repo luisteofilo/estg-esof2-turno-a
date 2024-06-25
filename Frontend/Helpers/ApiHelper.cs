@@ -1,19 +1,31 @@
-namespace Frontend.Helpers;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 
-public class ApiHelper(HttpClient httpClient)
+namespace Frontend.Helpers
 {
-    public async Task<T?> GetFromApiAsync<T>(string url)
+    public class ApiHelper
     {
-        try
+        private readonly HttpClient _httpClient;
+
+        public ApiHelper(HttpClient httpClient)
         {
-            var response = await httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<T>();
+            _httpClient = httpClient;
         }
-        catch (HttpRequestException e)
+
+        public async Task<T?> GetFromApiAsync<T>(string url)
         {
-            // Handle exception
-            throw new ApplicationException($"Error fetching data from {url}: {e.Message}");
+            try
+            {
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<T>();
+            }
+            catch (HttpRequestException e)
+            {
+                // Handle exception
+                throw new ApplicationException($"Error fetching data from {url}: {e.Message}");
+            }
         }
     }
 }

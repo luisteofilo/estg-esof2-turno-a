@@ -27,7 +27,7 @@ namespace ESOF.WebApp.DBLayer.Context
             optionsBuilder.UseNpgsql(connectionString);
             return optionsBuilder.Options;
         })();
-        
+
         public ApplicationDbContext()
             : base(DefaultOptions)
         {
@@ -37,13 +37,13 @@ namespace ESOF.WebApp.DBLayer.Context
             : base(options)
         {
         }
-        
+
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
-        public DbSet<Game> Games { get; set; }
+        public DbSet<Game> Games { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -57,7 +57,7 @@ namespace ESOF.WebApp.DBLayer.Context
             BuildPermissions(modelBuilder);
             BuildRolePermissions(modelBuilder);
             BuildUserRoles(modelBuilder);
-            BuildGames(modelBuilder); 
+            BuildGames(modelBuilder);
             base.OnModelCreating(modelBuilder);
         }
 

@@ -6,7 +6,7 @@ namespace ESOF.WebApp.DBLayer.Context;
 // TODO: Implement context for the Games table
 public partial class ApplicationDbContext
 {
-    public class Game
+    public class GameTable
     {
         public int GameId { get; set; }
         public required string Name { get; set; }
