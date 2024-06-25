@@ -9,9 +9,12 @@ namespace ESOF.WebApp.DBLayer.Entities
         public Guid GameId { get; set; }
 
         [Required]
-        public required string Name { get; set; }
-        public required string Genre { get; set; }
-        public required string Platform { get; set; }
+        public string Name { get; set; }
+        [Required]
+        public string Genre { get; set; }
+        [Required]
+        public string Platform { get; set; }
+        [Required]
         public DateTime ReleaseDate { get; set; }
     }
 }

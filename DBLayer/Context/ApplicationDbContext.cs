@@ -2,6 +2,7 @@ using DotNetEnv;
 using ESOF.WebApp.DBLayer.Entities;
 using Helpers;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ESOF.WebApp.DBLayer.Context
 {
@@ -43,7 +44,7 @@ namespace ESOF.WebApp.DBLayer.Context
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
-        public DbSet<Game> Games { get; set; } 
+        public DbSet<Game> Games { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -57,25 +58,38 @@ namespace ESOF.WebApp.DBLayer.Context
             BuildPermissions(modelBuilder);
             BuildRolePermissions(modelBuilder);
             BuildUserRoles(modelBuilder);
-            BuildGames(modelBuilder);
+            BuildGame(modelBuilder);
+            SeedGames(modelBuilder);
             base.OnModelCreating(modelBuilder);
         }
 
-        private void BuildGames(ModelBuilder modelBuilder)
+        private void BuildGameTable(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Game>()
-                .HasIndex(g => g.Name)
-                .IsUnique();
-
-            modelBuilder.Entity<Game>()
-                .HasIndex(g => g.Genre);
-
-            modelBuilder.Entity<Game>()
-                .HasIndex(g => g.Platform);
-
-            modelBuilder.Entity<Game>()
-                .Property(p => p.GameId)
-                .HasDefaultValueSql("gen_random_uuid()");
+            modelBuilder.Entity<Game>(entity =>
+            {
+                entity.ToTable("Games");
+        
+                entity.HasKey(e => e.GameId);
+        
+                entity.Property(e => e.Name).IsRequired();
+                entity.Property(e => e.Genre).IsRequired();
+                entity.Property(e => e.Platform).IsRequired();
+                entity.Property(e => e.ReleaseDate).IsRequired();
+        
+                entity.Property(e => e.GameId)
+                      .HasDefaultValueSql("gen_random_uuid()");
+            });
+        }
+        
+        // Seed data for Games
+        private void SeedGames(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Game>().HasData(
+                new Game { GameId = Guid.NewGuid(), Name = "Game 1", Genre = "Action", Platform = "PC", ReleaseDate = DateTime.Parse("2021-01-01") },
+                new Game { GameId = Guid.NewGuid(), Name = "Game 2", Genre = "Adventure", Platform = "PS4", ReleaseDate = DateTime.Parse("2022-05-15") },
+                new Game { GameId = Guid.NewGuid(), Name = "Game 3", Genre = "RPG", Platform = "Xbox One", ReleaseDate = DateTime.Parse("2020-11-10") },
+                new Game { GameId = Guid.NewGuid(), Name = "Game 4", Genre = "Strategy", Platform = "PC", ReleaseDate = DateTime.Parse("2019-09-01") }
+            );
         }
     }
 }

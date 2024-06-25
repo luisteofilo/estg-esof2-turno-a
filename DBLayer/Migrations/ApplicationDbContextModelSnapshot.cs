@@ -22,11 +22,11 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Context.ApplicationDbContext+Game", b =>
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
-                    b.Property<int>("GameId")
+                    b.Property<Guid>("GameId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("Genre")
@@ -46,14 +46,41 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasKey("GameId");
 
-                    b.HasIndex("Genre");
+                    b.ToTable("Games", (string)null);
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.HasIndex("Platform");
-
-                    b.ToTable("Games");
+                    b.HasData(
+                        new
+                        {
+                            GameId = new Guid("32d3845c-9855-4977-a5fb-5e5c945630e9"),
+                            Genre = "Action",
+                            Name = "Game 1",
+                            Platform = "PC",
+                            ReleaseDate = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            GameId = new Guid("c41a8dbd-f6cb-4f15-8b58-904683022d2b"),
+                            Genre = "Adventure",
+                            Name = "Game 2",
+                            Platform = "PS4",
+                            ReleaseDate = new DateTime(2022, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            GameId = new Guid("95da62b9-00fe-4920-a02b-44d63fac2c64"),
+                            Genre = "RPG",
+                            Name = "Game 3",
+                            Platform = "Xbox One",
+                            ReleaseDate = new DateTime(2020, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            GameId = new Guid("1a7a6b24-d8e8-4da3-8801-3b57d4e9d900"),
+                            Genre = "Strategy",
+                            Name = "Game 4",
+                            Platform = "PC",
+                            ReleaseDate = new DateTime(2019, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>

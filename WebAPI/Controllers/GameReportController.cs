@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
+using System.Linq;
 
 namespace ESOF.WebApp.WebAPI.Controllers
 {
@@ -18,17 +19,17 @@ namespace ESOF.WebApp.WebAPI.Controllers
 
         [HttpGet("order")]
         public async Task<ActionResult<IEnumerable<Game>>> GetOrderedGames(
-            string orderBy = "name", 
-            string? name = null, 
-            string? genre = null, 
-            string? platform = null, 
+            string orderBy = "name",
+            string? name = null,
+            string? genre = null,
+            string? platform = null,
             DateTime? releaseDate = null)
         {
             IQueryable<Game> query = _context.Games.AsQueryable();
 
             if (!string.IsNullOrEmpty(name))
             {
-                query = query.Where(g => g.Name.Contains(name));
+                query = query.Where(g => g.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrEmpty(genre))
