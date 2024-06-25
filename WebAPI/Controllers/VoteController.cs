@@ -49,7 +49,7 @@ public class VoteController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao registrar voto: {ex.Message}");
+            Console.WriteLine($"Erro ao registar voto: {ex.Message}");
             return StatusCode(500, "Erro interno no servidor.");
         }
     }
@@ -66,12 +66,21 @@ public class VoteController : ControllerBase
                 .Select(g => g.Key)
                 .FirstOrDefaultAsync();
 
-            if (gameOfTheMonthId == default)
+            if (gameOfTheMonthId == Guid.Empty)
             {
                 return NotFound("Nenhum voto foi registado este mês.");
             }
 
             var game = await _context.Games.FindAsync(gameOfTheMonthId);
+
+            // Recuperar os votos para o jogo do mês
+            var votes = await _context.Votes
+                .Where(v => v.GameId == gameOfTheMonthId && v.VoteTime.Month == DateTime.Now.Month && v.VoteTime.Year == DateTime.Now.Year)
+                .ToListAsync();
+
+            // Associar a coleção de votos ao jogo
+            game.Votes = votes;
+
             return Ok(game);
         }
         catch (Exception ex)
@@ -80,6 +89,7 @@ public class VoteController : ControllerBase
             return StatusCode(500, "Erro interno no servidor.");
         }
     }
+
 
 
 

@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Linq;
+using ESOF.WebApp.WebAPI;
+using ESOF.WebApp.WebAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,9 @@ builder.Services.AddScoped<VoteService>();
 
 // Add controllers
 builder.Services.AddControllers();
+
+// Add Repository
+builder.Services.AddScoped<IVoteRepository, VoteRepository>();
 
 // Add Swagger
 builder.Services.AddSwaggerGen(c =>
