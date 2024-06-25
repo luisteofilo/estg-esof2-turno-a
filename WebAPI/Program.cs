@@ -87,7 +87,6 @@ app.MapPost("/games", async (Games newGame) =>
     .WithOpenApi();
 
 
-
 app.Run();
 
 
