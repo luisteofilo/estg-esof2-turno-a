@@ -1,6 +1,7 @@
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
 using Helpers.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,7 +63,33 @@ app.MapGet("/games/{GameID:guid}", async (Guid GameID) =>
     .WithOpenApi();
 
 // Run the app
+
+app.MapPost("/games", async (Games newGame) =>
+    {
+        var db = new ApplicationDbContext();
+
+        var game = new Games
+        {
+            GameId = newGame.GameId,
+            Name = newGame.Name,
+            Description = newGame.Description,
+            Url_Image = newGame.Url_Image,
+            Developer = newGame.Developer,
+            Publisher = newGame.Publisher,
+            ReleaseDate = newGame.ReleaseDate,
+            Price = newGame.Price
+        };
+
+        db.Games.Add(game);
+        await db.SaveChangesAsync();
+    })
+    .WithName("AddGame")
+    .WithOpenApi();
+
+
+
 app.Run();
+
 
 // WeatherForecast record (if needed)
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
