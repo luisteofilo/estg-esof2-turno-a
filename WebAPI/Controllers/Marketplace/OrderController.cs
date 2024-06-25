@@ -1,5 +1,9 @@
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities.Marketplace;
+using ESOF.WebApp.WebAPI.DtoClasses;
+using ESOF.WebApp.WebAPI.DtoClasses.Response;
+using ESOF.WebApp.WebAPI.DtoClasses.Update;
+using ESOF.WebApp.WebAPI.Services.Marketplace;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,109 +13,42 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OrderService _orderService = new(new ApplicationDbContext());
 
-        public OrderController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        // GET: api/Order
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
-        {
-            return await _context.Orders.ToListAsync();
+        public ActionResult<List<ResponseOrderDto>> GetAllOrders() {
+            return _orderService.GetAllOrders();
         }
-
-        // GET: api/Order/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(Guid id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-
-            if (order == null)
-            {
+        
+        [HttpGet("{id:guid}")]
+        public ActionResult<ResponseOrderDto> GetOrderById(Guid id) {
+            return _orderService.GetOrderById(id);
+        }
+        
+        [HttpPost("add")]
+        public ActionResult<ResponseOrderDto> CreateOrder(CreateOrderDto order) {
+            return _orderService.CreateOrder(order);
+        }
+        
+        [HttpPost("update")]
+        public ActionResult<ResponseOrderDto> UpdateOrder(Guid id, UpdateOrderDto order) {
+            try {
+                return _orderService.UpdateOrder(id, order);
+            }
+            catch (Exception e) {
                 return NotFound();
             }
-
-            return order;
         }
-
-        // PUT: api/Order/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(Guid id, Order order)
-        {
-            if (id != order.user_id)
-            {
-                return BadRequest();
+        
+        [HttpDelete("delete")]
+        public IActionResult DeleteOrder(Guid id) {
+            try {
+                _orderService.DeleteOrder(id);
+                return NoContent();
             }
-
-            _context.Entry(order).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Order
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
-        {
-            _context.Orders.Add(order);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (OrderExists(order.user_id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetOrder", new { id = order.user_id }, order);
-        }
-
-        // DELETE: api/Order/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(Guid id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
+            catch (Exception e) {
                 return NotFound();
             }
-
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool OrderExists(Guid id)
-        {
-            return _context.Orders.Any(e => e.user_id == id);
         }
     }
 }
