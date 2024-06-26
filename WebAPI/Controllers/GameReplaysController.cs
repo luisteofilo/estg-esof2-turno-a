@@ -20,7 +20,8 @@ public class GameReplaysController : ControllerBase
             {
                 g.Id,
                 g.Title,
-                g.UploadDate
+                g.UploadDate,
+                g.User.Email
             }).ToList();
 
         return Ok(gameReplays);

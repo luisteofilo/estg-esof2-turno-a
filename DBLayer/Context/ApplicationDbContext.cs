@@ -44,7 +44,7 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<GameReplay> GameReplays { get; set; }
-    public DbSet<UserGameReplay> UserGameReplays { get; set; }
+    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -63,6 +63,6 @@ public partial class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         // New Model
         BuildGameReplays(modelBuilder);
-        BuildUserGameReplays(modelBuilder);
+        
     }
 }
