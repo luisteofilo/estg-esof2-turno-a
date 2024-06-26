@@ -25,6 +25,8 @@
 
     <ItemGroup>
       <Compile Remove="Context\Tables\Games.cs" />
+      <Compile Remove="Migrations\20240626165727_SpeedRuns.cs" />
+      <Compile Remove="Migrations\20240626165727_SpeedRuns.Designer.cs" />
     </ItemGroup>
 
 </Project>

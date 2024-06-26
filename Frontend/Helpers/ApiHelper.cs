@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 
 namespace Frontend.Helpers;
@@ -52,6 +53,23 @@ public class ApiHelper(HttpClient httpClient)
         }
     }
 
+    
+    public async Task PutToApiAsync(string url)
+    {
+        try
+        {
+            // Enviar a solicitação PUT para a API
+            var response = await httpClient.PutAsync(url, null);
+
+            // Verificar se a solicitação foi bem-sucedida
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            // Tratar exceções de solicitação HTTP
+            throw new ApplicationException($"Error putting data to {url}: {e.Message}");
+        }
+    }
     
     public async Task<T> DeleteFromApiAsync<T>(string url)
     {

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESOF.WebApp.WebAPI.Controllers;
 
-
 [Route("api/[controller]")]
 [ApiController]
 public class SpeedRunsController : ControllerBase
@@ -28,6 +27,14 @@ public class SpeedRunsController : ControllerBase
     {
         return Ok(_speedRunService.GetSpeedRunModerators());
     }
+    
+    // ver as categorias que um utilizador é moderador
+    [HttpGet("moderators/games/{userID:guid}")]
+    public ActionResult<IEnumerable<GameViewModel>> GetModeratorGamesByUser(Guid userID)
+    {
+        return Ok(_speedRunService.GetModeratorGamesByUser(userID));
+    }
+    
 
     [HttpGet("runs/{categoryID}")]
     public ActionResult<IEnumerable<SpeedrunRunViewModel>> GetRunsByCategory(Guid categoryID)
@@ -39,17 +46,37 @@ public class SpeedRunsController : ControllerBase
         }
         return Ok(runs);
     }
+    
+    // ver as runs de um jogador
+    [HttpGet("runs/player/{playerID:guid}")]
+    public ActionResult<IEnumerable<SpeedrunRunViewModel>> GetRunsByPlayer(Guid playerID)
+    {
+        return Ok(_speedRunService.GetRunsByPlayer(playerID));
+    }
 
     [HttpGet("runs")]
     public ActionResult<IEnumerable<SpeedrunRunViewModel>> GetSpeedRunRuns()
     {
         return Ok(_speedRunService.GetSpeedRunRuns());
     }
+    
+    [HttpGet("runs/verify")]
+    public ActionResult<IEnumerable<SpeedrunRunViewModel>> GetSpeedRunRunsToVerify()
+    {
+        return Ok(_speedRunService.GetSpeedRunRunsToVerify());
+    }
 
     [HttpGet("categories")]
     public ActionResult<IEnumerable<SpeedrunCategoryViewModel>> GetSpeedRunCategories()
     {
         return Ok(_speedRunService.GetSpeedRunCategories());
+    }
+    
+    // categoria por id
+    [HttpGet("categorie/{categoryID:guid}")]
+    public ActionResult<SpeedrunCategoryViewModel> GetCategory(Guid categoryID)
+    {
+        return Ok(_speedRunService.GetCategory(categoryID));
     }
 
     [HttpGet("categories/{gameID}")]
@@ -101,6 +128,14 @@ public class SpeedRunsController : ControllerBase
     {
         _speedRunService.UpdateSpeedrunRun(run);
         return Ok(run);
+    }
+    
+    // apenas atulizar uma run para verificada
+    [HttpPut("runs/verify/{runID:guid}/{verifier:guid}/{verify:bool}")]
+    public ActionResult<SpeedrunRunViewModel> VerifyRun(Guid runID, Guid verifier, bool verify)
+    {
+        _speedRunService.VerifyRun(runID, verifier, verify);
+        return Ok();
     }
 
     [HttpPut("categories")]

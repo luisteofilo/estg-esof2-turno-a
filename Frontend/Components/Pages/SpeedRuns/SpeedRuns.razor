@@ -6,9 +6,14 @@
 @attribute [StreamRendering]
 @inject ApiHelper ApiHelper
 @inject HttpClient httpClient
+@inject IJSRuntime JSRuntime
+
 @rendermode InteractiveServer
 
 <PageTitle>Speed Runs</PageTitle>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <style>
     
@@ -28,62 +33,88 @@
         transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
     
+    .large-modal .modal-dialog {
+        max-width: 1400px;
+    }
+    
 </style>
 
 
 <div class="container">
     <!-- Barra Lateral à direita -->
     <div class="filter">
-            <form method="get">
+        <form method="get">
                
-                  <h3>Game</h3>
-                  <input type="text" class="custom-input" @oninput="@((ChangeEventArgs args) => SearchGame(args, "leaderboard"))" placeholder="Search for a game" />            
-                  <select class="form-control mt-3" @onchange="@((ChangeEventArgs args) => SelectGame(args, "leaderboard"))">
-                      @if (_filteredGames == null)
-                      {
-                          <option>Loading games...</option>
-                      }
-                      else
-                      {
-                          <option value="">Select a game...</option>
-                          @foreach (var game in _filteredGames)
-                          {
-                              <option value="@game.GameID">@game.GameName</option>
-                          }
-                      }
-                  </select>
+            <h3>Game</h3>
+            <input type="text" class="custom-input" @oninput="@((ChangeEventArgs args) => SearchGame(args, "leaderboard"))" placeholder="Search for a game" />            
+            <select class="form-control mt-3" @onchange="@((ChangeEventArgs args) => SelectGame(args, "leaderboard"))">
+                @if (_filteredGames == null)
+                {
+                    <option>Loading games...</option>
+                }
+                else
+                {
+                    <option value="">Select a game...</option>
+                    @foreach (var game in _filteredGames)
+                    {
+                        <option value="@game.GameID">@game.GameName</option>
+                    }
+                }
+            </select>
                 
-                  <br>
+            <br>
                 
-                  <h3>Category</h3>
-                  <input type="text" class="custom-input" placeholder="Search for a category..." @oninput="@((ChangeEventArgs args) => SearchCategory(args, "leaderboard"))" />
+            <h3>Category</h3>
+            <input type="text" class="custom-input" placeholder="Search for a category..." @oninput="@((ChangeEventArgs args) => SearchCategory(args, "leaderboard"))" />
                   
-                  <select class="form-control mt-3" @onchange="@((ChangeEventArgs args) => SelectCategory(args, "leaderboard"))">
-                      @if (_filteredCategories == null)
-                      {
-                          <option>Loading categories...</option>
-                      }
-                      else
-                      {
-                          <option value="">Select a category...</option>
-                          @foreach (var category in _filteredCategories)
-                          {
-                              <option value="@category.CategoryID">@category.CategoryName</option>
-                          }
-                      }
-                  </select>
+            <select class="form-control mt-3" @onchange="@((ChangeEventArgs args) => SelectCategory(args, "leaderboard"))">
+                @if (_filteredCategories == null)
+                {
+                    <option>Loading categories...</option>
+                }
+                else
+                {
+                    <option value="">Select a category...</option>
+                    @foreach (var category in _filteredCategories)
+                    {
+                        <option value="@category.CategoryID">@category.CategoryName</option>
+                    }
+                }
+            </select>
+            
                 
-                
-                
-            </form>
-        </div>
+        </form>
+        
+        <br/>
+        
+        <div class="game-rules">
+                <h4>Category Rules</h4>
+                @if (_gameRulesLeaderboard == null)
+                {
+                    <p>Loading category rules...</p>
+                }
+                else
+                {
+                    <p>@_gameRulesLeaderboard</p>
+                }
+            </div>
+    </div>
     
     <!-- Conteúdo Principal -->
     <div class="main-content">
         <div class="leaderboard">
             <h1>Speedrun Leaderboard</h1>
-            <button class="btn btn-success mb-4" data-toggle="modal" data-target="#myModal">Add New Run</button>
-            <button class="btn btn-primary mb-4" data-toggle="modal" data-target="#adminModal">Manage Runs</button>
+            <button class="btn btn-success mb-4" data-toggle="modal" data-target="#myModal">Add Run</button>
+            <button class="btn btn-success mb-4" data-toggle="modal" data-target="#myRunsModal">My Runs</button>
+            @if(_moderatorGames != null && _moderatorGames.Count > 0)  
+            {
+                <button class="btn btn-primary mb-4" style="margin-left: 4px;" data-toggle="modal" data-target="#verifyModal">Verify Runs</button>
+            }
+            @if(_moderatorGames != null && _moderatorGames.Count > 0)  
+            {
+                <button class="btn btn-primary mb-4" style="margin-left: 4px;" data-toggle="modal" data-target="#administrationModal">Administration</button>
+            }
+            
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -97,11 +128,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                @if (_speedRuns != null)
+                @if (_speedRunsLeaderboard != null)
                 {
                     // Ordenar as runs por tempo e que sejam verificadas
                     
-                    var orderedSpeedRuns = _speedRuns
+                    var orderedSpeedRuns = _speedRunsLeaderboard
                         .Where(run => run.Verified)
                         .OrderBy(run => run.RunTime)
                         .ToList();
@@ -139,9 +170,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add New Run</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <form method="post" @onsubmit="AddRun">
                 <div class="modal-body">
@@ -185,7 +213,7 @@
                       <br>
                       
                       <div class="form-group">
-                          <label for="time">Time (hh:mm:ss)</label>
+                          <label for="time">Time (seconds)</label>
                           <input type="text" name="time" class="form-control" @bind="runTimeAddRun" required />
                       </div>
                       
@@ -205,14 +233,27 @@
     </div>
 </div>
 
-<div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="adminModalLabel" aria-hidden="true" data-backdrop="false">
+<div class="modal fade large-modal" id="verifyModal" tabindex="-1" role="dialog" aria-labelledby="verifyModalLabel" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="adminModalLabel">Manage Runs</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="verifyModalLabel">Manage Runs</h5>
+                <div>
+                    <select class="form-control mt-3" style="margin-top: 100px" @bind="_gameSelectedVerifyRuns" >
+                        @if (_moderatorGames == null)
+                        {
+                            <option>Loading games...</option>
+                        }
+                        else
+                        {
+                            <option value="">Select a game...</option>
+                            @foreach (var game in _moderatorGames)
+                            {
+                                <option value="@game.GameID">@game.GameName</option>
+                            }
+                        }
+                    </select>
+                </div>
             </div>
             <div class="modal-body">
                 <table class="table table-striped">
@@ -223,31 +264,32 @@
                         <th>Category</th>
                         <th>Time</th>
                         <th>Date Achieved</th>
-                        <th>Verified</th>
+                        <th>Video</th>
+                        <th>Action</th>
                         <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                        @if (_speedRuns != null)
+                    @if (_runsToVerify != null)
+                    {
+                        for (int i = 0; i < _runsToVerify.Count; i++)
                         {
-                            for (int i = 0; i < _speedRuns.Count; i++)
+                            if (_runsToVerify[i].GameID.Equals(_gameSelectedVerifyRuns))
                             {
-                                if (!_speedRuns[i].Verified)
-                                {
-                                    var run = _speedRuns[i];
-                                    <tr>
-                                        <td>@(i + 1)</td>
-                                        <td>@run.PlayerID</td>
-                                        <td>@run.</td>
-                                        <td>@run.CategoryName</td>
-                                        <td>@run.RunTime</td>
-                                        <td>@run.SubmissionDate.ToString("yyyy-MM-dd")</td>
-                                        <td>@(run.Verified ? "Yes" : "No")</td>
-                                        <td><button class="btn btn-success">Verify</button></td>
-                                    </tr> 
-                                }
+                                var run = _runsToVerify[i];
+                                <tr>
+                                    <td>@run.PlayerName</td>
+                                    <td>@run.GameName</td>
+                                    <td>@run.CategoryName</td>
+                                    <td>@run.RunTime</td>
+                                    <td>@run.SubmissionDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@(run.VideoLink)</td>
+                                    <td><button class="btn btn-success" @onclick="@((MouseEventArgs args) => verifyRun(args, run.RunID, true))" >True</button></td>
+                                    <td><button class="btn btn-danger" @onclick="@((MouseEventArgs args) => verifyRun(args, run.RunID, false))" >False</button></td>
+                                </tr> 
                             }
                         }
+                    }
                     </tbody>
                 </table>
             </div>
@@ -258,24 +300,167 @@
     </div>
 </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<div class="modal fade large-modal" id="myRunsModal" tabindex="-1" role="dialog" aria-labelledby="myRunsModalLabel" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myRunsModalLabel">My Runs</h5>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Player</th>
+                        <th>Game</th>
+                        <th>Category</th>
+                        <th>Time</th>
+                        <th>Date Achieved</th>
+                        <th>Verified</th>
+                        <th>Video</th>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @if (_playerRuns != null)
+                    {
+                        for (int i = 0; i < _playerRuns.Count; i++)
+                        {
+                            var run = _playerRuns[i];
+                            <tr>
+                                <td>@run.Rank</td>
+                                <td>@run.PlayerName</td>
+                                <td>@run.GameName</td>
+                                <td>@run.CategoryName</td>
+                                <td>@run.RunTime</td>
+                                <td>@run.SubmissionDate.ToString("yyyy-MM-dd")</td>
+                                <td>@run.Verified</td>
+                                <td>@(run.VideoLink)</td>
 
-    <script>
-    window.onload = function() {
-        var choicesSelects = Array.from(document.querySelectorAll('.choices-select'));
-        choicesSelects.map(function(select) {
-            new Choices(select, {
-                itemSelectText: '',
-            });
-        });
-    };
-    
-    
-    </script>
+                            </tr> 
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="administrationModal" tabindex="-1" role="dialog" aria-labelledby="administrationModalLabel" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="administrationModalLabel">Administration</h5>
+                </div>
+                
+                <label>Game</label>
+                  <input type="text" class="custom-input" @oninput="@((ChangeEventArgs args) => SearchGame(args, "addRun"))" placeholder="Search for a game" />            
+                  <select class="form-control mt-3"  @onchange="@((ChangeEventArgs args) => SelectGame(args, "addRun"))" required >
+                      @if (_filteredGamesAddRun == null)
+                      {
+                          <option>Loading games...</option>
+                      }
+                      else
+                      {
+                          <option value="">Select a game...</option>
+                          @foreach (var game in _filteredGamesAddRun)
+                          {
+                              <option value="@game.GameID">@game.GameName</option>
+                          }
+                      }
+                  </select>
+                  
+                  <br>
+                    
+                <div class="accordion" id="categoryAccordion">
+                    <div class="card">
+                        <div class="card-header" id="reCategoryHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#removeCategory" aria-expanded="true" aria-controls="addCategory">
+                                    Remove Category
+                                </button>
+                            </h2>
+                        </div>
+                
+                        <div id="removeCategory" class="collapse" aria-labelledby="removeCategoryHeading" data-parent="#categoryAccordion">
+                            <div class="card-body">
+                                <form method="post">
+                                    <label>Category</label>
+                                          <input type="text" class="custom-input" placeholder="Search for a category..." @oninput="@((ChangeEventArgs args) => SearchCategory(args, "addRun"))" />
+                                          
+                                    <select class="form-control mt-3" @onchange="@((ChangeEventArgs args) => SelectCategory(args, "addRun"))" required>
+                                        @if (_filteredCategoriesAddRun == null)
+                                        {
+                                            <option>Loading categories...</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="">Select a category...</option>
+                                            @foreach (var category in _filteredCategoriesAddRun)
+                                            {
+                                                <option value="@category.CategoryID">@category.CategoryName</option>
+                                            }
+                                        }
+                                    </select>
+                                    
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Adicionar Categoria</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion" id="removeCategoryAccordion">
+                    <div class="card">
+                        <div class="card-header" id="removeCategoryHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#addCategory" aria-expanded="true" aria-controls="addCategory">
+                                    Add Category
+                                </button>
+                            </h2>
+                        </div>
+                
+                        <div id="addCategory" class="collapse" aria-labelledby="addCategoryHeading" data-parent="#categoryAccordion">
+                            <div class="card-body">
+                                <form method="post">
+                                    <div class="form-group">
+                                        <label for="categoryName">Nome da Categoria</label>
+                                        <input type="text" id="categoryName" class="form-control"  required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoryDescription">Descrição da Categoria</label>
+                                        <textarea id="categoryDescription" class="form-control" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoryRules">Regras da Categoria</label>
+                                        <textarea id="categoryRules" class="form-control"  required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Adicionar Categoria</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+<script>
+    function closeModal(modalId) {
+        $('#' + modalId).modal('hide');
+    }
+</script>
+
+
     
 @code {
     private List<GameViewModel>? _games;
@@ -294,25 +479,44 @@
     private string videoLinkAddRun;
   
     
-    private List<SpeedrunRunViewModel>? _speedRuns;
+    private List<SpeedrunRunViewModel>? _speedRunsLeaderboard;
+    private string _gameRulesLeaderboard;
     
     private string search = string.Empty;
     private Guid selectedGameId;
     private string userInput = string.Empty;
     
  
-    private Guid userId = Guid.Parse("7e8056de-1f06-4c13-882f-7d7a0280e7cb");
+    private Guid userId = Guid.Parse("840a0b48-c00f-4afd-87d8-8c824393ca63");
+    private List<GameViewModel> _moderatorGames;
+    private List<SpeedrunRunViewModel> _runsToVerify;
+    private Guid _gameSelectedVerifyRuns;
+    
+    private List<SpeedrunRunViewModel> _playerRuns;
     
     
     protected override async Task OnInitializedAsync()
+    {
+       
+        await LoadData();
+
+        //_categories = await ApiHelper.GetFromApiAsync<List<SpeedrunCategoryViewModel>>("speedRuns/categories");
+        //_speedRunsLeaderboard = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>("/speedRuns/runs/{8bb38d39-c58b-4eb4-a181-cbc3b918001e}");
+
+    }
+    
+    private async Task LoadData()
     {
         _games = await ApiHelper.GetFromApiAsync<List<GameViewModel>>("api/SpeedRuns/games");
         
         _filteredGames = _games;
         _filteredGamesAddRun = _games;
-        //_categories = await ApiHelper.GetFromApiAsync<List<SpeedrunCategoryViewModel>>("speedRuns/categories");
-        //_speedRuns = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>("/speedRuns/runs/{8bb38d39-c58b-4eb4-a181-cbc3b918001e}");
         
+        _playerRuns = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>($"api/SpeedRuns/runs/player/{userId}");
+    
+        _moderatorGames = await ApiHelper.GetFromApiAsync<List<GameViewModel>>($"api/SpeedRuns/moderators/games/{userId}");
+        if (_moderatorGames != null)
+            _runsToVerify = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>("api/SpeedRuns/runs/verify");    
     }
     
     private void SearchGame(ChangeEventArgs e, string localSearch)
@@ -394,13 +598,18 @@
             case "leaderboard":
                 if (e.Value.ToString() == "")
                 {
-                    if (_speedRuns != null)
-                        _speedRuns.Clear();
+                    if (_speedRunsLeaderboard != null)
+                        _speedRunsLeaderboard.Clear();
                     return;
                 }
                 
                 var selectedCategoryId = Guid.Parse(e.Value.ToString());
-                _speedRuns = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>($"api/speedRuns/runs/{selectedCategoryId}");
+                _speedRunsLeaderboard = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>($"api/speedRuns/runs/{selectedCategoryId}");
+                
+                SpeedrunCategoryViewModel category = await ApiHelper.GetFromApiAsync<SpeedrunCategoryViewModel>($"api/speedRuns/categorie/{selectedCategoryId}");
+                if (category != null)
+                    _gameRulesLeaderboard = category.CategoryRules;
+                
                 break;
             
             case "addRun":
@@ -421,8 +630,8 @@
                 case "leaderboard":
                     if (_categories != null)
                         _categories.Clear();
-                    if (_speedRuns != null)     
-                        _speedRuns.Clear();
+                    if (_speedRunsLeaderboard != null)     
+                        _speedRunsLeaderboard.Clear();
                     break;
                 case "addRun":
                     if (_filteredCategoriesAddRun != null)
@@ -442,8 +651,8 @@
             case "leaderboard":
                 _filteredCategories = _categories;
         
-                if (_speedRuns != null)
-                    _speedRuns.Clear();
+                if (_speedRunsLeaderboard != null)
+                    _speedRunsLeaderboard.Clear();
                 break;
             case "addRun":
                 _filteredCategoriesAddRun = _categories;
@@ -459,6 +668,9 @@
         try
         {
             await ApiHelper.PostToApiAsync<SpeedrunRunViewModel>($"api/speedRuns/runs/{userId}/{selectedCategoryAddRun}/{runTimeAddRun}/{videoLinkAddRun}");
+            await JSRuntime.InvokeVoidAsync("closeModal", "myModal");
+            await LoadData();
+       
         }
         catch (Exception ex)
         {
@@ -467,4 +679,19 @@
         }
     }
 
+    private async Task verifyRun(MouseEventArgs e, Guid runId, bool verify)
+    {
+        try
+        {
+            await ApiHelper.PutToApiAsync($"api/speedRuns/runs/verify/{runId}/{userId}/{verify}");
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error to verify! {ex.Message}");
+        }
+        
+        StateHasChanged();
+    }
+    
 }

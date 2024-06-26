@@ -4,6 +4,7 @@ namespace Helpers.Models
     {
         public Guid RunID { get; set; }
         public Guid PlayerID { get; set; }
+        public Guid GameID { get; set; }
         public Guid CategoryID { get; set; }
         public int RunTime { get; set; }
         public DateTimeOffset SubmissionDate { get; set; }
@@ -13,6 +14,7 @@ namespace Helpers.Models
         public string PlayerName { get; set; }
         public string GameName { get; set; }
         public string CategoryName { get; set; }
+        public int Rank { get; set; }
         
     }
 }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240621212909_SpeedRunsData")]
-    partial class SpeedRunsData
+    [Migration("20240626184128_SpeedRuns")]
+    partial class SpeedRuns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,28 +27,55 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
-                    b.Property<Guid>("game_id")
+                    b.Property<Guid>("GameId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<int[]>("Categories")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<int[]>("Consoles")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("DeveloperID")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("description")
+                    b.Property<int[]>("Genres")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("name")
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Publisher")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("price")
-                        .HasColumnType("real");
-
-                    b.Property<DateTimeOffset>("release_date")
+                    b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("stock")
-                        .HasColumnType("integer");
+                    b.Property<byte[]>("Rom")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
-                    b.HasKey("game_id");
+                    b.Property<string>("Url_Image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("GameId");
+
+                    b.HasIndex("DeveloperID");
 
                     b.ToTable("Games");
                 });
@@ -100,6 +127,32 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("RolePermissions");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
+                {
+                    b.Property<Guid>("ShopId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GameOfMonthId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("gameId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ShopId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("Shop");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.SpeedrunCategory", b =>
                 {
                     b.Property<Guid>("categoryID")
@@ -119,7 +172,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("creationDate")
+                    b.Property<DateTimeOffset>("creationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("gameID")
@@ -142,7 +195,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<Guid>("gameID")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("roleGivenDate")
+                    b.Property<DateTimeOffset>("roleGivenDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("userID")
@@ -164,7 +217,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<DateTime>("SubmissionDate")
+                    b.Property<DateTimeOffset>("SubmissionDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("categoryID")
@@ -181,7 +234,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid>("verifierID")
+                    b.Property<Guid?>("verifierID")
                         .HasColumnType("uuid");
 
                     b.Property<string>("videoLink")
@@ -241,6 +294,17 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "Developer")
+                        .WithMany("GamesDeveloped")
+                        .HasForeignKey("DeveloperID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Developer");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Permission", "Permission")
@@ -258,6 +322,17 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
+                        .WithMany("Shops")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.SpeedrunCategory", b =>
@@ -306,9 +381,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.SpeedrunModerator", "verifier")
                         .WithMany("SpeedRuns")
-                        .HasForeignKey("verifierID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("verifierID");
 
                     b.Navigation("category");
 
@@ -338,6 +411,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
+                    b.Navigation("Shops");
+
                     b.Navigation("speedrunCategories");
 
                     b.Navigation("speedrunModerators");
@@ -367,6 +442,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
+                    b.Navigation("GamesDeveloped");
+
                     b.Navigation("UserRoles");
 
                     b.Navigation("speedrunModerators");

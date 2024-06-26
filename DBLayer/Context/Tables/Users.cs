@@ -33,6 +33,12 @@ public partial class ApplicationDbContext
             .HasMany(u => u.speedrunModerators)
             .WithOne(m => m.user)
             .HasForeignKey(m => m.userID);
+        
+        // relação com a tabela Game
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.GamesDeveloped)
+            .WithOne(g => g.Developer)
+            .HasForeignKey(g => g.DeveloperID);
             
     }
 }

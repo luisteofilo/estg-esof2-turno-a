@@ -18,7 +18,7 @@ public class SpeedRunService (ApplicationDbContext db)
         return db.Games.Select(g => new GameViewModel()
         {
             GameID = g.GameId,
-            GameName = g.Name,
+            GameName = g.Name
         }).ToArray();
     }
 
@@ -32,17 +32,32 @@ public class SpeedRunService (ApplicationDbContext db)
             RoleGivenDate = m.roleGivenDate
         }).ToArray();
     }
+    
+    // retornar os jogos que um utilizador é moderador
+    public IEnumerable<GameViewModel> GetModeratorGamesByUser(Guid userID)
+    {
+        return db.SpeedrunModerators.Where(m => m.userID == userID).Select(m => new GameViewModel()
+        {
+            GameID = m.gameID,
+            GameName = db.Games.FirstOrDefault(g => g.GameId == m.gameID) != null ? db.Games.FirstOrDefault(g => g.GameId == m.gameID).Name : "Unknown Game"
+        }).ToArray();
+    }
+    
 
     public IEnumerable<SpeedrunRunViewModel> GetRunsByCategory(Guid categoryID)
     {
         var category = db.SpeedrunCategories.Find(categoryID);
         if (category == null) return null;
+        Console.WriteLine(category.gameID);
 
         var game = db.Games.Find(category.gameID);
         string gameName = game != null ? game.Name : "Unknown Game";
+        Console.WriteLine(game.Name);
 
         var runs = db.SpeedrunRuns.Where(r => r.categoryID == categoryID).ToList();
-
+            
+        Console.WriteLine(runs.Count);
+        
         return runs.Select(run =>
         {
             var player = db.Users.Find(run.playerID);
@@ -64,6 +79,38 @@ public class SpeedRunService (ApplicationDbContext db)
             };
         }).ToList();
     }
+    
+    // retornar as runs de um jogador com o nome da categoria e do jogo e do jogador e retorn o rank dessa run na respetiva categoria
+    public IEnumerable<SpeedrunRunViewModel> GetRunsByPlayer(Guid playerID)
+    {
+        var runs = db.SpeedrunRuns.Where(r => r.playerID == playerID).ToList();
+        return runs.Select(run =>
+        {
+            var player = db.Users.Find(run.playerID);
+            var category = db.SpeedrunCategories.Find(run.categoryID);
+            var game = db.Games.Find(category.gameID);
+            string playerName = player != null ? player.Email : "Unknown Player";
+            string categoryName = category != null ? category.categoryName : "Unknown Category";
+            string gameName = game != null ? game.Name : "Unknown Game";
+
+            var rank = db.SpeedrunRuns.Where(r => r.categoryID == run.categoryID && r.runTime < run.runTime).Count() + 1;
+
+            return new SpeedrunRunViewModel()
+            {
+                RunID = run.runID,
+                PlayerID = run.playerID,
+                PlayerName = playerName,
+                CategoryName = categoryName,
+                GameName = gameName,
+                CategoryID = run.categoryID,
+                RunTime = run.runTime,
+                SubmissionDate = run.SubmissionDate,
+                Verified = run.verified,
+                VideoLink = run.videoLink,
+                Rank = rank
+            };
+        }).ToList();
+    }
 
     public IEnumerable<SpeedrunRunViewModel> GetSpeedRunRuns()
     {
@@ -79,6 +126,38 @@ public class SpeedRunService (ApplicationDbContext db)
             VideoLink = r.videoLink
         }).ToArray();
     }
+    
+    // retornar as runs que ainda não foram verificadas com o nome do jogador, categoria e jogo e IDS
+    
+    public IEnumerable<SpeedrunRunViewModel> GetSpeedRunRunsToVerify()
+    {
+        var runs = db.SpeedrunRuns.Where(r => r.verifier == null).ToList();
+        return runs.Select(run =>
+        {
+            var player = db.Users.Find(run.playerID);
+            var category = db.SpeedrunCategories.Find(run.categoryID);
+            var game = db.Games.Find(category.gameID);
+            string playerName = player != null ? player.Email : "Unknown Player";
+            string categoryName = category != null ? category.categoryName : "Unknown Category";
+            string gameName = game != null ? game.Name : "Unknown Game";
+
+            return new SpeedrunRunViewModel()
+            {
+                RunID = run.runID,
+                PlayerID = run.playerID,
+                PlayerName = playerName,
+                CategoryName = categoryName,
+                GameName = gameName,
+                GameID = category.gameID != null ? category.gameID : Guid.Empty,
+                CategoryID = run.categoryID,
+                RunTime = run.runTime,
+                SubmissionDate = run.SubmissionDate,
+                Verified = run.verified,
+                verifierID = run.verifierID ?? Guid.Empty,
+                VideoLink = run.videoLink
+            };
+        }).ToList();
+    }
 
     public IEnumerable<SpeedrunCategoryViewModel> GetSpeedRunCategories()
     {
@@ -91,6 +170,22 @@ public class SpeedRunService (ApplicationDbContext db)
             CategoryDescription = c.categoryDescription,
             CategoryRules = c.categoryRules
         }).ToArray();
+    }
+    
+    // categoria por id
+    public SpeedrunCategoryViewModel GetCategory(Guid categoryID)
+    {
+        var category = db.SpeedrunCategories.Find(categoryID);
+        if (category == null) return null;
+        return new SpeedrunCategoryViewModel()
+        {
+            CategoryID = category.categoryID,
+            GameID = category.gameID,
+            CreationDate = category.creationDate,
+            CategoryName = category.categoryName,
+            CategoryDescription = category.categoryDescription,
+            CategoryRules = category.categoryRules
+        };
     }
 
     public IEnumerable<SpeedrunCategoryViewModel> GetCategoriesByGame(Guid gameID)
@@ -172,6 +267,28 @@ public class SpeedRunService (ApplicationDbContext db)
             entity.verified = run.Verified;
             entity.videoLink = run.VideoLink;
             db.SaveChanges();
+        }
+    }
+    
+    // verificar run e adicionar o ID do verificador
+    public void VerifyRun(Guid runID, Guid verifierID, bool verify)
+    {
+        var run = db.SpeedrunRuns.Find(runID);
+        var category = db.SpeedrunCategories.Find(run.categoryID);
+        if (run != null && category != null)
+        {
+            
+            var verifier = db.SpeedrunModerators.Where(m => m.userID == verifierID && m.gameID == category.gameID).FirstOrDefault();
+            if (verifier != null)
+            {
+                run.verified = verify;
+                run.verifierID = verifier.moderatorID;
+                db.SaveChanges();
+            }
+        }
+        else
+        {
+           
         }
     }
 

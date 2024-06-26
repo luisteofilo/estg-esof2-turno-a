@@ -44,7 +44,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Developer")
+                    b.Property<string>("DeveloperID")
                         .IsRequired()
                         .HasColumnType("text");
 

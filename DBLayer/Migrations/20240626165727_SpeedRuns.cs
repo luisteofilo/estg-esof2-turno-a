@@ -11,22 +11,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Games",
-                columns: table => new
-                {
-                    game_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: false),
-                    release_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    price = table.Column<float>(type: "real", nullable: false),
-                    stock = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Games", x => x.game_id);
-                });
-            
 
             migrationBuilder.CreateTable(
                 name: "SpeedrunCategories",
@@ -34,7 +18,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 {
                     categoryID = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     gameID = table.Column<Guid>(type: "uuid", nullable: false),
-                    creationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    creationDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     categoryName = table.Column<string>(type: "text", nullable: false),
                     categoryDescription = table.Column<string>(type: "text", nullable: false),
                     categoryRules = table.Column<string>(type: "text", nullable: false)
@@ -46,7 +30,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         name: "FK_SpeedrunCategories_Games_gameID",
                         column: x => x.gameID,
                         principalTable: "Games",
-                        principalColumn: "game_id",
+                        principalColumn: "GameId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -57,7 +41,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     moderatorID = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     userID = table.Column<Guid>(type: "uuid", nullable: false),
                     gameID = table.Column<Guid>(type: "uuid", nullable: false),
-                    roleGivenDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    roleGivenDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,7 +50,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         name: "FK_SpeedrunModerators_Games_gameID",
                         column: x => x.gameID,
                         principalTable: "Games",
-                        principalColumn: "game_id",
+                        principalColumn: "GameId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SpeedrunModerators_Users_userID",
@@ -84,7 +68,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     playerID = table.Column<Guid>(type: "uuid", nullable: false),
                     categoryID = table.Column<Guid>(type: "uuid", nullable: false),
                     runTime = table.Column<int>(type: "integer", nullable: false),
-                    SubmissionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SubmissionDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     verified = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     verifierID = table.Column<Guid>(type: "uuid", nullable: true),
                     videoLink = table.Column<string>(type: "text", nullable: false)
@@ -102,8 +86,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         name: "FK_SpeedrunRuns_SpeedrunModerators_verifierID",
                         column: x => x.verifierID,
                         principalTable: "SpeedrunModerators",
-                        principalColumn: "moderatorID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "moderatorID");
                     table.ForeignKey(
                         name: "FK_SpeedrunRuns_Users_playerID",
                         column: x => x.playerID,
@@ -111,7 +94,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
-
+            
             migrationBuilder.CreateIndex(
                 name: "IX_SpeedrunCategories_gameID",
                 table: "SpeedrunCategories",
@@ -141,6 +124,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 name: "IX_SpeedrunRuns_verifierID",
                 table: "SpeedrunRuns",
                 column: "verifierID");
+            
         }
 
         /// <inheritdoc />
@@ -148,6 +132,9 @@ namespace ESOF.WebApp.DBLayer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "RolePermissions");
+
+            migrationBuilder.DropTable(
+                name: "Shop");
 
             migrationBuilder.DropTable(
                 name: "SpeedrunRuns");

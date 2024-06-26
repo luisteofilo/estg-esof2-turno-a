@@ -77,12 +77,15 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     { normalUserId, normalRoleId }
                 });
             
+         
+
             var gameId = Guid.NewGuid();
+            List<int> list = new List<int> { 1, 2 };
 
             migrationBuilder.InsertData(
                 table: "Games",
-                columns: new[] { "game_id", "name", "description", "stock", "price", "release_date" },
-                values: new object[] { gameId, "Roblox", "Descrição do Jogo", 100, 59.99, DateTime.UtcNow }
+                columns: new[] { "GameId", "Name", "ReleaseDate", "Url_Image", "DeveloperID", "Publisher", "Description", "Price", "Genres", "Categories", "Consoles" },
+                values: new object[] { gameId, "Game Name", DateTime.UtcNow, "http://example.com/image.png", adminUserId, "Publisher Name", "Game Description", 59.99 , list, list, list }
             );
 
             var categoryId = Guid.NewGuid();
