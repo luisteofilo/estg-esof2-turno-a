@@ -17,6 +17,7 @@ public partial class ApplicationDbContext
             .HasIndex(u => u.Email)
             .IsUnique();
         
+        
         modelBuilder.Entity<User>()
             .Property(p => p.UserId)
             .HasDefaultValueSql("gen_random_uuid()");
