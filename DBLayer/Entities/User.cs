@@ -7,6 +7,9 @@ public class User
     [Key]
     public Guid UserId { get; set; }
     
+    [Required, StringLength(20)]
+    public string Username { get; set; }
+    
     [EmailAddress, Required]
     public string Email { get; set; }
     
