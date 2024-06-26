@@ -4,6 +4,7 @@
 @using Frontend.Helpers
 @inject ApiHelper ApiHelper
 @inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
 
 <PageTitle>Gametok</PageTitle>
 
@@ -63,7 +64,7 @@ else
                 </svg>
             </button>
 
-            <a class="icon-button">
+            <a class="icon-button" href="/gametok/upload/@video.videoquestid">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                     <!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
                     <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
@@ -73,12 +74,6 @@ else
     }
 </div>
 }
-
-<script>
-    function logButtonClick(message) {
-        console.log(message);
-    }
-</script>
 
 @code {
     [Parameter]
@@ -122,8 +117,6 @@ else
     
     private async Task ToggleLike(Guid videoId)
     {
-        Console.WriteLine("ToggleLike method called");
-        await JSRuntime.InvokeVoidAsync("logButtonClick", $"Button clicked for video ID: {videoId}");
         if (likeStatus.TryGetValue(videoId, out bool isLiked))
         {
             if (isLiked)

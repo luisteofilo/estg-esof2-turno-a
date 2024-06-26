@@ -22,7 +22,7 @@ public class LikeController : ControllerBase
     }
     
     [HttpPost]
-    public ActionResult<ResponseLikeDto> LikeVideo([FromForm] CreateLikeDto createLikeDto)
+    public ActionResult<ResponseLikeDto> LikeVideo([FromBody] CreateLikeDto createLikeDto)
     {
         return _likeService.CreateLike(createLikeDto);
     }
