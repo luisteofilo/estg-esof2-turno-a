@@ -1,7 +1,10 @@
 using ESOF.WebApp.DBLayer.Context;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using ESOF.WebApp.WebAPI.Controllers;
 using Microsoft.EntityFrameworkCore;
+=======
+>>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
 =======
 >>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
 
@@ -35,10 +38,13 @@ app.MapGet("/users/emails", () =>
     .WithOpenApi();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 app.MapEnumController();
 app.MapFavoriteController();
 app.Run();
 =======
+=======
+>>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
