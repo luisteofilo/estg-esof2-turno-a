@@ -31,11 +31,11 @@ namespace ESOF.WebApp.WebAPI.Services
 
         public async Task<bool> VoteForGameAsync(Vote vote)
         {
-            // Verifica se o usuário já votou neste mês (se necessário)
+            // Verifica se o utilizador já votou neste mês (se necessário)
             var hasVoted = await HasUserVotedAsync(vote.UserId, vote.VoteTime.Month, vote.VoteTime.Year);
             if (hasVoted)
             {
-                return false; // Ou lance uma exceção informando que o usuário já votou
+                return false; 
             }
 
             _context.Votes.Add(vote);

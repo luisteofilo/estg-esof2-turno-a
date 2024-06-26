@@ -43,11 +43,11 @@ public class VoteController : ControllerBase
             // Insert the vote data into the database
             await _voteRepository.AddVote(vote);
 
-            return Ok("Voto registrado com sucesso!");
+            return Ok("Voto registado com sucesso!");
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"Erro ao registrar voto: {ex.Message}");
+            return StatusCode(500, $"Erro ao registar voto: {ex.Message}");
         }
     }
 

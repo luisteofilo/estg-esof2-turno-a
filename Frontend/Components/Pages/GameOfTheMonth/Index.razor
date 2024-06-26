@@ -42,7 +42,7 @@ else
 @code {
     private List<Game> games;
     private string message;
-    private Guid userId = new Guid("0510fc34-10ab-4b30-89e5-f9df85116f27");
+    private Guid userId = Guid.NewGuid();
     private bool hasVoted = false;
     private Dictionary<Guid, double> votePercentages = new();
     private bool isVotingPeriod = false;
@@ -101,18 +101,18 @@ else
 
             if (result)
             {
-                message = "Voto registrado com sucesso!";
+                message = "Voto registado com sucesso!";
                 hasVoted = true; // Prevent user from voting again
                 await UpdateVotePercentages(); // Update vote percentages after a new vote is registered
             }
             else
             {
-                message = "Falha ao registrar o voto.";
+                message = "Falha ao registar o voto.";
             }
         }
         catch (Exception ex)
         {
-            message = $"Erro ao registrar o voto: {ex.Message}";
+            message = $"Erro ao registar o voto: {ex.Message}";
         }
     }
 
