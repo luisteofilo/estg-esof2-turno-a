@@ -1,5 +1,4 @@
 namespace Frontend.ViewModels;
-
 public class GameReplayViewModel
 {
     public Guid Id { get; set; }
@@ -7,4 +6,5 @@ public class GameReplayViewModel
     public string FilePath { get; set; }
     public DateTime UploadDate { get; set; }
     public byte[] VideoData { get; set; }
+    
 }
