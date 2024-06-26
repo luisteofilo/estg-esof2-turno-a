@@ -71,18 +71,6 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
-app.MapGet("/users", () =>
-    {
-        var db = new ApplicationDbContext();
-        return db.Users.Select(a => new UserViewModel()
-        {
-            Email = a.Email,
-            UserId = a.UserId
-        }).ToArray();
-    })
-    .WithName("GetUsers")
-    .WithOpenApi();
-
 app.MapControllers();
 
 app.Run();
