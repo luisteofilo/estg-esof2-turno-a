@@ -13,19 +13,15 @@
         <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search...">
     </div>
     <div class="game-card-container">
-        @if (_games == null)
-        {
+        @if (_games == null) {
             <p>Loading...</p>
         }
-        else if (_games.Count == 0)
-        {
+        else if (_games.Count == 0) {
             <p>No games found.</p>
         }
-        else
-        {
-            @foreach (var game in _games)
-            {
-                <ListingCard TItem="ResponseMKP_GameDto" Game="@game" />
+        else {
+            @foreach (var game in _games) {
+                <ListingCard TItem="ResponseMKP_GameDto" Game="@game"/>
             }
         }
     </div>
@@ -34,15 +30,13 @@
 @code {
     private List<ResponseMKP_GameDto> _games;
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
+    protected override async Task OnInitializedAsync() {
+        try {
             _games = await ApiHelper.GetFromApiAsync<List<ResponseMKP_GameDto>>("marketplace/Game");
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Console.WriteLine($"Error fetching games: {ex.Message}");
         }
     }
+
 }
