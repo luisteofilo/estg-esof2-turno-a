@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 builder.Services.AddDbContext<ApplicationDbContext>();
@@ -27,7 +28,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 
 var app = builder.Build();
@@ -72,9 +72,7 @@ app.MapGet("/users/emails", () =>
     .WithOpenApi();
 
 app.MapControllers();
-
 app.Run();
-
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {

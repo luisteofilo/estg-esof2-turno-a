@@ -1,5 +1,6 @@
 using DotNetEnv;
 using ESOF.WebApp.DBLayer.Entities;
+using ESOF.WebApp.DBLayer.Entities.Marketplace;
 using Helpers;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +42,15 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Achievement> Achievements { get; set; }
     public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
     public DbSet<TestUserScore> TestUserScores { get; set; }
+    
+    public DbSet<MarketPlace_Game> MarketPlaceGames { get; set; }
+    public DbSet<GameGenre> GameGenres { get; set; }
+    public DbSet<GamePlatform> GamePlatforms { get; set; }
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Platform> Platforms { get; set; }
+    public DbSet<OrderReview> OrderReviews { get; set; }
 
     public DbSet<Game> Games { get; set; }
     public DbSet<Shops> Shop { get; set; }
@@ -73,6 +83,16 @@ public partial class ApplicationDbContext : DbContext
         BuildPlayerAchievements(modelBuilder);
         //Build para tabelas de teste de scores
         BuildTestUserScores(modelBuilder);
+        
+        BuildMarketPlace_Game(modelBuilder);
+        BuildGameGenre(modelBuilder);
+        BuildGamePlatform(modelBuilder);
+        BuildGenre(modelBuilder);
+        BuildOrder(modelBuilder);
+        BuildOrderItem(modelBuilder);
+        BuildPlatform(modelBuilder);
+        BuildReview(modelBuilder);
+
         base.OnModelCreating(modelBuilder);
     }
 }
