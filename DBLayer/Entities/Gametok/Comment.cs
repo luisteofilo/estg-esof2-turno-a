@@ -13,7 +13,7 @@ public class Comment
     
     
     [Required]
-    public String comment{ get; set; }
+    public String Text{ get; set; }
     
-    public DateTime created_at{ get; set; }
+    public DateTime CreatedAt{ get; set; }
 }

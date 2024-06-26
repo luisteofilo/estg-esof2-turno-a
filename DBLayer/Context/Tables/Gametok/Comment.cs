@@ -14,7 +14,10 @@ public partial class ApplicationDbContext
             modelBuilder.Entity<Comment>()
                 .HasKey(c => new { c.UserId, c.VideoId });
             
-            entity.Property(e => e.comment).IsRequired();
+            entity.Property(e => e.Text).IsRequired();
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
             
             entity.HasOne(e => e.Video)
                 .WithMany(p => p.Comments)

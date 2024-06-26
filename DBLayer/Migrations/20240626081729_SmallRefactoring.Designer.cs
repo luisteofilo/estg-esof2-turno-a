@@ -3,6 +3,7 @@ using System;
 using ESOF.WebApp.DBLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240626081729_SmallRefactoring")]
+    partial class SmallRefactoring
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -44,6 +47,25 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasIndex("VideoId");
 
                     b.ToTable("Comments", "gametok");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
+                {
+                    b.Property<Guid>("GameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Console")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("GameId");
+
+                    b.ToTable("Games", "gametok");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Like", b =>
@@ -57,7 +79,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
                     b.HasKey("UserId", "VideoId");
 
@@ -159,8 +181,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 {
                     b.Property<Guid>("VideoId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Caption")
                         .IsRequired()
@@ -169,14 +190,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("VideoPath")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid>("VideoQuestId")
                         .HasColumnType("uuid");
@@ -199,13 +216,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 {
                     b.Property<Guid>("VideoQuestId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -215,6 +229,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("VideoQuestId");
+
+                    b.HasIndex("GameId");
 
                     b.ToTable("VideoQuests", "gametok");
                 });
@@ -312,6 +328,22 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
 
                     b.Navigation("VideoQuest");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.VideoQuest", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
+                        .WithMany("Challenges")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
+                {
+                    b.Navigation("Challenges");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
