@@ -13,7 +13,7 @@ public class Roms
     public Guid GameId { get; set; }
 
     [Required]
-    public byte[] ROM { get; set; }
+    public string ROM { get; set; }
 
     [Required]
     public string File_name { get; set; }

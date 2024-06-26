@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <PackageReference Include="DotNetEnv" Version="3.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -96,7 +97,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Components\Pages\Emulator_Games\Testing\" />
       <Folder Include="wwwroot\Games_Emulator\" />
     </ItemGroup>
 

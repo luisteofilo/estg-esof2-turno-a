@@ -15,16 +15,7 @@
 
 <link rel="stylesheet" href="Games_Emulator/Style/Games_Emulator.css"/>
 
-<h1 class="text-center mt-4 retro-title">Games Emulator</h1>
-
-<div id="top">
-    <h1>EmulatorJS Demo</h1>
-</div>
-
-<div id="box">
-    <input type="file" id="input">
-    Drag ROM file or click here
-</div>
+<h1 class="text-center mt-4 retro-title">Games Emulator RetroGaming</h1>
 
 <div class="container mt-5">
     <div style="width: 100%; height: 700px; overflow: hidden;">
@@ -38,22 +29,23 @@
             <div class="card-scroll-container">
                 @if (_games == null)
                 {
-                    <p><em>Loading...</em></p>
+                <p><em>Loading...</em></p>
                 }
                 else
                 {
-                    <div class="card-deck">
-                        @foreach (var game in _games)
-                        {
-                            <div class="card retro-card">
-                                <img class="card-img-top img-fluid" src="@game.UrlImage" alt="@game.Name">
-                                <div class="card-body">
-                                    <h5 class="card-title retro-card-title">@game.Name</h5>
-                                    <button class="btn btn-primary btn-block retro-btn" @onclick="() => PlayGame(game.GameId)">Play Now</button>
-                                </div>
-                            </div>
-                        }
+                <div class="card-deck">
+                    @foreach (var game in _games)
+                    {
+                    var id = game.GameId.ToString();
+                    <div class="card retro-card">
+                        <img class="card-img-top img-fluid" src="@game.UrlImage" alt="@game.Name">
+                        <div class="card-body">
+                            <h5 class="card-title retro-card-title">@game.Name</h5>
+                            <button onclick='playGame("@game.GameId")' class="btn btn-primary btn-block retro-btn">Play Now</button>
+                        </div>
                     </div>
+                    }
+                </div>
                 }
             </div>
         </div>
@@ -61,428 +53,17 @@
 </div>
 
 @code {
-    private GamesViewModel[] _games;
+private GamesViewModel[] _games;
+private RomsViewModel[] _roms;
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Carrega a lista de jogos ao inicializar a página
-        _games = await ApiHelper.GetFromApiAsync<GamesViewModel[]>("games");
-    }
+protected override async Task OnInitializedAsync()
+{
 
-    private async Task PlayGame(Guid gameId)
-    {
-        
-        var game = _games.FirstOrDefault(g => g.GameId == gameId);
-        if (game != null)
-        {
-            var gameID = game.GameId;
-           
-            var navigation = Navigation;
-            var request_game = await Http.GetAsync($"http://${navigation}/games/{gameID}");
-            
-            if (request_game.IsSuccessStatusCode)
-            {
-                
-                var content = await request_game.Content.ReadAsStringAsync();
-                
-                var gamesList = JsonSerializer.Deserialize<List<RomsViewModel>>(content);
-                
-                // Verifica se há dados na lista
-                if (gamesList.Count > 0)
-                {
-                    // Pega os dados do primeiro item da lista (posição 0)
-                    var url_cs = gamesList[0].ROM;
-                    var name_cs = gamesList[0].File_name;
-                    
-                    
-                    await JSRuntime.InvokeVoidAsync("emulator_trigger", url_cs, name_cs);
-                }
-                else
-                {
-                    Console.WriteLine("No ROMs found for the game.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Failed to fetch game details.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Game not found.");
-        }
-    }
+_games = await ApiHelper.GetFromApiAsync<GamesViewModel[]>("games");
 }
 
-<!--<script src="Games_Emulator/Script/Games_Emulator.js" ></script> -->
+}
 
+<script src="Games_Emulator/Script/Games_Emulator.js" ></script> 
 
-<script>
 
-    function emulator_trigger(url_cs, name_cs){
-
-        // Info Recieved from C#
-
-        const url = URL.createObjectURL(url_cs);
-
-        const parts = name_cs.split(".");
-        const file_name = name_cs.name;
-
-        console.log("Estou aqui no inicio");
-
-        let enableDebug = true;
-        let enableThreads = false;
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        if (urlParams.get("debug") == 1) {
-            enableDebug = true;
-            console.log("Debug is enabled");
-        } else {
-            console.log("Debug is disabled");
-        }
-
-        if (urlParams.get("threads") == 1) {
-            if (window.SharedArrayBuffer) {
-                enableThreads = true;
-                console.log("Threads are enabled");
-            } else {
-                console.warn(
-                    "Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724"
-                );
-                console.log("Threads are disabled");
-            }
-        } else {
-            console.log("Threads are disabled");
-        }
-
-
-
-
-        console.log(parts);
-        console.log(file_name);
-        console.log(url);
-
-        const core = await (async (ext) => {
-            if (["fds", "nes", "unif", "unf"].includes(ext)) return "nes";
-
-            if (
-                ["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext)
-            )
-                return "snes";
-
-            if (["z64", "n64"].includes(ext)) return "n64";
-
-            if (["pce"].includes(ext)) return "pce";
-
-            if (["ngp", "ngc"].includes(ext)) return "ngp";
-
-            if (["ws", "wsc"].includes(ext)) return "ws";
-
-            if (["col", "cv"].includes(ext)) return "coleco";
-
-            if (["d64"].includes(ext)) return "vice_x64sc";
-
-            if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
-
-            return await new Promise((resolve) => {
-                var coreValues = {
-                    "Nintendo 64": "n64",
-                    "Nintendo Game Boy": "gb",
-                    "Nintendo Game Boy Advance": "gba",
-                    "Nintendo DS": "nds",
-                    "Nintendo Entertainment System": "nes",
-                    "Super Nintendo Entertainment System": "snes",
-                    PlayStation: "psx",
-                    "Virtual Boy": "vb",
-                    "Sega Mega Drive": "segaMD",
-                    "Sega Master System": "segaMS",
-                    "Sega CD": "segaCD",
-                    "Atari Lynx": "lynx",
-                    "Sega 32X": "sega32x",
-                    "Atari Jaguar": "jaguar",
-                    "Sega Game Gear": "segaGG",
-                    "Sega Saturn": "segaSaturn",
-                    "Atari 7800": "atari7800",
-                    "Atari 2600": "atari2600",
-                    "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
-                    "NEC PC-FX": "pcfx",
-                    "SNK NeoGeo Pocket (Color)": "ngp",
-                    "Bandai WonderSwan (Color)": "ws",
-                    ColecoVision: "coleco",
-                    "Commodore 64": "vice_x64sc",
-                    "Commodore 128": "vice_x128",
-                    "Commodore VIC20": "vice_xvic",
-                    "Commodore Plus/4": "vice_xplus4",
-                    "Commodore PET": "vice_xpet",
-                };
-
-                const cores = Object.keys(coreValues)
-                    .sort()
-                    .reduce((obj, key) => {
-                        obj[key] = coreValues[key];
-                        return obj;
-                    }, {});
-
-                const button = document.createElement("button");
-                const select = document.createElement("select");
-
-                for (const type in cores) {
-                    const option = document.createElement("option");
-
-                    option.value = cores[type];
-                    option.textContent = type;
-                    select.appendChild(option);
-                }
-
-                button.onclick = () => resolve(select[select.selectedIndex].value);
-                button.textContent = "Load game";
-                box.innerHTML = "";
-
-                box.appendChild(select);
-                box.appendChild(button);
-            });
-        })(parts.pop());
-
-        const div = document.createElement("div");
-        const sub = document.createElement("div");
-        const script = document.createElement("script");
-
-        sub.id = "game";
-        div.id = "display";
-
-        const top = document.getElementById("top");
-        top.remove();
-        box.remove();
-        div.appendChild(sub);
-        document.body.appendChild(div);
-
-        // Configurações do EmulatorJS
-        window.EJS_player = "#game";
-        window.EJS_gameName = parts.join(".");
-        window.EJS_biosUrl = "";
-        window.EJS_gameUrl = url;
-        window.EJS_core = core;
-        window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-        window.EJS_startOnLoaded = false;
-        window.EJS_DEBUG_XX = enableDebug;
-        window.EJS_disableDatabases = true;
-        window.EJS_threads = enableThreads;
-        window.EJS_fullscreenOnLoaded = false;
-        // window.EJS_loadStateURL = url; // Define a URL de carregamento do estado salvo
-
-        EJS_Buttons = {
-            playPause: true,
-            restart: true,
-            mute: true,
-            settings: false,
-            fullscreen: true,
-            saveState: true,
-            loadState: true,
-            screenRecord: true,
-            gamepad: true,
-            cheat: false,
-            volume: true,
-            saveSavFiles: true,
-            loadSavFiles: true,
-            quickSave: false,
-            quickLoad: false,
-            screenshot: true,
-            cacheManager: false,
-        };
-
-        script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
-        document.body.appendChild(script);
-
-        // Mostrar controles de estado salvo
-        document.getElementById("controls").style.display = "flex";
-
-
-        box.ondragover = () => box.setAttribute("drag", true);
-        box.ondragleave = () => box.removeAttribute("drag");
-
-
-    }
-
-
-
-
-
-
-
-    console.log("Estou aqui no inicio");
-
-    let enableDebug = true;
-    let enableThreads = false;
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    if (urlParams.get("debug") == 1) {
-        enableDebug = true;
-        console.log("Debug is enabled");
-    } else {
-        console.log("Debug is disabled");
-    }
-
-    if (urlParams.get("threads") == 1) {
-        if (window.SharedArrayBuffer) {
-            enableThreads = true;
-            console.log("Threads are enabled");
-        } else {
-            console.warn(
-                "Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724"
-            );
-            console.log("Threads are disabled");
-        }
-    } else {
-        console.log("Threads are disabled");
-    }
-
-    input.onchange = async () => {
-        const url = URL.createObjectURL(input.files[0]);
-
-        const parts = input.files[0].name.split(".");
-        const file_name = input.files[0].name;
-
-        console.log(parts);
-        console.log(file_name);
-        console.log(url);
-
-        const core = await (async (ext) => {
-            if (["fds", "nes", "unif", "unf"].includes(ext)) return "nes";
-
-            if (
-                ["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext)
-            )
-                return "snes";
-
-            if (["z64", "n64"].includes(ext)) return "n64";
-
-            if (["pce"].includes(ext)) return "pce";
-
-            if (["ngp", "ngc"].includes(ext)) return "ngp";
-
-            if (["ws", "wsc"].includes(ext)) return "ws";
-
-            if (["col", "cv"].includes(ext)) return "coleco";
-
-            if (["d64"].includes(ext)) return "vice_x64sc";
-
-            if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
-
-            return await new Promise((resolve) => {
-                var coreValues = {
-                    "Nintendo 64": "n64",
-                    "Nintendo Game Boy": "gb",
-                    "Nintendo Game Boy Advance": "gba",
-                    "Nintendo DS": "nds",
-                    "Nintendo Entertainment System": "nes",
-                    "Super Nintendo Entertainment System": "snes",
-                    PlayStation: "psx",
-                    "Virtual Boy": "vb",
-                    "Sega Mega Drive": "segaMD",
-                    "Sega Master System": "segaMS",
-                    "Sega CD": "segaCD",
-                    "Atari Lynx": "lynx",
-                    "Sega 32X": "sega32x",
-                    "Atari Jaguar": "jaguar",
-                    "Sega Game Gear": "segaGG",
-                    "Sega Saturn": "segaSaturn",
-                    "Atari 7800": "atari7800",
-                    "Atari 2600": "atari2600",
-                    "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
-                    "NEC PC-FX": "pcfx",
-                    "SNK NeoGeo Pocket (Color)": "ngp",
-                    "Bandai WonderSwan (Color)": "ws",
-                    ColecoVision: "coleco",
-                    "Commodore 64": "vice_x64sc",
-                    "Commodore 128": "vice_x128",
-                    "Commodore VIC20": "vice_xvic",
-                    "Commodore Plus/4": "vice_xplus4",
-                    "Commodore PET": "vice_xpet",
-                };
-
-                const cores = Object.keys(coreValues)
-                    .sort()
-                    .reduce((obj, key) => {
-                        obj[key] = coreValues[key];
-                        return obj;
-                    }, {});
-
-                const button = document.createElement("button");
-                const select = document.createElement("select");
-
-                for (const type in cores) {
-                    const option = document.createElement("option");
-
-                    option.value = cores[type];
-                    option.textContent = type;
-                    select.appendChild(option);
-                }
-
-                button.onclick = () => resolve(select[select.selectedIndex].value);
-                button.textContent = "Load game";
-                box.innerHTML = "";
-
-                box.appendChild(select);
-                box.appendChild(button);
-            });
-        })(parts.pop());
-
-        const div = document.createElement("div");
-        const sub = document.createElement("div");
-        const script = document.createElement("script");
-
-        sub.id = "game";
-        div.id = "display";
-
-        const top = document.getElementById("top");
-        top.remove();
-        box.remove();
-        div.appendChild(sub);
-        document.body.appendChild(div);
-
-        // Configurações do EmulatorJS
-        window.EJS_player = "#game";
-        window.EJS_gameName = parts.join(".");
-        window.EJS_biosUrl = "";
-        window.EJS_gameUrl = url;
-        window.EJS_core = core;
-        window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-        window.EJS_startOnLoaded = false;
-        window.EJS_DEBUG_XX = enableDebug;
-        window.EJS_disableDatabases = true;
-        window.EJS_threads = enableThreads;
-        window.EJS_fullscreenOnLoaded = false;
-        // window.EJS_loadStateURL = url; // Define a URL de carregamento do estado salvo
-
-        EJS_Buttons = {
-            playPause: true,
-            restart: true,
-            mute: true,
-            settings: false,
-            fullscreen: true,
-            saveState: true,
-            loadState: true,
-            screenRecord: true,
-            gamepad: true,
-            cheat: false,
-            volume: true,
-            saveSavFiles: true,
-            loadSavFiles: true,
-            quickSave: false,
-            quickLoad: false,
-            screenshot: true,
-            cacheManager: false,
-        };
-
-        script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
-        document.body.appendChild(script);
-
-        // Mostrar controles de estado salvo
-        document.getElementById("controls").style.display = "flex";
-    };
-
-    box.ondragover = () => box.setAttribute("drag", true);
-    box.ondragleave = () => box.removeAttribute("drag");
-
-
-</script>

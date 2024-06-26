@@ -1,312 +1,91 @@
 
+    async function playGame(gameId) {
+    try {
+    console.log("GameId received:", gameId);
 
-function emulator_trigger(url_cs, name_cs){
 
-    // Info Recieved from C#
+    const response = await fetch(`http://localhost:5295/games/${gameId}`);
+    if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+}
 
-    const url = URL.createObjectURL(url_cs);
 
-    const parts = name_cs.split(".");
-    const file_name = name_cs.name;
+    const responseText = await response.text();
 
-    console.log("Estou aqui no inicio");
+
+    const roms = JSON.parse(responseText);
+
+
+    const rom = roms.find(r => r.gameId === gameId);
+
+    if (rom) {
+    console.log("Rom found:", rom);
+
+
+    const hexString = rom.rom;
+    const byteArray = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+
+    const romBlob = new Blob([byteArray], { type: 'application/octet-stream' });
+
+
+    const romObject = {
+    rom: romBlob,
+    fileName: rom.file_name ? String(rom.file_name) : '',
+    gameId: String(rom.gameId),
+    description: rom.description ? String(rom.description) : ''
+
+};
+
+    console.log("Roms received:", romObject);
+
+
+    emulator_trigger(romObject);
+} else {
+    console.error("Rom not found for gameId:", gameId);
+}
+} catch (error) {
+    console.error("Fetch error:", error.message);
+}
+}
+
+
+    function emulator_trigger(romObject) {
+    const { rom, fileName } = romObject;
+
+    console.log("Game ROM Blob:", rom);
+    console.log("File Name:", fileName);
+
+    const parts = fileName.split(".");
+    const core = getCoreFromExtension(parts.pop());
+
+    console.log("Starting emulator setup...");
 
     let enableDebug = true;
     let enableThreads = false;
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
+
     if (urlParams.get("debug") == 1) {
-        enableDebug = true;
-        console.log("Debug is enabled");
-    } else {
-        console.log("Debug is disabled");
-    }
-
-    if (urlParams.get("threads") == 1) {
-        if (window.SharedArrayBuffer) {
-            enableThreads = true;
-            console.log("Threads are enabled");
-        } else {
-            console.warn(
-                "Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724"
-            );
-            console.log("Threads are disabled");
-        }
-    } else {
-        console.log("Threads are disabled");
-    }
-
-
-
-
-    console.log(parts);
-    console.log(file_name);
-    console.log(url);
-
-    const core = await (async (ext) => {
-        if (["fds", "nes", "unif", "unf"].includes(ext)) return "nes";
-
-        if (
-            ["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext)
-        )
-            return "snes";
-
-        if (["z64", "n64"].includes(ext)) return "n64";
-
-        if (["pce"].includes(ext)) return "pce";
-
-        if (["ngp", "ngc"].includes(ext)) return "ngp";
-
-        if (["ws", "wsc"].includes(ext)) return "ws";
-
-        if (["col", "cv"].includes(ext)) return "coleco";
-
-        if (["d64"].includes(ext)) return "vice_x64sc";
-
-        if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
-
-        return await new Promise((resolve) => {
-            var coreValues = {
-                "Nintendo 64": "n64",
-                "Nintendo Game Boy": "gb",
-                "Nintendo Game Boy Advance": "gba",
-                "Nintendo DS": "nds",
-                "Nintendo Entertainment System": "nes",
-                "Super Nintendo Entertainment System": "snes",
-                PlayStation: "psx",
-                "Virtual Boy": "vb",
-                "Sega Mega Drive": "segaMD",
-                "Sega Master System": "segaMS",
-                "Sega CD": "segaCD",
-                "Atari Lynx": "lynx",
-                "Sega 32X": "sega32x",
-                "Atari Jaguar": "jaguar",
-                "Sega Game Gear": "segaGG",
-                "Sega Saturn": "segaSaturn",
-                "Atari 7800": "atari7800",
-                "Atari 2600": "atari2600",
-                "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
-                "NEC PC-FX": "pcfx",
-                "SNK NeoGeo Pocket (Color)": "ngp",
-                "Bandai WonderSwan (Color)": "ws",
-                ColecoVision: "coleco",
-                "Commodore 64": "vice_x64sc",
-                "Commodore 128": "vice_x128",
-                "Commodore VIC20": "vice_xvic",
-                "Commodore Plus/4": "vice_xplus4",
-                "Commodore PET": "vice_xpet",
-            };
-
-            const cores = Object.keys(coreValues)
-                .sort()
-                .reduce((obj, key) => {
-                    obj[key] = coreValues[key];
-                    return obj;
-                }, {});
-
-            const button = document.createElement("button");
-            const select = document.createElement("select");
-
-            for (const type in cores) {
-                const option = document.createElement("option");
-
-                option.value = cores[type];
-                option.textContent = type;
-                select.appendChild(option);
-            }
-
-            button.onclick = () => resolve(select[select.selectedIndex].value);
-            button.textContent = "Load game";
-            box.innerHTML = "";
-
-            box.appendChild(select);
-            box.appendChild(button);
-        });
-    })(parts.pop());
-
-    const div = document.createElement("div");
-    const sub = document.createElement("div");
-    const script = document.createElement("script");
-
-    sub.id = "game";
-    div.id = "display";
-
-    const top = document.getElementById("top");
-    top.remove();
-    box.remove();
-    div.appendChild(sub);
-    document.body.appendChild(div);
-
-    // Configurações do EmulatorJS
-    window.EJS_player = "#game";
-    window.EJS_gameName = parts.join(".");
-    window.EJS_biosUrl = "";
-    window.EJS_gameUrl = url;
-    window.EJS_core = core;
-    window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-    window.EJS_startOnLoaded = false;
-    window.EJS_DEBUG_XX = enableDebug;
-    window.EJS_disableDatabases = true;
-    window.EJS_threads = enableThreads;
-    window.EJS_fullscreenOnLoaded = false;
-    // window.EJS_loadStateURL = url; // Define a URL de carregamento do estado salvo
-
-    EJS_Buttons = {
-        playPause: true,
-        restart: true,
-        mute: true,
-        settings: false,
-        fullscreen: true,
-        saveState: true,
-        loadState: true,
-        screenRecord: true,
-        gamepad: true,
-        cheat: false,
-        volume: true,
-        saveSavFiles: true,
-        loadSavFiles: true,
-        quickSave: false,
-        quickLoad: false,
-        screenshot: true,
-        cacheManager: false,
-    };
-
-    script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
-    document.body.appendChild(script);
-
-    // Mostrar controles de estado salvo
-    document.getElementById("controls").style.display = "flex";
-
-
-    box.ondragover = () => box.setAttribute("drag", true);
-    box.ondragleave = () => box.removeAttribute("drag");
-
-
-}
-
-
-
-
-
-
-
-console.log("Estou aqui no inicio");
-
-let enableDebug = true;
-let enableThreads = false;
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-if (urlParams.get("debug") == 1) {
     enableDebug = true;
     console.log("Debug is enabled");
 } else {
     console.log("Debug is disabled");
 }
 
-if (urlParams.get("threads") == 1) {
+    if (urlParams.get("threads") == 1) {
     if (window.SharedArrayBuffer) {
-        enableThreads = true;
-        console.log("Threads are enabled");
-    } else {
-        console.warn(
-            "Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724"
-        );
-        console.log("Threads are disabled");
-    }
+    enableThreads = true;
+    console.log("Threads are enabled");
+} else {
+    console.warn(
+    "Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724"
+    );
+    console.log("Threads are disabled");
+}
 } else {
     console.log("Threads are disabled");
 }
-
-input.onchange = async () => {
-    const url = URL.createObjectURL(input.files[0]);
-
-    const parts = input.files[0].name.split(".");
-    const file_name = input.files[0].name;
-
-    console.log(parts);
-    console.log(file_name);
-    console.log(url);
-
-    const core = await (async (ext) => {
-        if (["fds", "nes", "unif", "unf"].includes(ext)) return "nes";
-
-        if (
-            ["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext)
-        )
-            return "snes";
-
-        if (["z64", "n64"].includes(ext)) return "n64";
-
-        if (["pce"].includes(ext)) return "pce";
-
-        if (["ngp", "ngc"].includes(ext)) return "ngp";
-
-        if (["ws", "wsc"].includes(ext)) return "ws";
-
-        if (["col", "cv"].includes(ext)) return "coleco";
-
-        if (["d64"].includes(ext)) return "vice_x64sc";
-
-        if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
-
-        return await new Promise((resolve) => {
-            var coreValues = {
-                "Nintendo 64": "n64",
-                "Nintendo Game Boy": "gb",
-                "Nintendo Game Boy Advance": "gba",
-                "Nintendo DS": "nds",
-                "Nintendo Entertainment System": "nes",
-                "Super Nintendo Entertainment System": "snes",
-                PlayStation: "psx",
-                "Virtual Boy": "vb",
-                "Sega Mega Drive": "segaMD",
-                "Sega Master System": "segaMS",
-                "Sega CD": "segaCD",
-                "Atari Lynx": "lynx",
-                "Sega 32X": "sega32x",
-                "Atari Jaguar": "jaguar",
-                "Sega Game Gear": "segaGG",
-                "Sega Saturn": "segaSaturn",
-                "Atari 7800": "atari7800",
-                "Atari 2600": "atari2600",
-                "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
-                "NEC PC-FX": "pcfx",
-                "SNK NeoGeo Pocket (Color)": "ngp",
-                "Bandai WonderSwan (Color)": "ws",
-                ColecoVision: "coleco",
-                "Commodore 64": "vice_x64sc",
-                "Commodore 128": "vice_x128",
-                "Commodore VIC20": "vice_xvic",
-                "Commodore Plus/4": "vice_xplus4",
-                "Commodore PET": "vice_xpet",
-            };
-
-            const cores = Object.keys(coreValues)
-                .sort()
-                .reduce((obj, key) => {
-                    obj[key] = coreValues[key];
-                    return obj;
-                }, {});
-
-            const button = document.createElement("button");
-            const select = document.createElement("select");
-
-            for (const type in cores) {
-                const option = document.createElement("option");
-
-                option.value = cores[type];
-                option.textContent = type;
-                select.appendChild(option);
-            }
-
-            button.onclick = () => resolve(select[select.selectedIndex].value);
-            button.textContent = "Load game";
-            box.innerHTML = "";
-
-            box.appendChild(select);
-            box.appendChild(button);
-        });
-    })(parts.pop());
 
     const div = document.createElement("div");
     const sub = document.createElement("div");
@@ -315,9 +94,13 @@ input.onchange = async () => {
     sub.id = "game";
     div.id = "display";
 
+    // Remover elementos top e box se existirem
     const top = document.getElementById("top");
-    top.remove();
-    box.remove();
+    if (top) top.remove();
+
+    const box = document.getElementById("box");
+    if (box) box.remove();
+
     div.appendChild(sub);
     document.body.appendChild(div);
 
@@ -325,7 +108,7 @@ input.onchange = async () => {
     window.EJS_player = "#game";
     window.EJS_gameName = parts.join(".");
     window.EJS_biosUrl = "";
-    window.EJS_gameUrl = url;
+    window.EJS_gameUrl = URL.createObjectURL(rom);
     window.EJS_core = core;
     window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
     window.EJS_startOnLoaded = false;
@@ -333,37 +116,79 @@ input.onchange = async () => {
     window.EJS_disableDatabases = true;
     window.EJS_threads = enableThreads;
     window.EJS_fullscreenOnLoaded = false;
-    // window.EJS_loadStateURL = url; // Define a URL de carregamento do estado salvo
 
     EJS_Buttons = {
-        playPause: true,
-        restart: true,
-        mute: true,
-        settings: false,
-        fullscreen: true,
-        saveState: true,
-        loadState: true,
-        screenRecord: true,
-        gamepad: true,
-        cheat: false,
-        volume: true,
-        saveSavFiles: true,
-        loadSavFiles: true,
-        quickSave: false,
-        quickLoad: false,
-        screenshot: true,
-        cacheManager: false,
-    };
+    playPause: true,
+    restart: true,
+    mute: true,
+    settings: false,
+    fullscreen: true,
+    saveState: true,
+    loadState: true,
+    screenRecord: true,
+    gamepad: true,
+    cheat: false,
+    volume: true,
+    saveSavFiles: true,
+    loadSavFiles: true,
+    quickSave: false,
+    quickLoad: false,
+    screenshot: true,
+    cacheManager: false,
+};
 
     script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
     document.body.appendChild(script);
 
-    // Mostrar controles de estado salvo
-    document.getElementById("controls").style.display = "flex";
-};
+    // Mostrar controles de estado salvo se existir o elemento
+    const controls = document.getElementById("controls");
+    if (controls) controls.style.display = "flex";
 
-box.ondragover = () => box.setAttribute("drag", true);
-box.ondragleave = () => box.removeAttribute("drag");
+    // Evento de dragover e dragleave para o elemento box, se existir
+    if (box) {
+    box.ondragover = () => box.setAttribute("drag", true);
+    box.ondragleave = () => box.removeAttribute("drag");
+}
+}
 
+    function getCoreFromExtension(extension) {
+    switch (extension.toLowerCase()) {
+    case "nes":
+    case "fds":
+    case "unif":
+    case "unf":
+    return "nes";
+    case "smc":
+    case "fig":
+    case "sfc":
+    case "gd3":
+    case "gd7":
+    case "dx2":
+    case "bsx":
+    case "swc":
+    return "snes";
+    case "z64":
+    case "n64":
+    return "n64";
+    case "pce":
+    return "pce";
+    case "ngp":
+    case "ngc":
+    return "ngp";
+    case "ws":
+    case "wsc":
+    return "ws";
+    case "col":
+    case "cv":
+    return "coleco";
+    case "d64":
+    return "vice_x64sc";
+    case "gba":
+    case "gb":
+    return extension;
+    default:
+    return "nes"; // Default to NES if extension is not recognized
+}
+}
 
- 
+    console.log("Initialized.");
