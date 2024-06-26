@@ -10,9 +10,7 @@ public partial class ApplicationDbContext{
 		modelBuilder.Entity<GameGenre>(entity => {
 			entity.ToTable("GameGenres", schema: "marketplace");
 			
-			entity.HasKey(e => e.game_id);
-
-			entity.HasKey(e => e.genre_id);
+			entity.HasKey(e => new { e.game_id, e.genre_id });
 			
 			entity.HasOne(e => e.genre)
 				.WithMany(g => g.gameGenres)

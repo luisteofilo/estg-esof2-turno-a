@@ -12,6 +12,8 @@ public partial class ApplicationDbContext{
 			
 			entity.HasKey(e => e.genre_id);
 
+			entity.Property(e => e.genre_id).HasDefaultValueSql("gen_random_uuid()");
+			
 			entity.Property(e => e.name).IsRequired();
 			
 			entity.Property(e => e.description).IsRequired();
