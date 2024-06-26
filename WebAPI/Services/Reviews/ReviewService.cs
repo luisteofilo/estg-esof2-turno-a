@@ -85,9 +85,9 @@ public class ReviewService(ApplicationDbContext db)
         await db.SaveChangesAsync();
     }
 
-    public async Task DeleteReview(DeleteReviewModel model)
+    public async Task DeleteReview(Guid ReviewId)
     {
-        var review = db.Reviews.FirstOrDefault(r => r.ReviewId == model.ReviewId);
+        var review = db.Reviews.FirstOrDefault(r => r.ReviewId == ReviewId);
         if (review == null)
         {
             throw new Exception("Selected review does not exist");

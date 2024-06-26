@@ -30,12 +30,14 @@ namespace ESOF.WebApp.WebAPI.Controllers.Reviews
             return Ok();
         }
 
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteReview(DeleteReviewModel model)
-        {
-                await _reviewService.DeleteReview(model);
-                return Ok();
+        [HttpDelete("delete/{reviewId}")]
+        public async Task<IActionResult> DeleteReview(Guid reviewId)
+        { 
+            await _reviewService.DeleteReview(reviewId);
+            return Ok();
         }
+
+
 
         [HttpPut("edit")]
         public async Task<IActionResult> UpdateReview(UpdateReviewModel model)

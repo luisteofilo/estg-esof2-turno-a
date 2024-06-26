@@ -59,6 +59,5 @@ public class ApiHelper(HttpClient httpClient)
             // Handle exception
             throw new Exception($"Error deleting from API: {e.Message}");
         }
-
     }
 }

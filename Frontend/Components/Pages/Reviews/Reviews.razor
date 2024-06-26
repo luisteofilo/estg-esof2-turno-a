@@ -23,7 +23,6 @@ else
     
     <h2>Leave a Review:</h2>
 
-
     <form class="review-form">
 
         <div class="form-group">
@@ -65,9 +64,40 @@ else
                     {
                         <p><em>(Edited on @review.EditedDate?.ToString("yyyy-MM-dd HH:mm"))</em></p>
                     }
+                    @if (review.UserId == UserId)
+                    {
+                        @if (isEditing && editingReview.ReviewId == review.ReviewId)
+                        {
+                            <form class="review-form">
+                                <div class="form-group">
+                                    <label for="rating">Rating:@editingReview.Rating</label>
+                                    <input type="range" id="rating" min="0" max="10" @bind="editingReview.Rating" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="written-review">Written Review:</label>
+                                    <textarea id="written-review" @bind="editingReview.WrittenReview" class="form-control" rows="5"></textarea>
+                                </div>
+
+                                <button type="submit" @onclick="async () => await SaveEditReview()" class="btn btn-primary">Save Edit</button>
+                                <button type="button" @onclick="() => isEditing = false" class="btn btn-secondary">Cancel</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-link" @onclick="() => EditReview(review)">Edit</button>
+                            <button class="btn btn-link" @onclick="() => DeleteReview(new DeleteReviewModel { ReviewId = review.ReviewId })">Delete</button>
+                        }
+                    }
+                    @if (UserId == AdminId)
+                    {
+                        <button class="btn btn-link" @onclick="() => DeleteReview(new DeleteReviewModel { ReviewId = review.ReviewId })">Delete</button>
+                        /*<button class="btn btn-link" @onclick="() => ApproveReview(new ApproveReviewModel { ReviewId = review.ReviewId, ApprovedStatus = true })">Approve</button>*/
+                    }
                 </div>
             </div>
         }
+
     }
 }
 
@@ -75,11 +105,15 @@ else
 {
     [Parameter] public Guid GameId { get; set; }
     private Guid UserId { get; set; } = new Guid("58053709-86aa-4771-8516-6b6b148ff1a6");
+    private Guid AdminId { get; set; } = new Guid("b22741ad-ba40-4005-902f-26aa2f21de80");
     //Can be changed once authentication is added
     
     private ViewGameByIdModel _gamedetails;
     private ReviewViewModel[] _reviews;
     private CreateReviewModel newReview = new CreateReviewModel();
+    private UpdateReviewModel editedReview = new UpdateReviewModel();
+    private bool isEditing = false;
+    private ReviewViewModel editingReview;
 
     protected override async Task OnInitializedAsync()
     {
@@ -117,5 +151,56 @@ else
             Console.WriteLine($"Error creating review: {ex.Message}");
         }
     }
+
+    public async Task EditReview(ReviewViewModel review)
+    {
+        isEditing = true;
+        editingReview = new ReviewViewModel { 
+            ReviewId = review.ReviewId, 
+            Rating = review.Rating, 
+            WrittenReview = review.WrittenReview, 
+        };
+    }
+
+    private async Task SaveEditReview()
+    {
+        try
+        {
+            await ApiHelper.PutToApiAsync($"http://localhost:5295/reviews/edit", editingReview);
+            _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
+            isEditing = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving edited review: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteReview(DeleteReviewModel deleteModel)
+    {
+        try
+        {
+            await ApiHelper.DeleteFromApiAsync<DeleteReviewModel>($"http://localhost:5295/reviews/delete?ReviewId={deleteModel.ReviewId}");
+            _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting review: {ex.Message}");
+        }
+    }
+    
+    /* async Task ApproveReview(ApproveReviewModel approveModel)
+    {
+        try
+        {
+            await ApiHelper.PutToApiAsync($"http://localhost:5295/reviews/delete?ReviewId={approveModel.ReviewId}", approveModel);
+            _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error approving review: {ex.Message}");
+        }
+    }*/
+
     
 }
