@@ -1,5 +1,9 @@
 @page "/marketplace"
 @using Frontend.Components.Pages.Marketplace.Components
+@using ESOF.WebApp.WebAPI.DtoClasses
+@using ESOF.WebApp.WebAPI.DtoClasses.Response
+@using Frontend.Helpers
+@inject ApiHelper ApiHelper
 
 <PageTitle>Marketplace</PageTitle>
 
@@ -9,12 +13,16 @@
         <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search...">
     </div>
     <div class="game-card-container">
-        @for (var i = 0; i < 9; i++) {  
-                <ListingCard ListingId="@i" />
+        @foreach (var game in _games) {  
+                <ListingCard ListingId="@game.id" />
         }
     </div>
 </div>
 
 @code {
-
+    private List<ResponseMKP_GameDto> _games = [];
+    
+    protected override async Task OnInitializedAsync() {
+        _games = await ApiHelper.GetFromApiAsync<List<ResponseMKP_GameDto>>("/marketplace/Game") ?? [];
+    }
 }
