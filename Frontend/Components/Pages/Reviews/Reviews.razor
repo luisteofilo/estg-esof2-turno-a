@@ -179,7 +179,7 @@ else
     {
         try
         {
-            await ApiHelper.DeleteFromApiAsync<DeleteReviewModel>($"http://localhost:5295/reviews/reviews/delete/{deleteModel.ReviewId}");
+            await ApiHelper.DeleteFromApiAsync<DeleteReviewModel>($"http://localhost:5295/reviews/delete/{deleteModel.ReviewId}");
             _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
         }
         catch (Exception ex)
