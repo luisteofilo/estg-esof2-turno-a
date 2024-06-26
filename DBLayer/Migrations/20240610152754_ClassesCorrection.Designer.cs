@@ -3,6 +3,7 @@ using System;
 using ESOF.WebApp.DBLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610152754_ClassesCorrection")]
+    partial class ClassesCorrection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,29 +25,16 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favorite", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnOrder(0);
-
-                    b.Property<Guid>("GameId")
-                        .HasColumnType("uuid")
-                        .HasColumnOrder(1);
-
-                    b.HasKey("UserId", "GameId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Favorites");
-                });
-
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
                     b.Property<Guid>("GameId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("AdditionalNotes")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int[]>("Categories")
                         .IsRequired()
@@ -66,12 +56,32 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired()
                         .HasColumnType("integer[]");
 
+                    b.Property<string>("Graphics")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Memory")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
+                    b.Property<string>("Network")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Os")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Processor")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Publisher")
                         .IsRequired()
@@ -80,11 +90,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("Rom")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("Url_Image")
+                    b.Property<string>("Storage")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -142,7 +148,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
                 {
-                    b.Property<Guid>("ShopId")
+                    b.Property<Guid>("GameOfMonthId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
@@ -153,13 +159,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<Guid>("GameId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("GameOfMonthId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("gameId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("ShopId");
+                    b.HasKey("GameOfMonthId");
 
                     b.HasIndex("GameId");
 
@@ -206,25 +209,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favorite", b =>
-                {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
-                        .WithMany("Favorites")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
-                        .WithMany("Favorites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
@@ -278,7 +262,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
-                    b.Navigation("Favorites");
                     b.Navigation("Shops");
                 });
 
@@ -296,8 +279,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
-                    b.Navigation("Favorites");
-
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
