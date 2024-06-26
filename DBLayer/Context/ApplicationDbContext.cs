@@ -37,6 +37,10 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    //Para os achievements
+    public DbSet<Achievement> Achievements { get; set; }
+    public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
+    public DbSet<TestUserScore> TestUserScores { get; set; }
 
     public DbSet<Game> Games { get; set; }
     public DbSet<Shops> Shop { get; set; }
@@ -64,6 +68,11 @@ public partial class ApplicationDbContext : DbContext
         BuildSpeedrunRuns(modelBuilder);
         BuildGames(modelBuilder); 
         BuildFavorites(modelBuilder); 
+        //Build para os Achievements
+        BuildAchievements(modelBuilder);
+        BuildPlayerAchievements(modelBuilder);
+        //Build para tabelas de teste de scores
+        BuildTestUserScores(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }

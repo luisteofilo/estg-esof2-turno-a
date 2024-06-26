@@ -24,6 +24,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Remove="Helpers\AchievementMethods.cs" />
+      <Compile Remove="Context\Tables\TestChallengeUser.cs" />
+      <Compile Remove="Context\Tables\TestChallenges.cs" />
+      <Compile Remove="Entities\TestChallenge.cs" />
+      <Compile Remove="Entities\TestChallengeUser.cs" />
+      <Compile Remove="Migrations\20240621162758_TestScores.cs" />
+      <Compile Remove="Migrations\20240621162758_TestScores.Designer.cs" />
       <Compile Remove="Context\Tables\Games.cs" />
       <Compile Remove="Migrations\20240626165727_SpeedRuns.cs" />
       <Compile Remove="Migrations\20240626165727_SpeedRuns.Designer.cs" />

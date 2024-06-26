@@ -101,6 +101,29 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("Games");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Achievement", b =>
+                {
+                    b.Property<Guid>("IdAchievement")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("RequiredScore")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("IdAchievement");
+
+                    b.ToTable("Achievements");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
                 {
                     b.Property<Guid>("PermissionId")
@@ -115,6 +138,24 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasKey("PermissionId");
 
                     b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.PlayerAchievement", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AchievementId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("Unlocked")
+                        .HasColumnType("date");
+
+                    b.HasKey("UserId", "AchievementId");
+
+                    b.HasIndex("AchievementId");
+
+                    b.ToTable("PlayerAchievements");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Role", b =>
@@ -146,6 +187,26 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.TestUserScore", b =>
+                {
+                    b.Property<Guid>("ScoreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<long>("Score")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ScoreId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TestUserScores");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
@@ -315,6 +376,25 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.PlayerAchievement", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Achievement", "Achievement")
+                        .WithMany("PlayerAchievements")
+                        .HasForeignKey("AchievementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                        .WithMany("PlayerAchievements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Achievement");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "Developer")
@@ -362,6 +442,17 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.TestUserScore", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                        .WithMany("TestUserScores")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
@@ -449,6 +540,11 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Achievement", b =>
+                {
+                    b.Navigation("PlayerAchievements");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
                     b.Navigation("Favorites");
@@ -483,6 +579,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
+                    b.Navigation("PlayerAchievements");
+
+                    b.Navigation("TestUserScores");
+
                     b.Navigation("GamesDeveloped");
 
                     b.Navigation("Favorites");
