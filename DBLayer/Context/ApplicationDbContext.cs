@@ -61,7 +61,6 @@ public partial class ApplicationDbContext : DbContext
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
         base.OnModelCreating(modelBuilder);
-        
         // New Model
         BuildGameReplays(modelBuilder);
         BuildUserGameReplays(modelBuilder);
