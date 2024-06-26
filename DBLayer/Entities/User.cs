@@ -17,6 +17,5 @@ public class User
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
     
-    // Add this line
     public ICollection<Favorite> Favorites { get; set; }
 }
