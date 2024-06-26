@@ -30,6 +30,16 @@
     font-style: italic;
 }
 
+.review-actions {
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center; 
+}
+
+.review-actions button {
+    margin-left: 10px; 
+}
+
 .review-form {
     background-color: #f7f7f7;
     padding: 20px;
