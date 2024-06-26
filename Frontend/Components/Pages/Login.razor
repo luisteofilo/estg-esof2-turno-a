@@ -69,7 +69,7 @@
             }
             
             Console.WriteLine("Sending data to the API...");
-            var response = await Http.PostAsJsonAsync("http://localhost:5295/logincontroller", UserDto);
+            var response = await Http.PostAsJsonAsync("http://localhost:5295/login", UserDto);
             Console.WriteLine("API request sent.");
 
             var responseContent = await response.Content.ReadAsStringAsync();

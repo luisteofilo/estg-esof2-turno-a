@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.WebAPI.Controllers
 {
-    [Route("/logincontroller")]
+    [Route("/login")]
     [ApiController]
     public class Login : ControllerBase
     {
