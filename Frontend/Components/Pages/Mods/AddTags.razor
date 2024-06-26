@@ -4,7 +4,7 @@
 @using System.Collections.Generic
 @inject ApiHelper ApiHelper
 
-<h3>Mod Details</h3>
+<h3>Add Tags to Mod</h3>
 
 @if (mod == null)
 {
@@ -14,40 +14,37 @@ else
 {
     <div>
         <h4>@mod.Name</h4>
-        <p><strong>Game:</strong> @mod.Game</p>
-        <p><strong>Description:</strong> @mod.Description</p>
-        <p><strong>Release Date:</strong> @mod.ReleaseDate.ToString("yyyy-MM-dd")</p>
-        <p><strong>Author:</strong> @mod.Author</p>
-        <p><strong>Version:</strong> @mod.Version</p>
-        <p><strong>Download Link:</strong> <a href="@mod.DownloadLink">@mod.DownloadLink</a></p>
-
         <h5>Tags</h5>
         <EditForm Model=@tags OnValidSubmit=@HandleValidSubmit FormName="AddTags">
             <table class="table">
                 <thead>
-                    <tr>
-                        <th>Select</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                    </tr>
+                <tr>
+                    <th>Select</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach (var tag in tags)
-                    {
-                        <tr>
-                            <td>
-                                <button type="button" class="btn btn-secondary" @onclick="() => ToggleSelection(tag)">
-                                    @(tag.IsSelected ? "Uncheck" : "Check")
-                                </button>
-                            </td>
-                            <td>@tag.Name</td>
-                            <td>@tag.Description</td>
-                        </tr>
-                    }
+                @foreach (var tag in tags)
+                {
+                    <tr>
+                        <td>
+                            <InputCheckbox @bind-Value="@tag.IsSelected" />
+                        </td>
+                        <td>@tag.Name</td>
+                        <td>@tag.Description</td>
+                    </tr>
+                }
                 </tbody>
             </table>
             <button type="submit" class="btn btn-primary">Save</button>
         </EditForm>
+        @if (shouldRedirect)
+            {
+                <NavLink class="nav-link" href="@($"/mod/{mod.ModId}")">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> See Mod Details
+                </NavLink>
+            }
     </div>
 }
 
@@ -57,6 +54,7 @@ else
 
     private ModDto mod;
     private List<TagDto> tags = new List<TagDto>();
+    private bool shouldRedirect = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,31 +74,23 @@ else
             }
         }
     }
-
-    private void ToggleSelection(TagDto tag)
-    {
-        tag.IsSelected = !tag.IsSelected;
-        Console.WriteLine("Tag selection toggled:");
-        Console.WriteLine($"Tag ID: {tag.TagId}, IsSelected: {tag.IsSelected}");
-    }
-
     private async Task HandleValidSubmit()
     {
+        var tag = tags.FirstOrDefault(t => t.TagId == new Guid("922c3cf9-92d2-4c27-b30e-6e50a9e6e4af"));
         var tag2 = tags.FirstOrDefault(t => t.TagId == new Guid("05e4447e-a308-4f18-b261-0b4954c7fade"));
+        //var tag = tags.FirstOrDefault(t => t.TagId == new Guid("292bd67c-0b4e-45e8-8200-b52e24044c0a"));
+        //var tag2 = tags.FirstOrDefault(t => t.TagId == new Guid("e571ab56-7ab9-4277-be93-79ccedf2b821"));
         Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(tag2));
 
-        if (tag2 != null)
+        if (tag != null && tag2 != null)
         {
+            tag.IsSelected = true;
             tag2.IsSelected = true;
         }
         else
         {
             Console.WriteLine("Tag not found.");
         }
-
-        var selectedTags2 = tags.Where(t => t.IsSelected).ToList();
-        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(selectedTags2));
-        await ApiHelper.PostToApiAsync($"/tag/{modId}", selectedTags2);
         Console.WriteLine("Submit button clicked.");
         var selectedTags = tags.Where(t => t.IsSelected).ToList();
         Console.WriteLine("Selected tags:");
@@ -108,6 +98,7 @@ else
         
         // Await an async API call
         await ApiHelper.PostToApiAsync($"/tag/{modId}", selectedTags);
+        shouldRedirect = true;
     }
 
     public class ModDto

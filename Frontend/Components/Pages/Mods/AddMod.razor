@@ -1,10 +1,20 @@
 @page "/add-mod"
 @using System.Net.Http.Json
-@using ESOF.WebApp.DBLayer.Entities
 @inject HttpClient Http
 @inject IJSRuntime JS
 @code {
-    private Mod formData = new Mod();
+    private string name = "Fight2Survive";
+    private string game = "Total Fight";
+    private string description = "This mod add more fighting techniques and a lot more weapons!";
+    private string author = "TimMint";
+    private string version = "2";
+    private string downloadlink = "https://example.com/fight2survive";
+    //private string name = "BeatifulTF";
+    //private string game = "Total Fight";
+    //private string description = "Better graphics.";
+    //private string author = "TimMint";
+    //private string version = "1";
+    //private string downloadlink = "https://example.com/beautifultf/";
     private string alertMessage = string.Empty;
     private string alertClass = string.Empty;
     private bool showMessageContainer = false;
@@ -15,29 +25,26 @@
     {
         try
         {
-            // Log form data to the server console
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(formData));
-
-            ModFormModel exampleMod = new ModFormModel
+            ModFormModel formData = new ModFormModel
             {
                 ModId = Guid.NewGuid(),
-                Name = "formData.Name2254345",
-                Game = "formData.Game",
-                Description = "formData.Description",
+                Name = name,
+                Game = game,
+                Description = description,
                 ReleaseDate = DateTime.UtcNow,
-                Author = "formData.Author",
-                Version = "2",
-                DownloadLink = "formData.DownloadLink",
+                Author = author,
+                Version = version,
+                DownloadLink = downloadlink,
                 DownloadCount = 0,
                 Rating = 0
             };
+            // Log form data to the server console
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(formData));
 
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(exampleMod));
-
-            var response = await Http.PostAsJsonAsync("/mods", exampleMod);
+            var response = await Http.PostAsJsonAsync("/mods", formData);
             if (response.IsSuccessStatusCode)
             {
-                createdModId = exampleMod.ModId;
+                createdModId = formData.ModId;
                 ShowMessage("Mod created successfully.", "alert-success");
                 shouldRedirect = true;
             }
@@ -77,41 +84,42 @@
 
 <div class="container">
     <h1>Add New Mod</h1>
-    @if (shouldRedirect)
-    {
-        <NavLink class="nav-link" href="@($"/add-tags/{createdModId}")">
-            <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Adicionar Mod
-        </NavLink>
-    }
-    <EditForm Model=@formData OnValidSubmit=@SubmitForm FormName="AddMod">
+    <EditForm Model="this" OnValidSubmit=@SubmitForm FormName="AddMod">
         <div class="mb-3">
             <label for="modName" class="form-label">Mod Name</label>
-            <InputText id="modName" class="form-control" placeholder="Mod Name" aria-label="Mod Name" aria-describedby="modName" @bind-Value=formData.Name @bind-Value:event="oninput" />
+            <InputText @bind-Value="name" @bind:event="oninput"/>
         </div>
         <div class="mb-3">
             <label for="gameName" class="form-label">Game Name</label>
-            <InputText id="gameName" class="form-control" placeholder="Game Name" aria-label="Game Name" aria-describedby="gameName" @bind-Value=formData.Game @bind-Value:event="oninput" />
+            <InputText @bind-Value="game" @bind:event="oninput"/>
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <InputTextArea id="description" class="form-control" placeholder="Description" aria-label="Description" aria-describedby="description" @bind-Value=formData.Description @bind-Value:event="oninput" />
+            <InputText @bind-Value="description" @bind:event="oninput"/>
         </div>
         <div class="mb-3">
             <label for="authorName" class="form-label">Author Name</label>
-            <InputText id="authorName" class="form-control" placeholder="Author Name" aria-label="Author Name" aria-describedby="authorName" @bind-Value=formData.Author @bind-Value:event="oninput" />
+           <InputText @bind-Value="author" @bind:event="oninput"/>
         </div>
         <div class="mb-3">
             <label for="version" class="form-label">Version</label>
-            <InputText id="version" class="form-control" placeholder="Version" aria-label="Version" aria-describedby="version" @bind-Value=formData.Version @bind-Value:event="oninput" />
+            <InputText @bind-Value="version" @bind:event="oninput"/>
         </div>
         <div class="mb-3">
             <label for="downloadLink" class="form-label">Download Link</label>
-            <InputText id="downloadLink" class="form-control" placeholder="Download Link" aria-label="Download Link" aria-describedby="downloadLink" @bind-Value=formData.DownloadLink @bind-Value:event="oninput" />
+            <InputText @bind-Value="downloadlink" @bind:event="oninput"/>
         </div>
         <div class="mb-3 text-end">
             <button type="submit" class="btn btn-primary">Create</button>
         </div>
     </EditForm>
+    
+    @if (shouldRedirect)
+        {
+            <NavLink class="nav-link" href="@($"/add-tags/{createdModId}")">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Adicionar Tags ao Mod
+            </NavLink>
+        }
 
     @if (showMessageContainer)
     {
