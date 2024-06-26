@@ -75,7 +75,7 @@ else
             Score = score
         };
 
-       bool success =  await ApiHelper.PostToApiAsync($"api/Achievements/SaveScore/{selectedUserId}/{score}", new { });
+       bool success =  await ApiHelper.PostToApiAsyncData($"api/Achievements/SaveScore/{selectedUserId}/{score}", new { });
 
        if (success)
        {
@@ -86,7 +86,7 @@ else
            {
                if (!_playerAchievements.Any(pa => pa.AchievementId == achievement.IdAchievement))
                {
-                   await ApiHelper.PostToApiAsync($"api/Achievements/PlayerAchievements/{selectedUserId}/{achievement.IdAchievement}", new { });
+                   await ApiHelper.PostToApiAsyncData($"api/Achievements/PlayerAchievements/{selectedUserId}/{achievement.IdAchievement}", new { });
                }
            }
        }

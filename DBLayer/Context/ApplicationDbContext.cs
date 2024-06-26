@@ -28,15 +28,9 @@ public partial class ApplicationDbContext : DbContext
         return optionsBuilder.Options;
     })();
     
-    public ApplicationDbContext()
-        : base(DefaultOptions)
-    {
-    }
+    public ApplicationDbContext() : base(DefaultOptions) { }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
@@ -48,6 +42,8 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
     public DbSet<TestUserScore> TestUserScores { get; set; }
 
+    public DbSet<Game> Games { get; set; }
+    public DbSet<Favorite> Favorites { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
@@ -62,6 +58,8 @@ public partial class ApplicationDbContext : DbContext
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        BuildGames(modelBuilder); 
+        BuildFavorites(modelBuilder); 
         //Build para os Achievements
         BuildAchievements(modelBuilder);
         BuildPlayerAchievements(modelBuilder);

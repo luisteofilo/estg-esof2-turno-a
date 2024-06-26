@@ -6,11 +6,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class MigrationFavoritos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Games",
+                columns: table => new
+                {
+                    GameId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Genre = table.Column<string>(type: "text", nullable: false),
+                    Consoles = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Games", x => x.GameId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Permissions",
                 columns: table => new
@@ -74,6 +88,30 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Favorites",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    GameId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favorites", x => new { x.UserId, x.GameId });
+                    table.ForeignKey(
+                        name: "FK_Favorites_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Favorites_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
@@ -98,6 +136,27 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Favorites_GameId",
+                table: "Favorites",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_Genre",
+                table: "Games",
+                column: "Genre");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_Name",
+                table: "Games",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_Consoles",
+                table: "Games",
+                column: "Consoles");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RolePermissions_PermissionId",
                 table: "RolePermissions",
                 column: "PermissionId");
@@ -118,10 +177,16 @@ namespace ESOF.WebApp.DBLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Favorites");
+
+            migrationBuilder.DropTable(
                 name: "RolePermissions");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "Permissions");
