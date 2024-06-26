@@ -28,7 +28,7 @@ public class Review
 
     public bool EditedStatus { get; set; } = false;
 
-    public DateTime? EditedDate { get; set; }
+    public DateTime? EditedDate { get; set; } = null;
 
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     

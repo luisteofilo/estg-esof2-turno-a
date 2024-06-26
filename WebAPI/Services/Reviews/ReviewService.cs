@@ -15,15 +15,42 @@ public class ReviewService(ApplicationDbContext db)
         {
             throw new Exception("Selected game does not exist");
         }
-
-        var review = new Review()
+        
+        if (game.Reviews == null)
+        {
+            game.Reviews = new List<Review>();
+        }
+        
+        var review = new Review
         {
             WrittenReview = model.WrittenReview,
             GameId = model.GameId,
             UserId = model.UserId,
             Rating = model.Rating,
+            ApprovedStatus = false,
+            EditedStatus = false,
+            CreationDate = DateTime.UtcNow
         };
+        
+        if (db == null)
+
+        {
+
+            throw new Exception("Database context is null");
+
+        }
+
+
+        if (game.Reviews == null)
+
+        {
+
+            throw new Exception("Game.Reviews is null");
+
+        }
         game.Reviews.Add(review);
+    
+        
         
         await db.SaveChangesAsync();
     }

@@ -74,7 +74,8 @@ else
 @code 
 {
     [Parameter] public Guid GameId { get; set; }
-    public Guid UserId { get; set; }
+    private Guid UserId { get; set; } = new Guid("eaf8050c-1b03-4eaa-9874-360df0720e15");
+    //Can be changed once authentication is added
     
     private ViewGameByIdModel _gamedetails;
     private ReviewViewModel[] _reviews;
@@ -107,7 +108,7 @@ else
 
         try
         {
-            await ApiHelper.PostToApiAsync($"http://localhost:5295/reviews/games/{GameId}/reviews/create", newReview);
+            await ApiHelper.PostToApiAsync($"http://localhost:5295/reviews/create", newReview);
             _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
             newReview = new CreateReviewModel();
         }
