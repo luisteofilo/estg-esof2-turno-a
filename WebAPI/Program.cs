@@ -1,6 +1,5 @@
 using ESOF.WebApp.DBLayer.Context;
-using ESOF.WebApp.DBLayer.Entities;
-using Microsoft.AspNetCore.Mvc;
+using ESOF.WebApp.WebAPI.Controllers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,64 +31,6 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
-app.MapGet("/users", () =>
-    {
-        var db = new ApplicationDbContext();
-        return db.Users;
-    })
-    .WithName("GetUsers")
-    .WithOpenApi();
-
-app.MapGet("/games", async () =>
-    {
-        var db = new ApplicationDbContext();
-        var games = await db.Games
-            .Select(g => new 
-            {
-                g.GameId,
-                g.Name,
-                g.Genre,
-                g.Platform
-            })
-            .ToListAsync();
-        return games;
-    })
-    .WithName("GetGames")
-    .WithOpenApi();
-
-app.MapGet("/games/{gameId:guid}", async (Guid GameId) =>
-    {
-        var db = new ApplicationDbContext();
-        var game = await db.Games
-            .Where(g => g.GameId == GameId)
-            .Select(g => new 
-            {
-                g.GameId,
-                g.Name,
-                g.Genre,
-                g.Platform
-            })
-            .FirstOrDefaultAsync();
-        return game;
-    })
-    .WithName("GetGamesById")
-    .WithOpenApi();
-
-app.MapGet("/consoles", () =>
-    {
-        var consoles = Enum.GetNames(typeof(Consoles)).ToList();
-        return consoles;
-    })
-    .WithName("GetConsoles")
-    .WithOpenApi();
-
-app.MapGet("/genres", () =>
-    {
-        var genres = Enum.GetNames(typeof(Genre)).ToList();
-        return genres;
-    })
-    .WithName("GetGenres")
-    .WithOpenApi();
-
+app.MapEnumController();
 app.MapFavoriteController();
 app.Run();
