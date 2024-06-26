@@ -11,6 +11,7 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+      <Content Remove="Components\Pages\GameOfTheMonth\Login.razor" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,6 +21,10 @@
     <ItemGroup>
       <ProjectReference Include="..\DBLayer\DBLayer.csproj" />
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Services\AuthenticationService.cs" />
     </ItemGroup>
 
 </Project>

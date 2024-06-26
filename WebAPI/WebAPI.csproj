@@ -30,4 +30,8 @@
       <ProjectReference Include="..\DBLayer\DBLayer.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Controllers\AuthController.cs" />
+    </ItemGroup>
+
 </Project>
