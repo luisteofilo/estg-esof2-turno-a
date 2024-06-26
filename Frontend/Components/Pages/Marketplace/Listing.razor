@@ -1,37 +1,83 @@
-@page "/marketplace/listing/{id}"
-
+@page "/marketplace/listing/{id:guid}"
+@using Frontend.Helpers
+@inject ApiHelper ApiHelper
+@inject HttpClient httpClient
+@rendermode InteractiveServer
 <PageTitle>Listing</PageTitle>
 
-<div class="main">
-    <div class="info">
-        
-        <div class="fw-bold fs-1">Listing</div>
-        <div class="listing-info-row">
-            <div class="fw-bold fs-5">Condition:</div>
-            <div class="fs-5">Used</div>
-        </div>
-        <div class="listing-info-col">
-            <div>Price</div>
-            <div class="fw-bold fs-3">20€</div>
-        </div>
-        <div class="listing-info-row">
-            <div class="fw-bold fs-5">Seller:</div>
-            <div class="fs-5">João Alves</div>
-        </div>
-        <div class="actions">
+@if (game == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="main">
+        <div class="info">
+            <div class="fw-bold fs-1">@game.Name</div>
             <div class="listing-info-row">
-                <button type="button" class="btn btn-outline-primary">Add to cart</button>
-                <button type="button" class="btn btn-primary">Buy now</button>
+                <div class="fw-bold fs-5">Condition:</div>
+                <div class="fs-5">@game.Condition</div>
             </div>
-            <a href="/marketplace/" type="button" class="btn btn-outline-secondary">Go back</a>
+            <div class="listing-info-col">
+                <div>Price</div>
+                <div class="fw-bold fs-3">@game.Price €</div>
+            </div>
+            <div class="listing-info-row">
+                <div class="fw-bold fs-5">Genres:</div>
+                <div class="fs-5">
+                    @if (game.Genres != null && game.Genres.Any())
+                    {
+                        @foreach (var genre in game.Genres)
+                        {
+                            <span>@genre.Name</span>
+                            @if (genre != game.Genres.Last()) { <span>, </span> }
+                        }
+                    }
+                    else
+                    {
+                        <span>No genres found</span>
+                    }
+                </div>
+            </div>
+            <div class="actions">
+                <div class="listing-info-row">
+                    <button type="button" class="btn btn-outline-primary">Add to cart</button>
+                    <button type="button" class="btn btn-primary">Buy now</button>
+                </div>
+                <a href="/marketplace/" type="button" class="btn btn-outline-secondary">Go back</a>
+            </div>
+        </div>
+        <div class="slideshow">
+            <img src="https://picsum.photos/600/400" alt="">
         </div>
     </div>
-    <div class="slideshow">
-        <img src="https://picsum.photos/600/400" alt="">
-    </div>
-</div>
+}
 
 @code {
     [Parameter]
-    public string? Id { get; set; }
+    public Guid? Id { get; set; }
+
+    private ResponseMKP_GameDto game;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            game = await ApiHelper.GetFromApiAsync<ResponseMKP_GameDto>($"marketplace/game/{Id}");
+        }
+    }
+
+    public class ResponseMKP_GameDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Condition { get; set; }
+        public decimal Price { get; set; }
+        public List<GenreDto> Genres { get; set; }
+    }
+
+    public class GenreDto
+    {
+        public string Name { get; set; }
+    }
 }
