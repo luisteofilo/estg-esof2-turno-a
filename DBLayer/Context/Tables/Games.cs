@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+using ESOF.WebApp.DBLayer.Entities;
+=======
 ﻿using ESOF.WebApp.DBLayer.Entities;
+>>>>>>> origin/master
 using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.DBLayer.Context;
@@ -41,5 +45,20 @@ public partial class ApplicationDbContext
             .WithMany(g => g.Favorites)
             .HasForeignKey(f => f.GameId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Game>(entity => {
+            entity.HasKey(e => e.game_id);
+
+            entity.Property(e => e.name).IsRequired();
+
+            entity.Property(e => e.description).IsRequired();
+
+            entity.Property(e => e.stock).IsRequired();
+
+            entity.Property(e => e.price).IsRequired();
+
+            entity.Property(e => e.release_date).IsRequired();
+            
+        });
     }
 }

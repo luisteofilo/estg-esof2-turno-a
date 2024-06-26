@@ -69,7 +69,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
             migrationBuilder.RenameColumn(
                 name: "developer",
                 table: "Games",
-                newName: "Developer");
+                newName: "DeveloperID");
 
             migrationBuilder.RenameColumn(
                 name: "description",

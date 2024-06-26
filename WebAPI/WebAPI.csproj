@@ -31,4 +31,8 @@
       <ProjectReference Include="..\DBLayer\DBLayer.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="ScaffoldingReadMe.txt" />
+    </ItemGroup>
+
 </Project>

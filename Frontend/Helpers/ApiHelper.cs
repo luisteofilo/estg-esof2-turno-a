@@ -20,6 +20,7 @@ public class ApiHelper(HttpClient httpClient)
             throw new ApplicationException($"Error fetching data from {url}: {e.Message}");
         }
     }
+    
     public async Task<T?> PostToApiAsync<T>(string url)
     {
         try
@@ -52,6 +53,23 @@ public class ApiHelper(HttpClient httpClient)
     }
 
     
+    public async Task PutToApiAsync(string url)
+    {
+        try
+        {
+            // Enviar a solicitação PUT para a API
+            var response = await httpClient.PutAsync(url, null);
+
+            // Verificar se a solicitação foi bem-sucedida
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            // Tratar exceções de solicitação HTTP
+            throw new ApplicationException($"Error putting data to {url}: {e.Message}");
+        }
+    }
+    
     public async Task<T> DeleteFromApiAsync<T>(string url)
     {
         using (var response = await httpClient.DeleteAsync(url))
@@ -75,19 +93,4 @@ public class ApiHelper(HttpClient httpClient)
         }
     }
 
-
-    public async Task<bool> PostToApiAsyncData<T>(string url, T data)
-    {
-        try
-        {
-            var response = await httpClient.PostAsJsonAsync(url, data);
-            response.EnsureSuccessStatusCode();
-            return true;
-        }
-        catch (HttpRequestException e)
-        {
-            // Handle exception
-            throw new ApplicationException($"Error posting data to {url}: {e.Message}");
-        }
-    }  
 }
