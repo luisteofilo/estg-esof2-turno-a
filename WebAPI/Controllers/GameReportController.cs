@@ -94,5 +94,26 @@ namespace ESOF.WebApp.WebAPI.Controllers
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
+
+        [HttpGet("users/emails")]
+        public async Task<ActionResult<IEnumerable<string>>> GetUsersEmails()
+        {
+            var emails = await _context.Users.Select(u => u.Email).ToListAsync();
+            return Ok(emails);
+        }
+
+        [HttpGet("users")]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            var users = await _context.Users.ToListAsync();
+            return Ok(users);
+        }
+
+        [HttpGet("games")]
+        public async Task<ActionResult<IEnumerable<Game>>> GetGames()
+        {
+            var games = await _context.Games.ToListAsync();
+            return Ok(games);
+        }
     }
 }
