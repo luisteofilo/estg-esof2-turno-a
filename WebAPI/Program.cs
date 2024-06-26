@@ -41,6 +41,7 @@ app.MapGet("/users", () =>
     .WithName("GetUsers")
     .WithOpenApi();
 
+app.MapControllers();
 app.Run();
 
 
