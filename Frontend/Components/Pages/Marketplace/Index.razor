@@ -10,8 +10,13 @@
 <div class="main">
     <div class="title">Marketplace</div>
     <div>
-        <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search...">
+        <input 
+            type="text" 
+            class="form-control form-control-lg" 
+            placeholder="Search..." 
+            @bind="SearchText">
     </div>
+    <div>@SearchText</div>
     <div class="game-card-container">
         @if (_games == null) {
             <p>Loading...</p>
@@ -20,7 +25,7 @@
             <p>No games found.</p>
         }
         else {
-            @foreach (var game in _games) {
+            @foreach (var game in FilteredGames) {
                 <ListingCard TItem="ResponseMKP_GameDto" Game="@game"/>
             }
         }
@@ -29,7 +34,8 @@
 
 @code {
     private List<ResponseMKP_GameDto> _games;
-
+    string SearchText { get; set; } = "";
+    
     protected override async Task OnInitializedAsync() {
         try {
             _games = await ApiHelper.GetFromApiAsync<List<ResponseMKP_GameDto>>("marketplace/Game");
@@ -38,5 +44,7 @@
             Console.WriteLine($"Error fetching games: {ex.Message}");
         }
     }
-
+    
+    List<ResponseMKP_GameDto> FilteredGames => _games.Where(
+        game => game.name.ToLower().Contains(SearchText.ToLower())).ToList();
 }
