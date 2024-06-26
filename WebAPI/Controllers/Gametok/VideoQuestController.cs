@@ -1,27 +1,25 @@
 using ESOF.WebApp.DBLayer.Context;
-using ESOF.WebApp.WebAPI.DtoClasses;
+using ESOF.WebApp.WebAPI.DtoClasses.Create;
 using ESOF.WebApp.WebAPI.DtoClasses.Response;
 using ESOF.WebApp.WebAPI.DtoClasses.Update;
-using ESOF.WebApp.WebAPI.DtoClasses.Create;
 using ESOF.WebApp.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 
 namespace ESOF.WebApp.WebAPI.Controllers;
 
-[Route("/Gametok/[controller]")]
+[Route("Gametok/[controller]")]
     [ApiController]
-    public class CommentController : ControllerBase
+    public class VideoQuestController : ControllerBase
     {
-        private readonly CommentService _commentService = new(new ApplicationDbContext());
+        private readonly VideoQuestService _videoQuestService = new(new ApplicationDbContext());
 
-        [HttpGet("video/{videoId:guid}")]
-        public ActionResult<List<ResponseCommentDto>> GetComments(Guid videoId)
+        [HttpGet("game/{gameId:guid}")]
+        public ActionResult<List<ResponseVideoQuestDto>> GetVideoQuests(Guid gameId)
         {
             try
             {
-                return _commentService.GetComments(videoId);
+                var videoQuests = _videoQuestService.GetVideoQuests(gameId);
+                return Ok(videoQuests);
             }
             catch (Exception ex)
             {
@@ -29,12 +27,13 @@ namespace ESOF.WebApp.WebAPI.Controllers;
             }
         }
 
-        [HttpGet("{userId:guid}/{videoId:guid}")]
-        public ActionResult<ResponseCommentDto> GetCommentById(Guid userId, Guid videoId)
+        [HttpGet("{videoQuestId:guid}")]
+        public ActionResult<ResponseVideoQuestDto> GetVideoQuestById(Guid videoQuestId)
         {
             try
             {
-                return _commentService.GetCommentById(userId, videoId);
+                var videoQuest = _videoQuestService.GetVideoQuestById(videoQuestId);
+                return Ok(videoQuest);
             }
             catch (ArgumentException)
             {
@@ -46,12 +45,13 @@ namespace ESOF.WebApp.WebAPI.Controllers;
             }
         }
 
-        [HttpPost("{userId:guid}/{videoId:guid}")]
-        public ActionResult<ResponseCommentDto> CreateComment([FromBody] CreateCommentDto createCommentDto, Guid userId, Guid videoId)
+        [HttpPost]
+        public ActionResult<ResponseVideoQuestDto> CreateVideoQuest([FromBody] CreateVideoQuestDto createVideoQuestDto)
         {
             try
             {
-                return _commentService.CreateComment(createCommentDto, userId, videoId);
+                var videoQuest = _videoQuestService.CreateVideoQuest(createVideoQuestDto);
+                return CreatedAtAction(nameof(GetVideoQuestById), new { videoQuestId = videoQuest.videoquestid }, videoQuest);
             }
             catch (ArgumentException ex)
             {
@@ -63,12 +63,13 @@ namespace ESOF.WebApp.WebAPI.Controllers;
             }
         }
 
-        [HttpPatch("{userId:guid}/{videoId:guid}")]
-        public ActionResult<ResponseCommentDto> UpdateComment(Guid userId, Guid videoId, [FromBody] UpdateCommentDto updateCommentDto)
+        [HttpPatch("{videoQuestId:guid}")]
+        public ActionResult<ResponseVideoQuestDto> UpdateVideoQuest(Guid videoQuestId, [FromBody] UpdateVideoQuestDto updateVideoQuestDto)
         {
             try
             {
-                return _commentService.UpdateComment(userId, videoId, updateCommentDto);
+                var updatedVideoQuest = _videoQuestService.UpdateVideoQuest(videoQuestId, updateVideoQuestDto);
+                return Ok(updatedVideoQuest);
             }
             catch (ArgumentException)
             {
@@ -80,12 +81,12 @@ namespace ESOF.WebApp.WebAPI.Controllers;
             }
         }
 
-        [HttpDelete("{userId:guid}/{videoId:guid}")]
-        public IActionResult DeleteComment(Guid userId, Guid videoId)
+        [HttpDelete("{videoQuestId:guid}")]
+        public IActionResult DeleteVideoQuest(Guid videoQuestId)
         {
             try
             {
-                _commentService.DeleteComment(userId, videoId);
+                _videoQuestService.DeleteVideoQuest(videoQuestId);
                 return NoContent();
             }
             catch (ArgumentException)

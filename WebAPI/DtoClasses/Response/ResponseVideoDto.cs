@@ -4,7 +4,9 @@ public class ResponseVideoDto
 {
     public Guid videoid { get; set; }
     public Guid userid { get; set; }
+    public string username { get; set; }
     public Guid videoquestid { get; set; }
+    public string description { get; set; }
     public string videopath { get; set; }
     public string caption { get; set; }
     public int viewcount { get; set; }

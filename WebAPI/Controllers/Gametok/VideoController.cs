@@ -13,24 +13,12 @@ namespace ESOF.WebApp.WebAPI.Controllers;
 [ApiController]
 public class VideoController : ControllerBase
 {
-    private readonly VideoService _videoService;
-
-    public VideoController(ApplicationDbContext context)
-    {
-        _videoService = new VideoService(context);
-    }
+    private readonly VideoService _videoService = new(new ApplicationDbContext());
 
     [HttpGet]
     public ActionResult<List<ResponseVideoDto>> GetAllVideos()
     {
-        try
-        {
-            return _videoService.GetAllVideos();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        return _videoService.GetAllVideos();
     }
 
     [HttpGet("{id:guid}")]
@@ -51,11 +39,11 @@ public class VideoController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<ResponseVideoDto> CreateVideo([FromBody] CreateVideoDto createVideoDto)
+    public async Task<ActionResult<ResponseVideoDto>> CreateVideo([FromForm] CreateVideoDto createVideoDto)
     {
         try
         {
-            return _videoService.CreateVideo(createVideoDto);
+            return await _videoService.CreateVideo(createVideoDto);
         }
         catch (ArgumentException ex)
         {
@@ -108,19 +96,6 @@ public class VideoController : ControllerBase
         try
         {
             return _videoService.GetRandomVideo();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-    }
-
-    [HttpPost("random/fromlist")]
-    public ActionResult<ResponseVideoDto> GetRandomVideoFromList([FromBody] List<Guid> videoIds)
-    {
-        try
-        {
-            return _videoService.GetRandomVideoFromList(videoIds);
         }
         catch (Exception ex)
         {

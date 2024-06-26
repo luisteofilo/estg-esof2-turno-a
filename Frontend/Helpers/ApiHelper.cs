@@ -16,4 +16,16 @@ public class ApiHelper(HttpClient httpClient)
             throw new ApplicationException($"Error fetching data from {url}: {e.Message}");
         }
     }
+    
+    public async Task PostToApiAsync<T>(string url, T data)
+    {
+        var response = await httpClient.PostAsJsonAsync(url, data);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task DeleteFromApiAsync(string url)
+    {
+        var response = await httpClient.DeleteAsync(url);
+        response.EnsureSuccessStatusCode();
+    }
 }

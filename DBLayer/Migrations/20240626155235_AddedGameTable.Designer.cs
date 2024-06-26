@@ -3,6 +3,7 @@ using System;
 using ESOF.WebApp.DBLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240626155235_AddedGameTable")]
+    partial class AddedGameTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,6 +77,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("Rom")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<string>("Url_Image")
                         .IsRequired()

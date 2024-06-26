@@ -9,7 +9,7 @@ public class VideoQuest
     public Guid VideoQuestId { get; set; }
         
     public Guid GameId { get; set; }
-    // public Game Game { get; set; }
+    public Game Game { get; set; }
         
     [Required]
     public string Description { get; set; }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Supabase;
 
 namespace ESOF.WebApp.WebAPI.Services;
 
@@ -30,6 +31,7 @@ public class VideoService {
                 {
                     videoid = video.VideoId,
                     userid = video.UserId,
+                    username = _context.Users.Where(u => u.UserId == video.UserId).Select(u => u.Email).FirstOrDefault(),
                     videoquestid = video.VideoQuestId,
                     videopath = video.VideoPath,
                     caption = video.Caption,
@@ -52,7 +54,9 @@ public class VideoService {
         }
         catch (Exception ex)
         {
-            throw new Exception("An error occurred while retrieving videos.", ex);
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            throw;
         }
     }
 
@@ -114,8 +118,11 @@ public class VideoService {
         {
             videoid = video.VideoId,
             videoquestid = video.VideoQuestId,
+            description = _context.VideoQuests.Find(video.VideoQuestId).Description,
             userid = video.UserId,
+            username = _context.Users.Find(video.UserId).Email,
             caption = video.Caption,
+            videopath = video.VideoPath,
             viewcount = video.ViewCount,
             like_ids = video.Likes.Select(l => l.UserId).ToList(),
             comment_ids = video.Comments.Select(c => c.UserId).ToList(),
@@ -135,10 +142,21 @@ public class VideoService {
         };
     }
 
-    public ResponseVideoDto CreateVideo(CreateVideoDto createVideoDto)
+    public async Task<ResponseVideoDto> CreateVideo(CreateVideoDto createVideoDto)
     {
         try
         {
+            var url = Environment.GetEnvironmentVariable("SUPABASE_URL");
+            var key = Environment.GetEnvironmentVariable("SUPABASE_KEY");
+        
+            var options = new SupabaseOptions
+            {
+                AutoConnectRealtime = true
+            };
+        
+            var supabase = new Client(url, key, options);
+            await supabase.InitializeAsync();
+            
             var user = _context.Users.Find(createVideoDto.userid);
             if (user == null)
             {
@@ -151,14 +169,28 @@ public class VideoService {
                 throw new ArgumentException("VideoQuest not found.");
             }
 
+            if (createVideoDto.videoFile.Length > 50 * 1024 * 1024) // Max 50 MB
+            {
+                throw new ArgumentException("Video file exceeds maximum allowed size (50 MB).");
+            }
+
+            using var ms = new MemoryStream();
+            await createVideoDto.videoFile.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
+            
+            var storageResponse = await supabase.Storage.From("videos").Upload(fileBytes, $"{Guid.NewGuid()}.mp4");
+
+            if (string.IsNullOrEmpty(storageResponse))
+            {
+                throw new Exception("Error uploading video to Supabase.");
+            }
+
             var video = new Video
             {
-                VideoId = Guid.NewGuid(),
                 UserId = createVideoDto.userid,
                 VideoQuestId = createVideoDto.challengeid,
+                VideoPath = url + "/storage/v1/object/public/" + storageResponse,
                 Caption = createVideoDto.caption,
-                ViewCount = createVideoDto.viewcount,
-                CreatedAt = DateTime.UtcNow
             };
 
             _context.Videos.Add(video);
@@ -168,8 +200,11 @@ public class VideoService {
             {
                 videoid = video.VideoId,
                 videoquestid = video.VideoQuestId,
+                description = _context.VideoQuests.Find(video.VideoQuestId).Description,
                 userid = video.UserId,
+                username = _context.Users.Find(video.UserId).Email,
                 caption = video.Caption,
+                videopath = video.VideoPath,
                 viewcount = video.ViewCount,
                 like_ids = new List<Guid>(),
                 comment_ids = new List<Guid>(),
@@ -201,8 +236,10 @@ public class VideoService {
         {
             videoid = video.VideoId,
             videoquestid = video.VideoQuestId,
+            description = _context.VideoQuests.Find(video.VideoQuestId).Description,
             userid = video.UserId,
             caption = video.Caption,
+            videopath = video.VideoPath,
             viewcount = video.ViewCount,
             like_ids = video.Likes.Select(l => l.UserId).ToList(),
             comment_ids = video.Comments.Select(c => c.UserId).ToList(),
@@ -254,6 +291,8 @@ public class VideoService {
             var video = _context.Videos
                 .Include(v => v.User)
                 .Include(v => v.VideoQuest)
+                .Include(v => v.Likes)
+                .Include(v => v.Comments)
                 .OrderBy(r => Guid.NewGuid())
                 .FirstOrDefault();
 
@@ -266,7 +305,9 @@ public class VideoService {
             {
                 videoid = video.VideoId,
                 userid = video.UserId,
+                username = _context.Users.Find(video.UserId).Email,
                 videoquestid = video.VideoQuestId,
+                description = _context.VideoQuests.Find(video.VideoQuestId).Description,
                 videopath = video.VideoPath,
                 caption = video.Caption,
                 viewcount = video.ViewCount,
@@ -289,55 +330,6 @@ public class VideoService {
         catch (Exception ex)
         {
             throw new Exception("An error occurred while retrieving a random video.", ex);
-        }
-    }
-    
-    public ResponseVideoDto GetRandomVideoFromList(List<Guid> videoIds)
-    {
-        try
-        {
-            var videos = _context.Videos
-                .Include(v => v.User)
-                .Include(v => v.VideoQuest)
-                .Where(v => videoIds.Contains(v.VideoId))
-                .ToList();
-
-            if (!videos.Any())
-            {
-                throw new ArgumentException("No videos found in the provided list.");
-            }
-
-            var randomVideo = videos
-                .OrderBy(r => Guid.NewGuid())
-                .FirstOrDefault();
-
-            return new ResponseVideoDto
-            {
-                videoid = randomVideo.VideoId,
-                userid = randomVideo.UserId,
-                videoquestid = randomVideo.VideoQuestId,
-                videopath = randomVideo.VideoPath,
-                caption = randomVideo.Caption,
-                viewcount = randomVideo.ViewCount,
-                created_at = randomVideo.CreatedAt,
-                likes = randomVideo.Likes.Select(l => new ResponseLikeDto
-                {
-                    userid = l.UserId,
-                    videoid = l.VideoId,
-                    created_at = l.CreatedAt
-                }).ToList(),
-                comments = randomVideo.Comments.Select(c => new ResponseCommentDto
-                {
-                    userid = c.UserId,
-                    videoid = c.VideoId,
-                    comment = c.Text,
-                    created_at = c.CreatedAt
-                }).ToList()
-            };
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("An error occurred while retrieving a random video from the list.", ex);
         }
     }
 }

@@ -19,9 +19,9 @@ public partial class ApplicationDbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             
-            // entity.HasOne(c => c.Game)
-            //     .WithMany(g => g.Challenges)
-            //     .HasForeignKey(c => c.GameId);
+            entity.HasOne(c => c.Game)
+                .WithMany(g => g.VideoQuests)
+                .HasForeignKey(c => c.GameId);
             
             entity.HasMany(e => e.Videos)
                 .WithOne(v => v.VideoQuest )
