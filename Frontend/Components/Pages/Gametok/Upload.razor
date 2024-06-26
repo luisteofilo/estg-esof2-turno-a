@@ -3,10 +3,18 @@
 @using ESOF.WebApp.WebAPI.DtoClasses.Create
 @using ESOF.WebApp.WebAPI.DtoClasses.Response
 @inject HttpClient HttpClient
+@rendermode InteractiveServer
 
 <PageTitle>Upload Video</PageTitle>
 
-<h1>Upload a Video</h1>
+@if (videoQuest == null)
+{
+    <h1>Upload a Quest and Video</h1>
+}
+else
+{
+    <h1>Upload a Video</h1>
+}
 
 @if (!string.IsNullOrEmpty(uploadError))
 {
@@ -33,12 +41,16 @@
             <label for="description">Description:</label>
             <textarea id="description" @bind="createVideoQuestDto.description"></textarea>
         </div>
-        <button @onclick="CreateVideoQuest">Create Video Quest</button>
         
         <h4>Create New Video</h4>
     }
+    else
+    {
+        <p>Game: @videoQuest.game</p>
+        <p>Quest: @videoQuest.description</p>
+    }
 
-    <InputFile id="videoFile" OnChange="HandleFileSelected" />
+    <InputFile id="videoFile" OnChange="HandleFileSelected" accept=".mp4"/>
     <div>
         <label for="caption">Caption:</label>
         <input id="caption" type="text" @bind="createVideoDto.caption" />
@@ -46,16 +58,6 @@
     <button @onclick="UploadVideo">Upload Video</button>
 
 </div>
-
-@if (!string.IsNullOrEmpty(uploadResult))
-{
-    <p>@uploadResult</p>
-}
-
-@if (!string.IsNullOrEmpty(uploadError))
-{
-    <p style="color: red;">@uploadError</p>
-}
 
 @code {
     [Parameter]
@@ -66,17 +68,13 @@
     private string? uploadResult;
     bool fileUploaded;
     
-    ResponseVideoQuestDto videoQuest;
+    ResponseVideoQuestDto? videoQuest;
     CreateVideoQuestDto createVideoQuestDto = new CreateVideoQuestDto();
     CreateVideoDto createVideoDto = new CreateVideoDto();
     
     private readonly List<string> validVideoMimeTypes = new List<string>
     {
         "video/mp4",
-        "video/x-msvideo",
-        "video/x-matroska",
-        "video/webm",
-        "video/ogg"
     };
     
     protected override async Task OnInitializedAsync()
@@ -109,21 +107,32 @@
     {
         try
         {
-            var formData = new MultipartFormDataContent();
-            formData.Add(new StringContent(createVideoDto.challengeid.ToString()), "challengeid");
-            formData.Add(new StringContent(createVideoDto.userid.ToString()), "userid");
-            formData.Add(new StringContent(createVideoDto.caption), "caption");
+            if(videoQuest == null)
+            {
+                await CreateVideoQuest();
+            }
             
-            var memoryStream = new MemoryStream();
-            await selectedFile.OpenReadStream(maxAllowedSize: 419430400).CopyToAsync(memoryStream);
-            var fileContent = new ByteArrayContent(memoryStream.ToArray());
-            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
-            formData.Add(fileContent, "VideoFile", selectedFile.Name);
-            
-
-            var response = await HttpClient.PostAsync("Gametok/Video", formData);
-            response.EnsureSuccessStatusCode();
-            uploadResult = "Video uploaded successfully!";
+            // var formData = new MultipartFormDataContent();
+            // formData.Add(new StringContent(createVideoDto.videoquestid.ToString()), "challengeid");
+            // formData.Add(new StringContent(createVideoDto.userid.ToString()), "userid");
+            // formData.Add(new StringContent(createVideoDto.caption), "caption");
+            //
+            // var memoryStream = new MemoryStream();
+            // await selectedFile.OpenReadStream(maxAllowedSize: 419430400).CopyToAsync(memoryStream);
+            // Console.WriteLine($"{selectedFile.ContentType}");
+            // var fileContent = new ByteArrayContent(memoryStream.ToArray());
+            // fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+            //
+            // // Log the Content-Type header
+            // Console.WriteLine($"File Content-Type set to: {fileContent.Headers.ContentType}");
+            //
+            // formData.Add(fileContent, "VideoFile", selectedFile.Name);
+            //
+            //
+            //
+            // var response = await HttpClient.PostAsync("Gametok/Video", formData);
+            // response.EnsureSuccessStatusCode();
+            // uploadResult = "Video uploaded successfully!";
         }
         catch (Exception ex)
         {

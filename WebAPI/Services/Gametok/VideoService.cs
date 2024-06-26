@@ -163,7 +163,7 @@ public class VideoService {
                 throw new ArgumentException("User not found.");
             }
 
-            var videoQuest = _context.VideoQuests.Find(createVideoDto.challengeid);
+            var videoQuest = _context.VideoQuests.Find(createVideoDto.videoquestid);
             if (videoQuest == null)
             {
                 throw new ArgumentException("VideoQuest not found.");
@@ -178,6 +178,9 @@ public class VideoService {
             await createVideoDto.videoFile.CopyToAsync(ms);
             var fileBytes = ms.ToArray();
             
+            var contentType = createVideoDto.videoFile.ContentType;
+            Console.WriteLine($"Received file content type: {contentType}");
+            
             var storageResponse = await supabase.Storage.From("videos").Upload(fileBytes, $"{Guid.NewGuid()}.mp4");
 
             if (string.IsNullOrEmpty(storageResponse))
@@ -188,7 +191,7 @@ public class VideoService {
             var video = new Video
             {
                 UserId = createVideoDto.userid,
-                VideoQuestId = createVideoDto.challengeid,
+                VideoQuestId = createVideoDto.videoquestid,
                 VideoPath = url + "/storage/v1/object/public/" + storageResponse,
                 Caption = createVideoDto.caption,
             };
