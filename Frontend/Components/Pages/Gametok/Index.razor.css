@@ -1,79 +1,55 @@
-.container {
+.main {
     display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.content {
-    flex-grow: 1;
-    padding: 20px;
+p, a{
+    margin: 0;
 }
 
-.challenge-video {
-    aspect-ratio: 16/9;
-    width: 100%;
-    background-color: #FFDC9B;
+a{
+    text-decoration: none;
+    color: black;
 }
 
-.challenge-info {
-    margin-left: 20px;
-    width: 100%;
+.video-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.5rem;
 }
 
-.icon-button, .upload-button {
-    display: block;
-    margin: 10px 0;
-    background-color: #FDB42E;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 50px;
-    font-weight: bold;
-}
-
-.caption, .description {
-    margin-top: 20px;
-}
-
-.more-challenges {
-    margin-top: 20px;
-}
-
-.challenges-list {
-    display: flex;
-    justify-content: space-between;
-}
-
-.challenge-item {
-    width: 30%;
-    height: 100px;
-    background-color: #FFDC9B;
-}
-
-.challenge-caption-box {
-    background-color: #FDB42E;
-    border-radius: 10px;
-    font-weight: bold;
+.video-list .video {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    
-    padding: 0.5rem;
-    width: 100%;
+    width: fit-content;
 }
 
-
-
-.challenge-details {
-    display: grid;
-    width: 100%;
-    grid-template-columns: 2fr 1fr;
-}
-
-
-.icon-button{
-    width: 3rem;
-    height: 3rem;
+.video-list .video .content{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0.8rem;
+    flex-direction: column;
+    background-color: #FFDC9B;
+    border-radius: 0.8rem;
+    
+    width: 240px;
+    aspect-ratio: 9/12;
+}
+
+.video-list .video .content video{
+    width: 100%;
+    height: 100%;
+}
+
+.video-list .video .information{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}
+
+.video-list .video .information > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
 }
