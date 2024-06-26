@@ -7,19 +7,10 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Aumentar o tamanho máximo permitido para uploads no Kestrel
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.Limits.MaxRequestBodySize = 1073741824; // 1 GB
-});
-
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-   
-});
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
 
