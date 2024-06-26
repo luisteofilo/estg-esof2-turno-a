@@ -22,4 +22,5 @@ public class User
     public ICollection<SpeedrunRun> speedrunRuns { get; set; }
 
     public ICollection<SpeedrunModerator> speedrunModerators { get; set; }
+    public ICollection<Favorite> Favorites { get; set; }
 }

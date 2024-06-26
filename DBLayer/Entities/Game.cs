@@ -48,6 +48,11 @@ public class Game
     public ICollection<SpeedrunCategory> speedrunCategories { get; set; }
 
     public ICollection<SpeedrunModerator> speedrunModerators { get; set; }
+        // Navigation properties
+    public ICollection<Favorite> Favorites { get; set; }
+        
+    
+    }
 }
 
 

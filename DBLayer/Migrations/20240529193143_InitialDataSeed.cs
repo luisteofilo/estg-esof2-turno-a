@@ -1,4 +1,4 @@
-﻿using ESOF.WebApp.DBLayer.Helpers;
+using ESOF.WebApp.DBLayer.Helpers;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable

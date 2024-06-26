@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240610212758_RemoveSomeAttributes")]
-    partial class RemoveSomeAttributes
+    [Migration("20240626165219_MigrationFavoritos")]
+    partial class MigrationFavoritos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,23 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favorite", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("UserId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("Favorites");
+                });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
@@ -47,6 +64,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<string>("DeveloperID")
                         .IsRequired()
                         .HasColumnType("text");
+                        
+                    b.Property<string>("Genre")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int[]>("Genres")
                         .IsRequired()
@@ -67,6 +88,13 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("GameId");
+
+                    b.HasIndex("Genre");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("Platform");
 
                     b.ToTable("Games");
                 });
@@ -116,32 +144,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
-                {
-                    b.Property<Guid>("ShopId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("GameId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("GameOfMonthId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("gameId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ShopId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Shop");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
