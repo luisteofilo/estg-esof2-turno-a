@@ -19,5 +19,4 @@ public class User
     
     // Add this line
     public ICollection<Favorite> Favorites { get; set; }
-    public ICollection<Game> GamesDeveloped { get; set; }
 }

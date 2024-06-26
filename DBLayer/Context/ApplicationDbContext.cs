@@ -41,17 +41,15 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Game> Games { get; set; }
     public DbSet<Favorite> Favorites { get; set; }
 
-    public DbSet<Shops> Shop { get; set; }
-    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
+
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        BuildShops(modelBuilder);
-        BuildGame(modelBuilder);
         BuildUsers(modelBuilder);
         BuildRoles(modelBuilder);
         BuildPermissions(modelBuilder);

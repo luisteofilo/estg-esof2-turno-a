@@ -46,49 +46,26 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<int[]>("Categories")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<int[]>("Consoles")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("Genre")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("Developer")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int[]>("Genres")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("Publisher")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<byte[]>("Rom")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("Url_Image")
+                    b.Property<string>("Platform")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("GameId");
+
+                    b.HasIndex("Genre");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("Platform");
 
                     b.ToTable("Games");
                 });
@@ -138,32 +115,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
-                {
-                    b.Property<Guid>("ShopId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("GameId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("GameOfMonthId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("gameId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ShopId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Shop");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
@@ -246,17 +197,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
-                {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
-                        .WithMany("Shops")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-                });
-
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.UserRole", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Role", "Role")
@@ -279,7 +219,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
                     b.Navigation("Favorites");
-                    b.Navigation("Shops");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
