@@ -88,23 +88,21 @@ else
             new Game { Name = "Game 4", Genre = "Strategy", Platform = "PC", ReleaseDate = DateTime.Parse("2019-09-01") }
         };
 
-        _allGames = _games;
+        _allGames = _games.ToList(); // Make a copy of the initial data
         _genres = _games.Select(g => g.Genre).Distinct().ToList();
         _platforms = _games.Select(g => g.Platform).Distinct().ToList();
 
         // Dados da API (quando estiver pronto a usar)
         // _allGames = await ApiHelper.GetFromApiAsync<List<Game>>("api/gamereport/order");
-        // _games = _allGames;
+        // _games = _allGames.ToList();
         // _genres = _allGames.Select(g => g.Genre).Distinct().ToList();
         // _platforms = _allGames.Select(g => g.Platform).Distinct().ToList();
     }
 
     private async Task ApplyFilters()
     {
-        // API pronto para uso
-        // _games = await ApiHelper.GetFromApiAsync<List<Game>>($"api/gamereport/order?name={NameFilter}&genre={GenreFilter}&platform={PlatformFilter}&releaseDate={ReleaseDateFilter?.ToString("yyyy-MM-dd")}");
-
-        _games = _allGames;
+        // Start with the full list of games
+        _games = _allGames.ToList();
 
         if (!string.IsNullOrEmpty(GenreFilter))
         {
@@ -135,7 +133,11 @@ else
         GenreFilter = string.Empty;
         PlatformFilter = string.Empty;
         ReleaseDateFilter = null;
-        ApplyFilters();
+        
+        // Redefinir _games para _allGames antes de aplicar os filtros
+        _games = _allGames.ToList();
+
+        StateHasChanged();
     }
 
     public class Game
