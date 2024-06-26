@@ -249,5 +249,27 @@ namespace ESOF.WebApp.WebAPI.Services.Marketplace
             _context.MarketPlaceGames.Remove(game);
             _context.SaveChanges();
         }
+        public void BuyGame(Guid id) {
+            var game = _context.MarketPlaceGames.Find(id);
+            if (game != null) {
+                game.stock += 1; 
+                _context.SaveChanges();
+            } else {
+                throw new Exception("Game not found");
+            }
+        }
+        public void SellGame(Guid id) {
+            var game = _context.MarketPlaceGames.Find(id);
+            if (game != null) {
+                if (game.stock > 0) {
+                    game.stock -= 1; 
+                    _context.SaveChanges();
+                } else {
+                    throw new Exception("No stock available to sell");
+                }
+            } else {
+                throw new Exception("Game not found");
+            }
+        }
     }
 }

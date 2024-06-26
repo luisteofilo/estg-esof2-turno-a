@@ -22,4 +22,9 @@
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\20240624213258_marketplace_v2.cs" />
+      <Compile Remove="Migrations\20240624213258_marketplace_v2.Designer.cs" />
+    </ItemGroup>
+
 </Project>

@@ -46,5 +46,27 @@ namespace ESOF.WebApp.WebAPI.Controllers.Marketplace {
                 return NotFound();
             }
         }
+
+        [HttpPost("{id:guid}/buy")]
+        public IActionResult BuyGame(Guid id) {
+            try {
+                _gameService.BuyGame(id);
+                return Ok();
+            }
+            catch (Exception e) {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("{id:guid}/sell")]
+        public IActionResult SellGame(Guid id) {
+            try {
+                _gameService.SellGame(id);
+                return Ok();
+            }
+            catch (Exception e) {
+                return NotFound();
+            }
+        }
     }
 }

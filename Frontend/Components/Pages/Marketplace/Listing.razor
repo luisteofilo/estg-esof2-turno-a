@@ -2,6 +2,7 @@
 @using Frontend.Helpers
 @inject ApiHelper ApiHelper
 @inject HttpClient httpClient
+@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 <PageTitle>Listing</PageTitle>
 
@@ -15,8 +16,8 @@ else
         <div class="info">
             <div class="fw-bold fs-1">@game.Name</div>
             <div class="listing-info-row">
-                <div class="fw-bold fs-5">Condition:</div>
-                <div class="fs-5">@game.Condition</div>
+                <div class="fw-bold fs-5">Description:</div>
+                <div class="fs-5">@game.Description</div>
             </div>
             <div class="listing-info-col">
                 <div>Price</div>
@@ -42,10 +43,15 @@ else
             <div class="actions">
                 <div class="listing-info-row">
                     <button type="button" class="btn btn-outline-primary">Add to cart</button>
-                    <button type="button" class="btn btn-primary">Buy now</button>
+                    <button type="button" class="btn btn-primary" @onclick="BuyNow">Buy now</button>
+                    <button type="button" class="btn btn-warning" @onclick="SellNow">Sell now</button>
                 </div>
                 <a href="/marketplace/" type="button" class="btn btn-outline-secondary">Go back</a>
             </div>
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="alert alert-success mt-3">@successMessage</div>
+            }
         </div>
         <div class="slideshow">
             <img src="https://picsum.photos/600/400" alt="">
@@ -58,6 +64,7 @@ else
     public Guid? Id { get; set; }
 
     private ResponseMKP_GameDto game;
+    private string successMessage;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -67,11 +74,43 @@ else
         }
     }
 
+    private async Task BuyNow()
+    {
+        if (Id != null)
+        {
+            var response = await ApiHelper.PostToApiAsync<object>($"marketplace/game/{Id}/buy");
+            if (response != null)
+            {
+                successMessage = "Buy action completed successfully!";
+            }
+            else
+            {
+                successMessage = "Error performing buy action.";
+            }
+        }
+    }
+
+    private async Task SellNow()
+    {
+        if (Id != null)
+        {
+            var response = await ApiHelper.PostToApiAsync<object>($"marketplace/game/{Id}/sell");
+            if (response != null)
+            {
+                successMessage = "Sell action completed successfully!";
+            }
+            else
+            {
+                successMessage = "Error performing sell action.";
+            }
+        }
+    }
+
     public class ResponseMKP_GameDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Condition { get; set; }
+        public string Description { get; set; }
         public decimal Price { get; set; }
         public List<GenreDto> Genres { get; set; }
     }
