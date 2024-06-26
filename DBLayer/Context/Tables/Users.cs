@@ -12,6 +12,11 @@ public partial class ApplicationDbContext
             .HasMany(u => u.UserRoles)
             .WithOne(ur => ur.User)
             .HasForeignKey(ur => ur.UserId);
+        
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.PlayerAchievements)
+            .WithOne(ur => ur.User)
+            .HasForeignKey(ur => ur.UserId);
 
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)
@@ -20,5 +25,7 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<User>()
             .Property(p => p.UserId)
             .HasDefaultValueSql("gen_random_uuid()");
+        
+
     }
 }

@@ -3,6 +3,7 @@ using ESOF.WebApp.DBLayer.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Helpers.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

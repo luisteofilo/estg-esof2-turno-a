@@ -23,4 +23,14 @@
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Helpers\AchievementMethods.cs" />
+      <Compile Remove="Context\Tables\TestChallengeUser.cs" />
+      <Compile Remove="Context\Tables\TestChallenges.cs" />
+      <Compile Remove="Entities\TestChallenge.cs" />
+      <Compile Remove="Entities\TestChallengeUser.cs" />
+      <Compile Remove="Migrations\20240621162758_TestScores.cs" />
+      <Compile Remove="Migrations\20240621162758_TestScores.Designer.cs" />
+    </ItemGroup>
+
 </Project>

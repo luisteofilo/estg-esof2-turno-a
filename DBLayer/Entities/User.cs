@@ -18,4 +18,11 @@ public class User
     public ICollection<UserRole> UserRoles { get; set; }
     
     public ICollection<Favorite> Favorites { get; set; }
+
+    //Novo parametro 
+    public ICollection<PlayerAchievement> PlayerAchievements { get; set; }
+    
+    public ICollection<TestUserScore> TestUserScores { get; set; }
+    
+
 }

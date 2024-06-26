@@ -10,4 +10,10 @@
       <PackageReference Include="DotNetEnv" Version="3.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Models\TestChallengesViewModel.cs" />
+      <Compile Remove="Models\TestChallengesInputModel.cs" />
+      <Compile Remove="Models\ModelAchievements\PlayerAchievementsInputModel.cs" />
+    </ItemGroup>
+
 </Project>
