@@ -13,6 +13,9 @@ namespace ESOF.WebApp.DBLayer.Context;
                 
                 modelBuilder.Entity<Like>()
                     .HasKey(c => new { c.UserId, c.VideoId });
+                
+                entity.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
             
                 entity.HasOne(l => l.Video)
                     .WithMany(v => v.Likes)

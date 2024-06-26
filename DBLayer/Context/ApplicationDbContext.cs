@@ -44,11 +44,10 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     
-    public DbSet<Game> Game { get; set; }
-    public DbSet<VideoQuests> VideoQuests { get; set; }
-    public DbSet<Comment> Comment { get; set; }
-    public DbSet<Like> Like { get; set; }
-    public DbSet<Video> Video { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Like> Likes { get; set; }
+    public DbSet<Video> Videos { get; set; }
+    public DbSet<VideoQuest> VideoQuests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -65,7 +64,6 @@ public partial class ApplicationDbContext : DbContext
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
         
-        BuildGame(modelBuilder);
         BuildVideoQuest(modelBuilder);
         BuildComment(modelBuilder);
         BuildLike(modelBuilder);

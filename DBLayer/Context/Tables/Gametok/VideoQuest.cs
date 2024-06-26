@@ -7,22 +7,24 @@ public partial class ApplicationDbContext
 {
     private void BuildVideoQuest(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<VideoQuests>(entity =>
+        modelBuilder.Entity<VideoQuest>(entity =>
         {
             entity.ToTable("VideoQuests", schema: "gametok");
             
-            entity.HasKey(e => e.VideoQuestId); 
+            entity.Property(p => p.VideoQuestId)
+                .HasDefaultValueSql("gen_random_uuid()");
             
             entity.Property(e => e.Description).IsRequired();
             
-            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
             
-            entity.HasOne(c => c.Game)
-                .WithMany(g => g.Challenges)
-                .HasForeignKey(c => c.GameId);
+            // entity.HasOne(c => c.Game)
+            //     .WithMany(g => g.Challenges)
+            //     .HasForeignKey(c => c.GameId);
             
             entity.HasMany(e => e.Videos)
-                .WithOne(v => v.VideoQuests )
+                .WithOne(v => v.VideoQuest )
                 .HasForeignKey(e => e.VideoId);
             
         });

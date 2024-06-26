@@ -11,15 +11,21 @@ public partial class ApplicationDbContext
         {
             entity.ToTable("Videos", schema: "gametok");
             
-            entity.HasKey(e => e.VideoId); 
+            entity.Property(p => p.VideoId)
+                .HasDefaultValueSql("gen_random_uuid()");
+            
+            entity.Property(e => e.VideoPath).IsRequired();
             
             entity.Property(e => e.Caption).IsRequired();
             
             entity.Property(e => e.ViewCount).HasDefaultValue(0);
             
-            entity.HasOne(e => e.VideoQuests)
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            
+            entity.HasOne(e => e.VideoQuest)
                 .WithMany(p => p.Videos)
-                .HasForeignKey(e => e.ChallengeId);
+                .HasForeignKey(e => e.VideoQuestId);
             
             entity.HasMany(e => e.Comments)
                 .WithOne(v => v.Video )

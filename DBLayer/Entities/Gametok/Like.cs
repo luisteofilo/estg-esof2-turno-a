@@ -11,6 +11,5 @@ public class Like
     public Guid VideoId { get; set; }
     public Video Video { get; set; }
     
-    [Required]
-    public DateTime created_at{ get; set; }
+    public DateTime CreatedAt{ get; set; }
 }
