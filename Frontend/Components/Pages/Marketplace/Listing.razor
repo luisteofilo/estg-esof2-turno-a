@@ -2,6 +2,7 @@
 @using Frontend.Helpers
 @inject ApiHelper ApiHelper
 @inject HttpClient httpClient
+@inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 <PageTitle>Listing</PageTitle>
@@ -47,10 +48,6 @@ else
                 </div>
                 <a href="/marketplace/" type="button" class="btn btn-outline-secondary">Go back</a>
             </div>
-            @if (!string.IsNullOrEmpty(successMessage))
-            {
-                <div class="alert alert-success mt-3">@successMessage</div>
-            }
         </div>
         <div class="slideshow">
             <img src="https://picsum.photos/600/400" alt="">
@@ -77,14 +74,13 @@ else
     {
         if (Id != null)
         {
-            var response = await ApiHelper.PostToApiAsync<object>($"marketplace/game/{Id}/buy");
-            if (response != null)
-            {
-                successMessage = "Buy action completed successfully!";
+            try {
+                var response = await httpClient.PostAsync($"marketplace/game/{Id}/buy", null);
+                response.EnsureSuccessStatusCode();
+                await JsRuntime.InvokeVoidAsync("alert", "Buy action completed successfully!");
             }
-            else
-            {
-                successMessage = "Error performing buy action.";
+            catch (Exception e) {
+                await JsRuntime.InvokeVoidAsync("alert", "Error performing buy action.");
             }
         }
     }
@@ -93,14 +89,13 @@ else
     {
         if (Id != null)
         {
-            var response = await ApiHelper.PostToApiAsync<object>($"marketplace/game/{Id}/sell");
-            if (response != null)
-            {
-                successMessage = "Sell action completed successfully!";
+            try {
+                var response = await httpClient.PostAsync($"marketplace/game/{Id}/sell", null);
+                response.EnsureSuccessStatusCode();
+                await JsRuntime.InvokeVoidAsync("alert", "Sell action completed successfully!");
             }
-            else
-            {
-                successMessage = "Error performing sell action.";
+            catch (Exception e) {
+                await JsRuntime.InvokeVoidAsync("alert", "Error performing sell action.");
             }
         }
     }
