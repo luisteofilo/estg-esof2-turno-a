@@ -1,4 +1,5 @@
-namespace ESOF.WebApp.WebAPI;
+using System;
+using System.Threading.Tasks;
 using ESOF.WebApp.DBLayer.Entities;
 
 public interface IVoteRepository

@@ -1,6 +1,9 @@
 @page "/gameofthemonth"
 @using ESOF.WebApp.DBLayer.Entities
+@using Frontend.Services
+@using ESOF.WebApp.DBLayer.Dto
 @inject HttpClient Http
+@inject VoteService VoteService
 
 <h3>Vote no Jogo do Mês</h3>
 
@@ -14,7 +17,7 @@ else if (!games.Any())
 }
 else
 {
-    <form @onsubmit="PostVote">
+    <form onsubmit="HandleSubmit">
         <ul>
             @foreach (var game in games)
             {
@@ -39,7 +42,7 @@ else
 @code {
     private List<Game> games;
     private string message;
-    private Guid userId = Guid.NewGuid();
+    private Guid userId = new Guid("0510fc34-10ab-4b30-89e5-f9df85116f27");
     private bool hasVoted = false;
     private Dictionary<Guid, double> votePercentages = new();
     private bool isVotingPeriod = false;
@@ -80,50 +83,37 @@ else
         return await Http.GetFromJsonAsync<bool>($"api/vote/HasVoted/{userId}");
     }
 
-    private async Task PostVote()
+    private async Task HandleSubmit()
     {
-        if (!isVotingPeriod)
+        // Prevent default form submission
+        await Task.Delay(1);
+
+        var voteDTO = new VoteDTO
         {
-            message = "A votação só está disponível nos últimos 5 dias do mês.";
-            return;
-        }
+            UserId = userId,
+            GameId = selectedGameId,
+            VoteTime = DateTime.Now
+        };
 
         try
         {
-            if (await CheckIfUserHasVoted())
-            {
-                message = "Você já votou neste mês.";
-                return;
-            }
+            bool result = await VoteService.PostVoteAsync(voteDTO);
 
-            var vote = new Vote { UserId = userId, GameId = selectedGameId, VoteTime = DateTime.Now };
-            var response = await PostVote(vote);
-
-            if (response.IsSuccessStatusCode)
+            if (result)
             {
-                message = "Voto registado com sucesso!";
-                hasVoted = true;
-                await UpdateVotePercentages();
+                message = "Voto registrado com sucesso!";
+                hasVoted = true; // Prevent user from voting again
+                await UpdateVotePercentages(); // Update vote percentages after a new vote is registered
             }
             else
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                message = $"Erro ao registar voto. Detalhes: {errorContent}";
+                message = "Falha ao registrar o voto.";
             }
         }
         catch (Exception ex)
         {
-            message = "Erro ao tentar registar o voto: " + ex.Message;
+            message = $"Erro ao registrar o voto: {ex.Message}";
         }
-
-        StateHasChanged();
-    }
-
-    private async Task<HttpResponseMessage> PostVote(Vote vote)
-    {
-        var jsonVote = System.Text.Json.JsonSerializer.Serialize(vote);
-        message = $"Enviando voto: {jsonVote}";
-        return await Http.PostAsJsonAsync("api/vote", vote);
     }
 
     private async Task UpdateVotePercentages()

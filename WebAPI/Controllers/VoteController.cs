@@ -3,8 +3,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ESOF.WebApp.DBLayer.Context;
+using ESOF.WebApp.DBLayer.Dto;
 using ESOF.WebApp.DBLayer.Entities;
-using ESOF.WebApp.WebAPI;
 using Microsoft.EntityFrameworkCore;
 
 [Route("api/[controller]")]
@@ -21,20 +21,18 @@ public class VoteController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostVote([FromBody] Vote vote)
+    public async Task<IActionResult> PostVote([FromBody] VoteDTO voteDTO)
     {
-        var today = DateTime.Now;
-        var lastDayOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
-        var firstVotingDay = lastDayOfMonth.AddDays(-4);
-
-        if (today < firstVotingDay)
-        {
-            return BadRequest("A votação só está disponível nos últimos 5 dias do mês.");
-        }
-
         try
         {
-            // Lógica para verificar se o utilizador já votou neste mês
+            var vote = new Vote
+            {
+                UserId = voteDTO.UserId,
+                GameId = voteDTO.GameId,
+                VoteTime = voteDTO.VoteTime
+            };
+
+            // Check if the user has already voted this month
             bool hasVoted = await _voteRepository.HasUserVotedThisMonth(vote.UserId);
 
             if (hasVoted)
@@ -42,17 +40,17 @@ public class VoteController : ControllerBase
                 return BadRequest("Já votou este mês.");
             }
 
-            // Inserir dados do voto na Base de Dados
+            // Insert the vote data into the database
             await _voteRepository.AddVote(vote);
 
-            return Ok("Voto registado com sucesso!");
+            return Ok("Voto registrado com sucesso!");
         }
         catch (Exception ex)
         {
             return StatusCode(500, $"Erro ao registrar voto: {ex.Message}");
         }
     }
-    
+
     [HttpGet("GameOfTheMonth")]
     public async Task<ActionResult<Game>> GetGameOfTheMonth()
     {
@@ -89,9 +87,6 @@ public class VoteController : ControllerBase
         }
     }
 
-
-
-
     [HttpGet("HasVoted/{userId}")]
     public async Task<ActionResult<bool>> HasVoted(Guid userId)
     {
@@ -113,6 +108,9 @@ public class VoteController : ControllerBase
         return Ok(voteCounts);
     }
 }
+
+
+
 
 
 

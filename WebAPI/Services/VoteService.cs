@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ESOF.WebApp.DBLayer.Dto;
 
 namespace ESOF.WebApp.WebAPI.Services
 {
@@ -80,6 +81,19 @@ namespace ESOF.WebApp.WebAPI.Services
             return game;
         }
         
-        
+        public async Task<bool> AddVoteAsync(VoteDTO voteDTO)
+        {
+            var vote = new Vote
+            {
+                UserId = voteDTO.UserId,
+                GameId = voteDTO.GameId,
+                VoteTime = voteDTO.VoteTime
+            };
+
+            _context.Votes.Add(vote);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+        }
+
     }
 }
