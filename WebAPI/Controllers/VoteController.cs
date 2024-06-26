@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
+using ESOF.WebApp.WebAPI;
 using Microsoft.EntityFrameworkCore;
 
 [Route("api/[controller]")]
@@ -11,14 +12,16 @@ using Microsoft.EntityFrameworkCore;
 public class VoteController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly IVoteRepository _voteRepository;
 
-    public VoteController(ApplicationDbContext context)
+    public VoteController(ApplicationDbContext context, IVoteRepository voteRepository)
     {
         _context = context;
+        _voteRepository = voteRepository ?? throw new ArgumentNullException(nameof(voteRepository));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Vote([FromBody] Vote vote)
+    public async Task<IActionResult> PostVote([FromBody] Vote vote)
     {
         var today = DateTime.Now;
         var lastDayOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
@@ -31,26 +34,22 @@ public class VoteController : ControllerBase
 
         try
         {
-            var existingVote = await _context.Votes
-                .FirstOrDefaultAsync(v => v.UserId == vote.UserId && 
-                                          v.VoteTime.Month == today.Month && 
-                                          v.VoteTime.Year == today.Year);
+            // Lógica para verificar se o utilizador já votou neste mês
+            bool hasVoted = await _voteRepository.HasUserVotedThisMonth(vote.UserId);
 
-            if (existingVote != null)
+            if (hasVoted)
             {
-                return BadRequest("Você já votou este mês.");
+                return BadRequest("Já votou este mês.");
             }
 
-            vote.VoteTime = today;
-            _context.Votes.Add(vote);
-            await _context.SaveChangesAsync();
+            // Inserir dados do voto na Base de Dados
+            await _voteRepository.AddVote(vote);
 
-            return Ok();
+            return Ok("Voto registado com sucesso!");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao registar voto: {ex.Message}");
-            return StatusCode(500, "Erro interno no servidor.");
+            return StatusCode(500, $"Erro ao registrar voto: {ex.Message}");
         }
     }
     

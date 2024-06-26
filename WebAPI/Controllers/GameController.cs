@@ -9,12 +9,10 @@ using Microsoft.EntityFrameworkCore;
 public class GameController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    private readonly IVoteRepository _voteRepository;
 
-    public GameController(ApplicationDbContext context, IVoteRepository voteRepository)
+    public GameController(ApplicationDbContext context)
     {
         _context = context;
-        _voteRepository = voteRepository ?? throw new ArgumentNullException(nameof(voteRepository));
     }
     
     [HttpGet]
@@ -67,40 +65,6 @@ public class GameController : ControllerBase
             Console.WriteLine($"Erro ao procurar jogo: {ex.Message}");
             return StatusCode(500, "Erro interno no servidor.");
         }
-    }
-    
-    [HttpPost]
-    public async Task<IActionResult> PostVote([FromBody] Vote vote)
-    {
-        var today = DateTime.Now;
-        var lastDayOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
-        var firstVotingDay = lastDayOfMonth.AddDays(-4);
-
-        if (today < firstVotingDay)
-        {
-            return BadRequest("A votação só está disponível nos últimos 5 dias do mês.");
-        }
-
-        try
-        {
-            // Lógica para verificar se o utilizador já votou neste mês
-            bool hasVoted = await _voteRepository.HasUserVotedThisMonth(vote.UserId);
-
-            if (hasVoted)
-            {
-                return BadRequest("Já votou este mês.");
-            }
-
-            // Inserir dados do voto na Base de Dados
-            await _voteRepository.AddVote(vote);
-
-            return Ok("Voto registado com sucesso!");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Erro ao registrar voto: {ex.Message}");
-        }
-        
     }
 
 }
