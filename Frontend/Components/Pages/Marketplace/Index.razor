@@ -4,6 +4,7 @@
 @using ESOF.WebApp.WebAPI.DtoClasses.Response
 @using Frontend.Helpers
 @inject ApiHelper ApiHelper
+@rendermode InteractiveServer
 
 <PageTitle>Marketplace</PageTitle>
 
@@ -14,9 +15,9 @@
             type="text" 
             class="form-control form-control-lg" 
             placeholder="Search..." 
-            @bind="SearchText">
+            @bind-value="SearchText"
+            @bind-value:event="oninput">
     </div>
-    <div>@SearchText</div>
     <div class="game-card-container">
         @if (_games == null) {
             <p>Loading...</p>
