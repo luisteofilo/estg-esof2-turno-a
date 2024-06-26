@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.DBLayer.Context;
 
+// TODO: Add tables for Games and Favorites list
 public partial class ApplicationDbContext : DbContext
 {
     private static readonly DbContextOptions DefaultOptions = new Func<DbContextOptions>(() =>
@@ -28,38 +29,34 @@ public partial class ApplicationDbContext : DbContext
         return optionsBuilder.Options;
     })();
     
-    public ApplicationDbContext()
-        : base(DefaultOptions)
-    {
-    }
+    public ApplicationDbContext() : base(DefaultOptions) { }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+
     public DbSet<Game> Games { get; set; }
-    public DbSet<Shops> Shop { get; set; }
-    
+    public DbSet<Favorite> Favorites { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
+
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        BuildShops(modelBuilder);
-        BuildGame(modelBuilder);
         BuildUsers(modelBuilder);
         BuildRoles(modelBuilder);
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        BuildGames(modelBuilder); 
+        BuildFavorites(modelBuilder); 
         base.OnModelCreating(modelBuilder);
     }
 }

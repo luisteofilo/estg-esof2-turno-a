@@ -1,0 +1,339 @@
+﻿@page "/catalog"
+@using Frontend.Helpers
+@using ESOF.WebApp.DBLayer.Entities
+@attribute [StreamRendering]
+@inject ApiHelper ApiHelper
+@rendermode InteractiveServer
+
+<PageTitle>Games catalog</PageTitle>
+<div class="mb-4">
+    <h1 class="title">Games catalog</h1>
+</div>
+
+@if (_gamesCatalog == null)
+{
+    <p class="col-md-10 offset-md-1 mb-5">
+        <em>Loading games...</em>
+    </p>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(_alertMessage))
+    {
+        <div class="alert @_alertClass alert-dismissible" role="alert">
+            @_alertMessage
+            <button type="button" class="btn-close" aria-label="Close" @onclick="ClearAlert"></button>
+        </div>
+    }
+    <div class="row">
+            <div class="col-10 border-color-right">
+                <div class="row justify-content-between align-items-center">
+                    <ul class="nav col-8 nav-underline mb-3" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Games</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="fav-tab" data-bs-toggle="tab" data-bs-target="#fav-tab-pane" type="button" role="tab" aria-controls="fav-tab-pane" aria-selected="false">Favorites</button>
+                        </li>
+                    </ul>
+                    <div class="col-4">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.5 -2.5 24 24" width="28" fill="currentColor">
+                                    <path d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm6.32-1.094l3.58 3.58a1 1 0 1 1-1.415 1.413l-3.58-3.58a8 8 0 1 1 1.414-1.414z"></path>
+                                </svg>
+                            </span>
+                            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" @bind="searchText" @bind:event="oninput">
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                        <div class="cardsGames row">
+                            @foreach (var game in FilteredGames)
+                            {
+                                <div class="col-md-3 mb-4">
+                                    <div class="card position-relative">
+                                        <img src="https://picsum.photos/500/700" class="card-img" alt="...">
+                                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                            <h3 class="card-title text-orange mb-0">@game.Name</h3>
+                                            <h5 class="card-text text-orange">@game.Genre - @game.Consoles</h5>
+                                        </div>
+                                        <div class="card-button">
+                                            <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(game)">
+                                                @if (IsFavorite(game))
+                                                {
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
+                                                        <path d="M10 16.207l-6.173 3.246 1.179-6.874L.01 7.71l6.902-1.003L10 .453l3.087 6.254 6.902 1.003-4.995 4.869 1.18 6.874z"></path>
+                                                    </svg>
+                                                }
+                                                else
+                                                {
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" fill="currentColor">
+                                                        <path d="M6.516 14.323l-1.49 6.452a.998.998 0 0 0 1.529 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082a1 1 0 0 0-.59-1.74l-5.701-.454-2.467-5.461a.998.998 0 0 0-1.822 0L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.214 4.107zm2.853-4.326a.998.998 0 0 0 .832-.586L12 5.43l1.799 3.981a.998.998 0 0 0 .832.586l3.972.315-3.271 2.944c-.284.256-.397.65-.293 1.018l1.253 4.385-3.736-2.491a.995.995 0 0 0-1.109 0l-3.904 2.603 1.05-4.546a1 1 0 0 0-.276-.94l-3.038-2.962 4.09-.326z"></path>
+                                                    </svg>
+                                                }
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="fav-tab-pane" role="tabpanel" aria-labelledby="fav-tab" tabindex="0">
+                        <div class="cardsGames row">
+                            @if (_gamesFavoritesById != null && _gamesFavoritesById.Any())
+                            {
+                                @foreach (var fav in FilteredFavorites)
+                                {
+                                    <div class="col-md-3 mb-4">
+                                        <div class="card position-relative">
+                                            <img src="https://picsum.photos/500/700" class="card-img" alt="...">
+                                            <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                                <h3 class="card-title text-orange mb-0">@fav.Name</h3>
+                                                <h5 class="card-text text-orange">@fav.Genre - @fav.Consoles</h5>
+                                            </div>
+                                            <div class="card-button">
+                                                <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(fav)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
+                                                        <path d="M10 16.207l-6.173 3.246 1.179-6.874L.01 7.71l6.902-1.003L10 .453l3.087 6.254 6.902 1.003-4.995 4.869 1.18 6.874z"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="col-md-10 offset-md-1 mb-5">
+                                    <em>No favorites yet...</em>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <div class="col-2">
+        <div class="menuFilters mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="m-0">Filters</h5>
+                <button type="button" class="btn btn-orange" @onclick="ClearFilters">Clear
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 24 24" width="20" fill="currentColor"><path d="M7.314 5.9l3.535-3.536A1 1 0 1 0 9.435.95L5.899 4.485 2.364.95A1 1 0 1 0 .95 2.364l3.535 3.535L.95 9.435a1 1 0 1 0 1.414 1.414l3.535-3.535 3.536 3.535a1 1 0 1 0 1.414-1.414L7.314 5.899z"></path></svg>
+                </button>
+            </div>
+            <div class="mb-3">
+                <button type="button" class="btn btn-orange w-100" @onclick="ToggleGenreFilters">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor" class="filter-icon @(genreFiltersOpen ? "rotate" : "")">
+                        <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
+                    </svg> Genre
+                </button>
+                <div class="filter-container @(genreFiltersOpen ? "open" : "")">
+                    @foreach (var genre in genreNames)
+                    {
+                        <div class="form-check my-3 ms-4">
+                            <input class="form-check-input" type="checkbox" id="@genre" @onclick="() => ToggleGenreFilter(genre)" checked="@selectedGenres.Contains(genre)" />
+                            <label class="form-check-label" for="@genre">
+                                @genre
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        
+            <div class="mb-3">
+                <button type="button" class="btn btn-orange w-100" @onclick="ToggleConsoleFilters">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="20" fill="currentColor" class="filter-icon @(consoleFiltersOpen ? "rotate" : "")">
+                        <path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path>
+                    </svg> Console
+                </button>
+                <div class="filter-container @(consoleFiltersOpen ? "open" : "")">
+                    @foreach (var console in consoleNames)
+                    {
+                        <div class="form-check my-3 ms-4">
+                            <input class="form-check-input" type="checkbox" id="@console" @onclick="() => ToggleConsoleFilter(console)" checked="@selectedConsoles.Contains(console)" />
+                            <label class="form-check-label" for="@console">
+                                @console
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    }
+
+@code {
+    private List<Game>? _gamesCatalog;
+    private List<Game> _gamesFavorites = new List<Game>();
+    private List<Game>? _gamesFavoritesById;
+    private Guid userId = Guid.Parse("4b7970ba-b06a-40d9-a440-4c40704dab23");// troca para o id de um user existente
+    private string? _alertMessage;
+    private string _alertClass = string.Empty;
+    private System.Timers.Timer? _alertTimer;
+    private string searchText;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFilters();
+        _gamesCatalog = await ApiHelper.GetFromApiAsync<List<Game>>("games");
+        
+        if (_gamesCatalog != null)
+        {
+            _gamesFavorites = await ApiHelper.GetFromApiAsync<List<Game>>($"favorites/user/{userId}");
+            _gamesFavoritesById = _gamesCatalog.Where(game => _gamesFavorites.Any(fav => fav.GameId == game.GameId)).ToList();
+        }
+    }
+
+    private async Task AddToFavorites(Guid gameId)
+    {
+        string addFavoritesUrl = $"favorites/{userId}/{gameId}";
+        var favorite = await ApiHelper.PostToApiAsync<Favorite>(addFavoritesUrl);
+
+            var game = _gamesCatalog?.FirstOrDefault(g => g.GameId == gameId);
+            if (game != null)
+            {
+                _gamesFavorites.Add(game);
+                UpdateFavoritesById();
+                _alertMessage = $"{game.Name} was added to favorites.";
+                _alertClass = "alert-success";
+                StartAlertTimer();
+            }
+        
+    }
+    private async Task RemoveFromFavorites(Guid gameId)
+    {
+        string removeFavoritesUrl = $"favorites/{userId}/{gameId}";
+        await ApiHelper.DeleteFromApiAsync<List<Game>>(removeFavoritesUrl);
+    
+        var game = _gamesFavorites.FirstOrDefault(g => g.GameId == gameId);
+        if (game != null)
+        {
+            _gamesFavorites.Remove(game);
+            UpdateFavoritesById();
+            _alertMessage = $"{game.Name} was removed from favorites.";
+            _alertClass = "alert-warning";
+            StartAlertTimer();
+        }
+    }
+    
+
+    private void UpdateFavoritesById()
+    {
+        _gamesFavoritesById = _gamesCatalog.Where(game => _gamesFavorites.Any(fav => fav.GameId == game.GameId)).ToList();
+    }
+
+    private bool IsFavorite(Game game)
+    {
+        return _gamesFavorites.Any(fav => fav.GameId == game.GameId);
+    }
+
+    private async Task ToggleFavorite(Game game)
+    {
+        if (IsFavorite(game))
+        {
+            await RemoveFromFavorites(game.GameId);
+        }
+        else
+        {
+            await AddToFavorites(game.GameId);
+        }
+    }
+
+    private void ClearAlert()
+    {
+        _alertMessage = null;
+        StateHasChanged();
+    }
+
+    private void StartAlertTimer()
+    {
+        _alertTimer?.Stop();
+        _alertTimer = new System.Timers.Timer(2000); 
+        _alertTimer.Elapsed += (sender, e) =>
+        {
+            InvokeAsync(() => 
+            {
+                ClearAlert();
+                StateHasChanged(); 
+            });
+            _alertTimer?.Stop();
+        };
+        _alertTimer.Start();
+    }
+    
+    private bool genreFiltersOpen = false;
+    private bool consoleFiltersOpen = false;
+
+    private void ToggleGenreFilters()
+    {
+        genreFiltersOpen = !genreFiltersOpen;
+    }
+
+    private void ToggleConsoleFilters()
+    {
+        consoleFiltersOpen = !consoleFiltersOpen;
+    }
+    
+    private HashSet<string> selectedGenres = new HashSet<string>();
+    private HashSet<string> selectedConsoles = new HashSet<string>();
+    
+    private List<string> consoleNames = new List<string>();
+    private List<string> genreNames = new List<string>();
+    
+    private async Task LoadFilters()
+    {
+        consoleNames = await ApiHelper.GetFromApiAsync<List<string>>("consoles");
+        genreNames = await ApiHelper.GetFromApiAsync<List<string>>("genres");
+
+        // Verifique se os nomes foram carregados corretamente
+        Console.WriteLine($"Console Names: {string.Join(", ", consoleNames)}");
+        Console.WriteLine($"Genre Names: {string.Join(", ", genreNames)}");
+    }
+    
+    
+    private IEnumerable<Game> FilteredGames =>
+        _gamesCatalog?.Where(game =>
+            (selectedGenres.Count == 0 || selectedGenres.Contains(game.Genre.ToString())) &&
+            (selectedConsoles.Count == 0 || selectedConsoles.Contains(game.Consoles.ToString())) &&
+            (string.IsNullOrEmpty(searchText) || game.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+
+    private IEnumerable<Game> FilteredFavorites =>
+        _gamesFavoritesById?.Where(fav =>
+            (selectedGenres.Count == 0 || selectedGenres.Contains(fav.Genre.ToString())) &&
+            (selectedConsoles.Count == 0 || selectedConsoles.Contains(fav.Consoles.ToString())) &&
+            (string.IsNullOrEmpty(searchText) || fav.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+    
+    
+    private void ToggleGenreFilter(string genre)
+    {
+        if (selectedGenres.Contains(genre))
+        {
+            selectedGenres.Remove(genre);
+        }
+        else
+        {
+            selectedGenres.Add(genre);
+        }
+    }
+
+    private void ToggleConsoleFilter(string console)
+    {
+        if (selectedConsoles.Contains(console))
+        {
+            selectedConsoles.Remove(console);
+        }
+        else
+        {
+            selectedConsoles.Add(console);
+        }
+    }
+
+    
+    private void ClearFilters()
+    {
+        selectedGenres.Clear();
+        selectedConsoles.Clear();
+    }
+}

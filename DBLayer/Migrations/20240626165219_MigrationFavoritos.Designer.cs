@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240606105405_Create_Shop")]
-    partial class Create_Shop
+    [Migration("20240626165219_MigrationFavoritos")]
+    partial class MigrationFavoritos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,75 +25,50 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favorite", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("UserId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("Favorites");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
-                    b.Property<Guid>("gameId")
+                    b.Property<Guid>("GameId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<string>("additionalNotes")
+                    b.Property<string>("Genre")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int[]>("categories")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<int[]>("consoles")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<string>("description")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("developer")
+                    b.Property<string>("Platform")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int[]>("genres")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
+                    b.HasKey("GameId");
 
-                    b.Property<string>("graphics")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.HasIndex("Genre");
 
-                    b.Property<string>("memory")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("network")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("os")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<float>("price")
-                        .HasColumnType("real");
-
-                    b.Property<string>("processor")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("publisher")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("releaseDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("storage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("gameId");
+                    b.HasIndex("Platform");
 
                     b.ToTable("Games");
                 });
@@ -145,25 +120,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("RolePermissions");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
-                {
-                    b.Property<Guid>("gameOfMonthId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("gameId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("gameOfMonthId");
-
-                    b.HasIndex("gameId");
-
-                    b.ToTable("Shop");
-                });
-
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -206,6 +162,25 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favorite", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
+                        .WithMany("Favorites")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Permission", "Permission")
@@ -223,17 +198,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
-                {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
-                        .WithMany("Shops")
-                        .HasForeignKey("gameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.UserRole", b =>
@@ -257,7 +221,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
-                    b.Navigation("Shops");
+                    b.Navigation("Favorites");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
@@ -274,6 +238,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
+                    b.Navigation("Favorites");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
