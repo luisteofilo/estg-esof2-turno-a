@@ -21,11 +21,25 @@ public class SpeedRunsController : ControllerBase
     {
         return Ok(_speedRunService.GetGames());
     }
+    
+    // users
+    [HttpGet("users")]
+    public ActionResult<IEnumerable<UserSpeedRunsViewModel>> GetUsers()
+    {
+        return Ok(_speedRunService.GetUsers());
+    }
 
     [HttpGet("moderators")]
     public ActionResult<IEnumerable<SpeedrunModeratorViewModel>> GetSpeedRunModerators()
     {
         return Ok(_speedRunService.GetSpeedRunModerators());
+    }
+    
+    // add moderator
+    [HttpPost("moderators/add/{userID:guid}/{gameID:guid}")]
+    public ActionResult<SpeedrunModeratorViewModel> AddModerator(Guid userID, Guid gameID)
+    {
+        return Ok(_speedRunService.AddModerator(userID, gameID));
     }
     
     // ver as categorias que um utilizador é moderador
@@ -78,6 +92,28 @@ public class SpeedRunsController : ControllerBase
     {
         return Ok(_speedRunService.GetCategory(categoryID));
     }
+    
+    // adicionar categoria 
+    [HttpPost("categories/add/{gameID:guid}/{categoryName}/{categoryDescription}/{categoryRules}")]
+    public ActionResult<SpeedrunCategoryViewModel> AddCategory(Guid gameID, string categoryName, string categoryDescription, string categoryRules)
+    {
+        return Ok(_speedRunService.AddSpeedrunCategory(gameID, categoryName, categoryDescription, categoryRules));
+    }
+    
+    // atualizar categoria
+    
+    [HttpPut("categories/update/{categoryID:guid}/{categoryName}/{categoryDescription}/{categoryRules}")]
+    public ActionResult<SpeedrunCategoryViewModel> UpdateCategory(Guid categoryID, string categoryName, string categoryDescription, string categoryRules)
+    {
+        return Ok(_speedRunService.UpdateCategory(categoryID, categoryName, categoryDescription, categoryRules));
+    }
+    
+    // eliminar categoria
+    [HttpDelete("categories/delete/{categoryID:guid}")]
+    public ActionResult<SpeedrunCategoryViewModel> DeleteCategory(Guid categoryID)
+    {
+        return Ok(_speedRunService.DeleteCategory(categoryID));
+    }
 
     [HttpGet("categories/{gameID}")]
     public ActionResult<IEnumerable<SpeedrunCategoryViewModel>> GetCategoriesByGame(Guid gameID)
@@ -90,6 +126,20 @@ public class SpeedRunsController : ControllerBase
     {
         _speedRunService.AddSpeedrunModerator(moderator);
         return CreatedAtAction(nameof(PostSpeedRunModerator), new { id = moderator.ModeratorID }, moderator);
+    }
+    
+    // moderador por game
+    [HttpGet("moderators/byGame/{GameID:guid}")]
+    public ActionResult<IEnumerable<SpeedrunModeratorViewModel>> GetModeratorsByGame(Guid GameID)
+    {
+        return Ok(_speedRunService.GetModeratorsByGame(GameID));
+    }
+    
+    // delete moderator 
+    [HttpDelete("moderators/delete/{moderatorID:guid}")]
+    public ActionResult<SpeedrunModeratorViewModel> DeleteModerator(Guid moderatorID)
+    {
+        return Ok(_speedRunService.DeleteModerator(moderatorID));
     }
 
     [HttpPost("runs/{playerID:guid}/{categoryID:guid}/{runTime:int}/{videoLink}")]

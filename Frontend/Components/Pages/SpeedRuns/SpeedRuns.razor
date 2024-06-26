@@ -358,16 +358,16 @@
                 </div>
                 
                 <label>Game</label>
-                  <input type="text" class="custom-input" @oninput="@((ChangeEventArgs args) => SearchGame(args, "addRun"))" placeholder="Search for a game" />            
-                  <select class="form-control mt-3"  @onchange="@((ChangeEventArgs args) => SelectGame(args, "addRun"))" required >
-                      @if (_filteredGamesAddRun == null)
+                  <input type="text" class="custom-input" @oninput="@((ChangeEventArgs args) => SearchGame(args, "administration"))" placeholder="Search for a game" />            
+                  <select class="form-control mt-3"  @onchange="@((ChangeEventArgs args) => SelectGame(args, "administration"))" required >
+                      @if (_filteredGamesAdministration == null)
                       {
                           <option>Loading games...</option>
                       }
                       else
                       {
                           <option value="">Select a game...</option>
-                          @foreach (var game in _filteredGamesAddRun)
+                          @foreach (var game in _filteredGamesAdministration)
                           {
                               <option value="@game.GameID">@game.GameName</option>
                           }
@@ -375,32 +375,65 @@
                   </select>
                   
                   <br>
-                    
-                <div class="accordion" id="categoryAccordion">
+                
+                <div class="accordion" id="addCategoryAccordion">
                     <div class="card">
-                        <div class="card-header" id="reCategoryHeading">
+                        <div class="card-header" id="addCategoryHeading">
                             <h2 class="mb-0">
-                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#removeCategory" aria-expanded="true" aria-controls="addCategory">
-                                    Remove Category
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#addCategory" aria-expanded="true" aria-controls="addCategory">
+                                    Add Category
                                 </button>
                             </h2>
                         </div>
-                
-                        <div id="removeCategory" class="collapse" aria-labelledby="removeCategoryHeading" data-parent="#categoryAccordion">
+
+                        <div id="addCategory" class="collapse" aria-labelledby="addCategoryHeading" data-parent="#addCategoryAccordion">
                             <div class="card-body">
-                                <form method="post">
+                                <form method="post" @onsubmit="AddCategory">
+                                    <div class="form-group">
+                                        <label for="categoryName">Category Name</label>
+                                        <input type="text" id="categoryName" class="form-control" @bind="categoryAddName" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoryDescription">Category Description</label>
+                                        <textarea id="categoryDescription" class="form-control" @bind="categoryAddDescription" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoryRules">Category Rules</label>
+                                        <textarea id="categoryRules" class="form-control" @bind="categoryAddRules" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Adicionar Categoria</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion" id="updateCategoryAccordion">
+                    <div class="card">
+                        <div class="card-header" id="updateCategoryHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#updateCategory" aria-expanded="true" aria-controls="updateCategory">
+                                    Update Category
+                                </button>
+                            </h2>
+                        </div>
+                        
+                        <div id="updateCategory" class="collapse" aria-labelledby="updateCategoryHeading" data-parent="#updateCategoryAccordion">
+                            <div class="card-body">
+                                <form method="post" @onsubmit="UpdateCategory">
+                                    
                                     <label>Category</label>
-                                          <input type="text" class="custom-input" placeholder="Search for a category..." @oninput="@((ChangeEventArgs args) => SearchCategory(args, "addRun"))" />
+                                    <input type="text" class="custom-input" placeholder="Search for a category..." @oninput="@((ChangeEventArgs args) => SearchCategory(args, "administration"))" />
                                           
-                                    <select class="form-control mt-3" @onchange="@((ChangeEventArgs args) => SelectCategory(args, "addRun"))" required>
-                                        @if (_filteredCategoriesAddRun == null)
+                                    <select class="form-control mt-3" @onchange="@((ChangeEventArgs args) => SelectCategory(args, "administration"))" required>
+                                        @if (_filteredCategoriesAdministration == null)
                                         {
                                             <option>Loading categories...</option>
                                         }
                                         else
                                         {
                                             <option value="">Select a category...</option>
-                                            @foreach (var category in _filteredCategoriesAddRun)
+                                            @foreach (var category in _filteredCategoriesAdministration)
                                             {
                                                 <option value="@category.CategoryID">@category.CategoryName</option>
                                             }
@@ -408,6 +441,19 @@
                                     </select>
                                     
                                     <br/>
+                                    
+                                    <div class="form-group">
+                                        <label for="categoryName">Category Name</label>
+                                        <input type="text" id="categoryName" class="form-control" @bind="categoryUpdateName" required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoryDescription">Category Description</label>
+                                        <textarea id="categoryDescription" class="form-control" @bind="categoryUpdateAddDescription" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoryRules">Category Rules</label>
+                                        <textarea id="categoryRules" class="form-control" @bind="categoryUpdateAddRules" required></textarea>
+                                    </div>
                                     <button type="submit" class="btn btn-success">Adicionar Categoria</button>
                                 </form>
                             </div>
@@ -415,32 +461,121 @@
                     </div>
                 </div>
                 
-                <div class="accordion" id="removeCategoryAccordion">
+                <div class="accordion" id="removecategoryAccordion">
                     <div class="card">
                         <div class="card-header" id="removeCategoryHeading">
                             <h2 class="mb-0">
-                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#addCategory" aria-expanded="true" aria-controls="addCategory">
-                                    Add Category
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#removeCategory" aria-expanded="true" aria-controls="removeCategory">
+                                    Remove Category
                                 </button>
                             </h2>
                         </div>
                 
-                        <div id="addCategory" class="collapse" aria-labelledby="addCategoryHeading" data-parent="#categoryAccordion">
+                        <div id="removeCategory" class="collapse" aria-labelledby="removeCategoryHeading" data-parent="#removecategoryAccordion">
                             <div class="card-body">
-                                <form method="post">
-                                    <div class="form-group">
-                                        <label for="categoryName">Nome da Categoria</label>
-                                        <input type="text" id="categoryName" class="form-control"  required />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="categoryDescription">Descrição da Categoria</label>
-                                        <textarea id="categoryDescription" class="form-control" required></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="categoryRules">Regras da Categoria</label>
-                                        <textarea id="categoryRules" class="form-control"  required></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-success">Adicionar Categoria</button>
+                                <form method="post" @onsubmit="DeleteCategory">
+                                    <label>Category</label>
+                                    <input type="text" class="custom-input" placeholder="Search for a category..." @oninput="@((ChangeEventArgs args) => SearchCategory(args, "administration"))" />
+                                          
+                                    <select class="form-control mt-3" @onchange="@((ChangeEventArgs args) => SelectCategory(args, "administration"))" required>
+                                        @if (_filteredCategoriesAdministration == null)
+                                        {
+                                            <option>Loading categories...</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="">Select a category...</option>
+                                            @foreach (var category in _filteredCategoriesAdministration)
+                                            {
+                                                <option value="@category.CategoryID">@category.CategoryName</option>
+                                            }
+                                        }
+                                    </select>
+                                    
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Eliminar Categoria</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <br/>
+                
+                <div class="accordion" id="addModeratorAccordion">
+                    <div class="card">
+                        <div class="card-header" id="addModeratorHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#addModerator" aria-expanded="true" aria-controls="addModerator">
+                                    Add Moderator
+                                </button>
+                            </h2>
+                        </div>
+                
+                        <div id="addModerator" class="collapse" aria-labelledby="addModeratorHeading" data-parent="#addModeratorAccordion">
+                            <div class="card-body">
+                                <form method="post" @onsubmit="AddModerator">
+                                    
+                                    <label>User</label>
+                                    <input type="text" class="custom-input" placeholder="Search for a category..." @oninput="SearchUser" />
+                                          
+                                    <select class="form-control mt-3" @onchange="SelectUser" required>
+                                        @if (_filteredUsersAdministration == null)
+                                        {
+                                            <option>Loading users...</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="">Select a user...</option>
+                                            @foreach (var user in _filteredUsersAdministration)
+                                            {
+                                                <option value="@user.UserID">@user.UserName</option>
+                                            }
+                                        }
+                                    </select>
+                                    <br/>
+                                    
+                                    <button type="submit" class="btn btn-success">Add Moderator</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion" id="deleteModeratorAccordion">
+                    <div class="card">
+                        <div class="card-header" id="deleteModeratorHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#deleteModerator" aria-expanded="true" aria-controls="deleteModerator">
+                                    Delete Moderator
+                                </button>
+                            </h2>
+                        </div>
+                
+                        <div id="deleteModerator" class="collapse" aria-labelledby="deleteModeratorHeading" data-parent="#deleteModeratorAccordion">
+                            <div class="card-body">
+                                <form method="post" @onsubmit="DeleteModerator">
+                                    
+                                    <label>Moderator</label>
+                                    <input type="text" class="custom-input" placeholder="Search for a moderator..." @oninput="SearchModerator" />
+                                          
+                                    <select class="form-control mt-3" @onchange="SelectModerator" required>
+                                        @if (_filteredModerators == null)
+                                        {
+                                            <option>Loading moderators...</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="">Select a moderator...</option>
+                                            @foreach (var moderator in _filteredModerators)
+                                            {
+                                                <option value="@moderator.ModeratorID">@moderator.ModeratorName </option>
+                                            }
+                                        }
+                                    </select>
+                                    
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Delete Moderator</button>
                                 </form>
                             </div>
                         </div>
@@ -448,15 +583,19 @@
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
+    </div>
 </div>
 
 <script>
     function closeModal(modalId) {
         $('#' + modalId).modal('hide');
+    }
+    
+    function closeAccordion(accordionId) {
+        $('#' + accordionId).collapse('hide');
     }
 </script>
 
@@ -471,23 +610,47 @@
     private List<SpeedrunCategoryViewModel>? _filteredCategories;
     private List<SpeedrunCategoryViewModel>? _filteredCategoriesAddRun;
     
+    private List<GameViewModel>? _filteredGamesAdministration;
+    private List<SpeedrunCategoryViewModel>? _filteredCategoriesAdministration;
+    private Guid? selectedCategoryAdministration;
+    
     
     //Add Run
     private Guid selectedGameAddRun;
     private Guid selectedCategoryAddRun;
     private int runTimeAddRun;
     private string videoLinkAddRun;
-  
+    
+    //Add Category
+    private string categoryAddName;
+    private string categoryAddDescription;
+    private string categoryAddRules;
+    
+    //Update Category
+    private string categoryUpdateName;
+    private string categoryUpdateAddDescription;
+    private string categoryUpdateAddRules;
+    
+    //Moderators
+    private List<SpeedrunModeratorViewModel> _moderators;
+    private List<SpeedrunModeratorViewModel> _filteredModerators;
+    private Guid? _selectedModerator;
+    
+    //User
+    private List<UserSpeedRunsViewModel> _users;
+    private List<UserSpeedRunsViewModel> _filteredUsersAdministration;
+    private Guid _selectedUser;
     
     private List<SpeedrunRunViewModel>? _speedRunsLeaderboard;
     private string _gameRulesLeaderboard;
+    
     
     private string search = string.Empty;
     private Guid selectedGameId;
     private string userInput = string.Empty;
     
  
-    private Guid userId = Guid.Parse("840a0b48-c00f-4afd-87d8-8c824393ca63");
+    private Guid userId = Guid.Parse("8d59f878-81fe-4186-a106-cf32ee5ecf9a");
     private List<GameViewModel> _moderatorGames;
     private List<SpeedrunRunViewModel> _runsToVerify;
     private Guid _gameSelectedVerifyRuns;
@@ -517,6 +680,7 @@
         _moderatorGames = await ApiHelper.GetFromApiAsync<List<GameViewModel>>($"api/SpeedRuns/moderators/games/{userId}");
         if (_moderatorGames != null)
             _runsToVerify = await ApiHelper.GetFromApiAsync<List<SpeedrunRunViewModel>>("api/SpeedRuns/runs/verify");    
+            _filteredGamesAdministration = _games;
     }
     
     private void SearchGame(ChangeEventArgs e, string localSearch)
@@ -552,6 +716,20 @@
                         _filteredCategoriesAddRun.Clear();
                 }
                 break;
+            case "administration":
+                if (string.IsNullOrWhiteSpace(search))
+                {
+                    _filteredGamesAdministration = _games;
+                }
+                else
+                {
+                    _filteredGamesAdministration = _games?.Where(game => game.GameName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+            
+                    if (_filteredCategoriesAdministration != null)
+                        _filteredCategoriesAdministration.Clear();
+                } 
+                break;
+                
         }
         
         
@@ -588,6 +766,17 @@
                 }
                 
                 break;
+            case "administration":
+
+                if (string.IsNullOrWhiteSpace(search))
+                {
+                    _filteredCategoriesAdministration = _categories;
+                }
+                else
+                {
+                    _filteredCategoriesAdministration = _categories?.Where(category => category.CategoryName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+                break;
         }
     }
 
@@ -615,6 +804,16 @@
             case "addRun":
                 selectedCategoryAddRun = Guid.Parse(e.Value.ToString());
                 break;
+            case "administration":
+                selectedCategoryAdministration = Guid.Parse(e.Value.ToString());
+                
+                var selectedCategoryId2 = Guid.Parse(e.Value.ToString());
+                SpeedrunCategoryViewModel category2 = await ApiHelper.GetFromApiAsync<SpeedrunCategoryViewModel>($"api/speedRuns/categorie/{selectedCategoryId2}");
+                
+                categoryUpdateName = category2.CategoryName;
+                categoryUpdateAddDescription = category2.CategoryDescription;
+                categoryUpdateAddRules = category2.CategoryRules;
+                break;
         }
 
         StateHasChanged();
@@ -637,6 +836,10 @@
                     if (_filteredCategoriesAddRun != null)
                         _filteredCategoriesAddRun.Clear();
                     break;
+                case "administration":
+                    if (_filteredCategoriesAdministration != null) 
+                        _filteredCategoriesAdministration.Clear();
+                break;
             }
             
             return;
@@ -657,6 +860,15 @@
             case "addRun":
                 _filteredCategoriesAddRun = _categories;
                 selectedGameAddRun = selectedGameId;
+                break;
+            case "administration":
+                _filteredCategoriesAdministration = _categories;
+                
+                _moderators = await ApiHelper.GetFromApiAsync<List<SpeedrunModeratorViewModel>>($"api/speedRuns/moderators/byGame/{selectedGameId}");
+                _filteredModerators = _moderators;
+                
+                _users = await ApiHelper.GetFromApiAsync<List<UserSpeedRunsViewModel>>($"api/speedRuns/users");
+                _filteredUsersAdministration = _users;
                 break;
         }
         
@@ -692,6 +904,149 @@
         }
         
         StateHasChanged();
+    }
+    
+    private async Task AddCategory()
+    {
+        try
+        {
+            await ApiHelper.PostToApiAsync<SpeedrunCategoryViewModel>($"api/speedRuns/categories/add/{selectedGameId}/{categoryAddName}/{categoryAddDescription}/{categoryAddRules}");
+            
+            //close accordion
+            await JSRuntime.InvokeVoidAsync("closeAccordion", "addCategory");
+            
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error to add! {ex.Message}");
+        }
+    }
+    
+    private async Task UpdateCategory()
+    {
+        try
+        {
+            await ApiHelper.PutToApiAsync($"api/speedRuns/categories/update/{selectedCategoryAdministration}/{categoryUpdateName}/{categoryUpdateAddDescription}/{categoryUpdateAddRules}");
+            
+            await JSRuntime.InvokeVoidAsync("closeAccordion", "updateCategory");
+            
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error to add! {ex.Message}");
+        }
+    }
+    
+    private async Task DeleteCategory()
+    {
+        try
+        {
+            await ApiHelper.DeleteFromApiAsync<SpeedrunCategoryViewModel>($"api/speedRuns/categories/delete/{selectedCategoryAdministration}");
+            
+            //close accordion
+            await JSRuntime.InvokeVoidAsync("closeAccordion", "removeCategory");
+            
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error to add! {ex.Message}");
+        }
+    }
+    
+    // search moderator
+    private async void SearchModerator(ChangeEventArgs e)
+    {
+        userInput = e.Value.ToString();
+        if (string.IsNullOrWhiteSpace(userInput))
+        {
+            _filteredModerators = _moderators;
+        }
+        else
+        {
+            _filteredModerators = _moderators?.Where(moderator => moderator.ModeratorName.Contains(userInput, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
+    
+    // select moderator
+    private async void SelectModerator(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "")
+        {
+            _selectedModerator = null;
+            return;
+        }
+        
+        _selectedModerator = Guid.Parse(e.Value.ToString());
+    }
+    
+    // delete moderator
+    private async void DeleteModerator()
+    {
+        if (_selectedModerator == null)
+        {
+            return;
+        }
+        
+        try
+        {
+            await ApiHelper.DeleteFromApiAsync<SpeedrunModeratorViewModel>($"api/speedRuns/moderators/delete/{_selectedModerator}");
+            await LoadData();
+            
+            await JSRuntime.InvokeVoidAsync("closeAccordion", "deleteModerator");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error to delete! {ex.Message}");
+        }
+    }
+    
+    // search user
+    private async void SearchUser(ChangeEventArgs e)
+    {
+        userInput = e.Value.ToString();
+        if (string.IsNullOrWhiteSpace(userInput))
+        {
+            _filteredUsersAdministration = _users;
+        }
+        else
+        {
+            _filteredUsersAdministration = _users?.Where(user => user.UserName.Contains(userInput, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
+    
+    // select user
+    private async void SelectUser(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "")
+        {
+            _selectedUser = Guid.Empty;
+            return;
+        }
+        
+        _selectedUser = Guid.Parse(e.Value.ToString());
+    }
+    
+    // add moderator
+    private async void AddModerator()
+    {
+        if (_selectedUser == Guid.Empty)
+        {
+            return;
+        }
+        
+        try
+        {
+            await ApiHelper.PostToApiAsync<SpeedrunModeratorViewModel>($"api/speedRuns/moderators/add/{_selectedUser}/{selectedGameId}");
+            await LoadData();
+            await JSRuntime.InvokeVoidAsync("closeAccordion", "addModerator");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error to add! {ex.Message}");
+        }
     }
     
 }

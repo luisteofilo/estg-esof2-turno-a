@@ -21,6 +21,16 @@ public class SpeedRunService (ApplicationDbContext db)
             GameName = g.Name
         }).ToArray();
     }
+    
+    // retornar os utilizadores
+    public IEnumerable<UserSpeedRunsViewModel> GetUsers()
+    {
+        return db.Users.Select(u => new UserSpeedRunsViewModel()
+        {
+            UserID = u.UserId,
+            UserName = u.Email
+        }).ToArray();
+    }
 
     public IEnumerable<SpeedrunModeratorViewModel> GetSpeedRunModerators()
     {
@@ -31,6 +41,27 @@ public class SpeedRunService (ApplicationDbContext db)
             GameID = m.gameID,
             RoleGivenDate = m.roleGivenDate
         }).ToArray();
+    }
+    
+    // adicionar moderador e retornar o moderador
+    public SpeedrunModeratorViewModel AddModerator(Guid userID, Guid gameID)
+    {
+        var moderator = new SpeedrunModerator()
+        {
+            moderatorID = Guid.NewGuid(),
+            userID = userID,
+            gameID = gameID,
+            roleGivenDate = DateTimeOffset.Now.UtcDateTime
+        };
+        db.SpeedrunModerators.Add(moderator);
+        db.SaveChanges();
+        return new SpeedrunModeratorViewModel()
+        {
+            ModeratorID = moderator.moderatorID,
+            UserID = moderator.userID,
+            GameID = moderator.gameID,
+            RoleGivenDate = moderator.roleGivenDate
+        };
     }
     
     // retornar os jogos que um utilizador é moderador
@@ -200,6 +231,70 @@ public class SpeedRunService (ApplicationDbContext db)
             CategoryRules = c.categoryRules
         }).ToArray();
     }
+    
+    // adicionar categoria e retornar a categoria
+    public SpeedrunCategoryViewModel AddSpeedrunCategory(Guid gameID, string categoryName, string categoryDescription, string categoryRules)
+    {
+        var category = new SpeedrunCategory()
+        {
+            categoryID = Guid.NewGuid(),
+            gameID = gameID,
+            creationDate = DateTimeOffset.Now.UtcDateTime,
+            categoryName = categoryName,
+            categoryDescription = categoryDescription,
+            categoryRules = categoryRules
+        };
+        db.SpeedrunCategories.Add(category);
+        db.SaveChanges();
+        return new SpeedrunCategoryViewModel()
+        {
+            CategoryID = category.categoryID,
+            GameID = category.gameID,
+            CreationDate = category.creationDate,
+            CategoryName = category.categoryName,
+            CategoryDescription = category.categoryDescription,
+            CategoryRules = category.categoryRules
+        };
+    }
+    
+    // atualizar categoria e retornar a categoria
+    public SpeedrunCategoryViewModel UpdateCategory(Guid categoryID, string categoryName, string categoryDescription, string categoryRules)
+    {
+        var category = db.SpeedrunCategories.Find(categoryID);
+        if (category == null) return null;
+        category.categoryName = categoryName;
+        category.categoryDescription = categoryDescription;
+        category.categoryRules = categoryRules;
+        db.SaveChanges();
+        return new SpeedrunCategoryViewModel()
+        {
+            CategoryID = category.categoryID,
+            GameID = category.gameID,
+            CreationDate = category.creationDate,
+            CategoryName = category.categoryName,
+            CategoryDescription = category.categoryDescription,
+            CategoryRules = category.categoryRules
+        };
+    }
+    
+    // eliminar categoria e retornar a categoria
+    public SpeedrunCategoryViewModel DeleteCategory(Guid categoryID)
+    {
+        var category = db.SpeedrunCategories.Find(categoryID);
+        if (category == null) return null;
+        db.SpeedrunCategories.Remove(category);
+        db.SaveChanges();
+        return new SpeedrunCategoryViewModel()
+        {
+            CategoryID = category.categoryID,
+            GameID = category.gameID,
+            CreationDate = category.creationDate,
+            CategoryName = category.categoryName,
+            CategoryDescription = category.categoryDescription,
+            CategoryRules = category.categoryRules
+        };
+    }
+    
 
     public void AddSpeedrunModerator(SpeedrunModeratorViewModel moderator)
     {
@@ -212,6 +307,45 @@ public class SpeedRunService (ApplicationDbContext db)
         };
         db.SpeedrunModerators.Add(entity);
         db.SaveChanges();
+    }
+    
+    // retorna moderatores por game com o nome de cada moderador da tabela de utilizadores
+    public IEnumerable<SpeedrunModeratorViewModel> GetModeratorsByGame(Guid GameID)
+    {
+        
+        Console.WriteLine(GameID);
+        // moderadores
+        var moderators = db.SpeedrunModerators.Where(m => m.gameID == GameID).ToList();
+        return moderators.Select(m =>
+        {
+            var user = db.Users.Find(m.userID);
+            string userName = user != null ? user.Email : "Unknown User";
+            Console.WriteLine(userName);
+            return new SpeedrunModeratorViewModel()
+            {
+                ModeratorID = m.moderatorID,
+                UserID = m.userID,
+                GameID = m.gameID,
+                ModeratorName = userName,
+                RoleGivenDate = m.roleGivenDate
+            };
+        }).ToList();
+    }
+    
+    // delete moderator e retornar o moderador
+    public SpeedrunModeratorViewModel DeleteModerator(Guid moderatorID)
+    {
+        var moderator = db.SpeedrunModerators.Find(moderatorID);
+        if (moderator == null) return null;
+        db.SpeedrunModerators.Remove(moderator);
+        db.SaveChanges();
+        return new SpeedrunModeratorViewModel()
+        {
+            ModeratorID = moderator.moderatorID,
+            UserID = moderator.userID,
+            GameID = moderator.gameID,
+            RoleGivenDate = moderator.roleGivenDate
+        };
     }
 
     public void AddSpeedrunRun(Guid playerID, Guid categoryID, int runTime, string videoLink)
