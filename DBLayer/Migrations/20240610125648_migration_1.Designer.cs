@@ -3,6 +3,7 @@ using System;
 using ESOF.WebApp.DBLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610125648_migration_1")]
+    partial class migration_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,83 +25,71 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameReplay", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-                    
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<DateTime>("UploadDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<byte[]>("VideoData")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("GameReplays");
-                });
-                    
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
                     b.Property<Guid>("GameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
-                    b.Property<int[]>("Categories")
+                    b.Property<string>("additionalNotes")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int[]>("categories")
                         .IsRequired()
                         .HasColumnType("integer[]");
 
-                    b.Property<int[]>("Consoles")
+                    b.Property<int[]>("consoles")
                         .IsRequired()
                         .HasColumnType("integer[]");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Developer")
+                    b.Property<string>("developer")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int[]>("Genres")
+                    b.Property<int[]>("genres")
                         .IsRequired()
                         .HasColumnType("integer[]");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("graphics")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("Publisher")
+                    b.Property<string>("memory")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("ReleaseDate")
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("network")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("os")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("price")
+                        .HasColumnType("real");
+
+                    b.Property<string>("processor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("publisher")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("releaseDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("Rom")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("Url_Image")
+                    b.Property<string>("storage")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -156,10 +147,9 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Shops", b =>
                 {
-                    b.Property<Guid>("ShopId")
+                    b.Property<Guid>("GameOfMonthId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
@@ -167,13 +157,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<Guid>("GameId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("GameOfMonthId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("gameId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("ShopId");
+                    b.HasKey("GameOfMonthId");
 
                     b.HasIndex("GameId");
 
@@ -220,17 +207,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameReplay", b =>
-                {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
-                        .WithMany("UserGameReplays")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
@@ -301,8 +277,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
-                    b.Navigation("UserGameReplays");
-
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

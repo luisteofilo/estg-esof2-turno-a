@@ -23,4 +23,7 @@ public class User
     {
         UserGameReplays = new List<GameReplay>();
     }
+
+    public ICollection<Game> GamesDeveloped { get; set; }
+
 }
