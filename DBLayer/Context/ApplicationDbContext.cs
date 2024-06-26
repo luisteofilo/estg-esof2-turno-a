@@ -45,6 +45,9 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<Game> Games { get; set; }
     public DbSet<Shops> Shop { get; set; }
+    public DbSet<SpeedrunRun> SpeedrunRuns { get; set; }
+    public DbSet<SpeedrunCategory> SpeedrunCategories { get; set; }
+    public DbSet<SpeedrunModerator> SpeedrunModerators { get; set; }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -60,6 +63,9 @@ public partial class ApplicationDbContext : DbContext
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        BuildSpeedrunCategories(modelBuilder);
+        BuildSpeedrunModerators(modelBuilder);
+        BuildSpeedrunRuns(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }

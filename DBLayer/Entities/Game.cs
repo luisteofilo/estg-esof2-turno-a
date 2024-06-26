@@ -41,6 +41,10 @@ public class Game
     public List<Consoles> Consoles { get; set; } = new List<Consoles>();
 
     public ICollection<Shops> Shops { get; set; }
+    
+    public ICollection<SpeedrunCategory> speedrunCategories { get; set; }
+
+    public ICollection<SpeedrunModerator> speedrunModerators { get; set; }
 }
 
 

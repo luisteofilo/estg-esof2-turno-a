@@ -17,8 +17,8 @@ public class SpeedRunService (ApplicationDbContext db)
     {
         return db.Games.Select(g => new GameViewModel()
         {
-            GameID = g.game_id,
-            GameName = g.name
+            GameID = g.GameId,
+            GameName = g.Name,
         }).ToArray();
     }
 
@@ -39,7 +39,7 @@ public class SpeedRunService (ApplicationDbContext db)
         if (category == null) return null;
 
         var game = db.Games.Find(category.gameID);
-        string gameName = game != null ? game.name : "Unknown Game";
+        string gameName = game != null ? game.Name : "Unknown Game";
 
         var runs = db.SpeedrunRuns.Where(r => r.categoryID == categoryID).ToList();
 

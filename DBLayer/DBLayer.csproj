@@ -23,4 +23,8 @@
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Context\Tables\Games.cs" />
+    </ItemGroup>
+
 </Project>
