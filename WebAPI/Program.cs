@@ -41,43 +41,6 @@ app.MapGet("/users", () =>
     .WithName("GetUsers")
     .WithOpenApi();
 
-app.MapGet("/games", async () =>
-    {
-        var db = new ApplicationDbContext();
-        var games = await db.Games
-            .Select(g => new 
-            {
-                g.GameId,
-                g.Name,
-                g.Genre,
-                g.Consoles
-            })
-            .ToListAsync();
-        return games;
-    })
-    .WithName("GetGames")
-    .WithOpenApi();
-
-app.MapGet("/games/{gameId:guid}", async (Guid GameId) =>
-    {
-        var db = new ApplicationDbContext();
-        var game = await db.Games
-            .Where(g => g.GameId == GameId)
-            .Select(g => new 
-            {
-                g.GameId,
-                g.Name,
-                g.Genre,
-                g.Consoles
-            })
-            .FirstOrDefaultAsync();
-        return game;
-    })
-    .WithName("GetGamesById")
-    .WithOpenApi();
-
-app.MapEnumController();
-app.MapFavoriteController();
 app.Run();
 
 
