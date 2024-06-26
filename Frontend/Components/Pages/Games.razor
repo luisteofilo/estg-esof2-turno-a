@@ -1,0 +1,380 @@
+@page "/Games"
+@using ESOF.WebApp.DBLayer.Entities
+@using ESOF.WebApp.DBLayer.Dto
+@inject HttpClient Http
+@rendermode InteractiveServer
+
+
+<h3>Games</h3>
+
+@if (_showSuccessMessageGame)
+{
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    Game created successfully.
+    <button type="button" class="btn-close" @onclick="CloseSuccessMessage" aria-label="Close"></button>
+</div>
+}
+
+@if (_showSuccessMessageDelete)
+{
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    Game deleted successfully.
+    <button type="button" class="btn-close" @onclick="CloseSuccessMessageDelete" aria-label="Close"></button>
+</div>
+}
+
+@if (_showSuccessMessageEdit)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Game edited successfully.
+        <button type="button" class="btn-close" @onclick="CloseSuccessMessageEdit" aria-label="Close"></button>
+    </div>
+}
+
+@if (_games == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <button type="button" class="btn btn-primary addbutton" data-bs-toggle="modal" data-bs-target="#gameModal" @onclick="() => OpenAddGameModal()">Add Game</button>
+    
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Url Image</th>
+            <th>Release Date</th>
+            <th>Developer</th>
+            <th>Publisher</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var game in _games)
+        {
+        <tr>
+            <td>@game.Name</td>
+            <td>@game.Url_Image</td>
+            <td>@game.ReleaseDate.ToShortDateString()</td>
+            <td>@game.Developer</td>
+            <td>@game.Publisher</td>
+            <td>@game.Price.ToString("C")</td>
+            <td>
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#gameModal" @onclick="() => OpenEditGameModal(game)">Edit</button>
+                <button class="btn btn-danger" @onclick="() => DeleteGame(game.GameId)">Delete</button>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@if (_modalGame)
+{
+    <div class="modal fade" id="gameModal" tabindex="-1" aria-labelledby="gameModalLabel" aria-hidden="true">
+        <div class="modal-dialog custom-modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gameModalLabel">@modalTitle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@currentGameDto" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                    <div class="row">
+                        <div class="col-md-6 has-validation">
+                            
+                            <div class="form-floating">
+                                <InputText id="gameName" class="form-control" @bind-Value="currentGameDto.Name" placeholder="Name" required></InputText>
+                                <label for="floatingTextarea">Name</label>
+                            </div>
+                            <ValidationMessage For="@(() => currentGameDto.Name)" />
+                            
+                            <div class="form-floating">
+                                <input type="date" id="releaseDate" class="form-control" @bind="currentGameDto.ReleaseDate" required min="1980-01-01" max="2024-12-31"/>
+                                <label for="releaseDate">Release Date</label>
+                                <ValidationMessage For="@(() => currentGameDto.ReleaseDate)" />
+                            </div>
+                            
+                            <div class="form-floating">
+                                <InputText id="developer" class="form-control" @bind-Value="currentGameDto.Developer" placeholder="Developer Name" required></InputText>
+                                <label for="floatingTextarea">Developer Name</label>
+                                <ValidationMessage For="@(() => currentGameDto.Developer)" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <InputText id="publisher" class="form-control" @bind-Value="currentGameDto.Publisher" placeholder="Publisher Name" required></InputText>
+                                <label for="floatingTextarea">Publisher Name</label>
+                                <ValidationMessage For="@(() => currentGameDto.Publisher)" />
+                            </div>
+                            
+                            <div class="form-floating">
+                                <InputNumber id="price" class="form-control" @bind-Value="currentGameDto.Price" placeholder="Price" required></InputNumber>
+                                <label for="floatingTextarea">Price</label>
+                                <ValidationMessage For="@(() => currentGameDto.Price)" />
+                            </div>
+                            
+                            <div class="form-floating">
+                                <InputTextArea id="description" class="form-control" @bind-Value="currentGameDto.Description" placeholder="Description" required></InputTextArea>
+                                <label for="floatingTextarea">Description</label>
+                                <ValidationMessage For="@(() => currentGameDto.Description)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group is-invalid">
+                        <label for="fileInput">Game Picture:</label>
+                        <InputFile id="fileInput" OnChange="HandleFileSelected"/>
+                        <ValidationMessage For="@(() => currentGameDto.Url_Image)" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Consoles</h4>
+                            <div class="row">
+                                @if (availableConsoles != null)
+                                {
+                                    @foreach (var console in availableConsoles)
+                                    {
+                                        <div class="col-md-2">
+                                            <div>
+                                                <InputCheckbox @bind-Value="console.IsChecked"/> @console.Name
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <ValidationMessage For="@(() => currentGameDto.Consoles)" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Categories</h4>
+                            <div class="row">
+                                @if (availableCategories != null)
+                                {
+                                    @foreach (var category in availableCategories)
+                                    {
+                                        <div class="col-md-2">
+                                            <div>
+                                                <InputCheckbox @bind-Value="category.IsChecked"/> @category.Name
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <ValidationMessage For="@(() => currentGameDto.Categories)" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Genres</h4>
+                            <div class="row">
+                                @if (availableGenres != null)
+                                {
+                                    @foreach (var genre in availableGenres)
+                                    {
+                                        <div class="col-md-2">
+                                            <div>
+                                                <InputCheckbox @bind-Value="genre.IsChecked"/> @genre.Name
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <ValidationMessage For="@(() => currentGameDto.Genres)" />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @onclick="ValidateForm">@modalButtonTitle</button>
+                    </div>
+                </EditForm>
+                
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+@code {
+    private List<GameDto>? _games;
+    private GameDto currentGameDto = new GameDto();
+    private bool _showSuccessMessageGame = false;
+    private bool _showSuccessMessageDelete = false;
+    private bool _showSuccessMessageEdit = false;
+    private bool _modalGame = false;
+    
+    private string modalTitle = "";
+    private string modalButtonTitle = "";
+
+    List<SelectableItem>? availableConsoles;
+    List<SelectableItem>? availableCategories;
+    List<SelectableItem>? availableGenres;
+
+    private bool isValidForm = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _games = await Http.GetFromJsonAsync<List<GameDto>>("games");
+
+        var consoles = await Http.GetFromJsonAsync<List<string>>("consoles");
+        var categories = await Http.GetFromJsonAsync<List<string>>("categories");
+        var genres = await Http.GetFromJsonAsync<List<string>>("genres");
+
+        availableConsoles = consoles?.Select(c => new SelectableItem { Name = c, IsChecked = false }).ToList();
+        availableCategories = categories?.Select(c => new SelectableItem { Name = c, IsChecked = false }).ToList();
+        availableGenres = genres?.Select(g => new SelectableItem { Name = g, IsChecked = false }).ToList();
+    }
+    
+    private void OpenAddGameModal()
+    {
+        currentGameDto = new GameDto(); 
+        modalTitle = "Add Game";
+        modalButtonTitle = "Add Game";
+        _modalGame = true; 
+    }
+    
+    private void OpenEditGameModal(GameDto game)
+    {
+        currentGameDto = game; 
+        modalTitle = "Edit Game";
+        modalButtonTitle = "Update Game";
+        
+        // Set checkboxes for consoles, categories, and genres based on the game's current settings
+        if (availableConsoles != null)
+        {
+            foreach (var console in availableConsoles)
+            {
+                console.IsChecked = currentGameDto.Consoles?.Any(c => c.ToString() == console.Name) ?? false;
+            }
+        }
+
+        if (availableCategories != null)
+        {
+            foreach (var category in availableCategories)
+            {
+                category.IsChecked = currentGameDto.Categories?.Any(c => c.ToString() == category.Name) ?? false;
+            }
+        }
+
+        if (availableGenres != null)
+        {
+            foreach (var genre in availableGenres)
+            {
+                genre.IsChecked = currentGameDto.Genres?.Any(g => g.ToString() == genre.Name) ?? false;
+            }
+        }
+        
+        _modalGame = true; 
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (!isValidForm)
+        {
+            return;
+        }
+        
+        currentGameDto.ReleaseDate = currentGameDto.ReleaseDate.ToUniversalTime();
+        currentGameDto.Consoles = availableConsoles?.Where(c => c.IsChecked).Select(c => Enum.Parse<Consoles>(c.Name)).ToList() ?? new List<Consoles>();
+        currentGameDto.Categories = availableCategories?.Where(c => c.IsChecked).Select(c => Enum.Parse<Category>(c.Name)).ToList() ?? new List<Category>();
+        currentGameDto.Genres = availableGenres?.Where(g => g.IsChecked).Select(g => Enum.Parse<Genre>(g.Name)).ToList() ?? new List<Genre>();
+
+        HttpResponseMessage response;
+        if (currentGameDto.GameId == Guid.Empty)
+        {
+            response = await Http.PostAsJsonAsync("game", currentGameDto);
+            if (response.IsSuccessStatusCode)
+            {
+                var addedGame = await response.Content.ReadFromJsonAsync<GameDto>();
+                _games?.Add(addedGame);
+                _showSuccessMessageGame = true;
+            }
+        }
+        else
+        {
+            response = await Http.PutAsJsonAsync($"game/{currentGameDto.GameId}", currentGameDto);
+            if (response.IsSuccessStatusCode)
+            {
+                var updatedGame = await response.Content.ReadFromJsonAsync<GameDto>();
+                int index = _games.FindIndex(g => g.GameId == currentGameDto.GameId);
+                if (index != -1)
+                {
+                    _games[index] = updatedGame;
+                }
+                _showSuccessMessageEdit = true;
+            }
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            _modalGame = false;
+            StateHasChanged();
+        }
+        else
+        {
+            Console.Error.WriteLine($"Failed to {(currentGameDto.GameId == Guid.Empty ? "create" : "update")} the game. Status code: {response.StatusCode}");
+        }
+    }
+    
+    private void CloseSuccessMessage()
+    {
+        _showSuccessMessageGame = false;
+    }
+
+    private void CloseSuccessMessageDelete()
+    {
+        _showSuccessMessageDelete = false;
+    }
+
+    private void CloseSuccessMessageEdit()
+    {
+        _showSuccessMessageEdit = false;
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            currentGameDto.Url_Image = file.Name;
+        }
+    }
+    
+    private void ValidateForm()
+    {
+        isValidForm = !string.IsNullOrEmpty(currentGameDto.Name) &&
+                      !string.IsNullOrEmpty(currentGameDto.Developer) &&
+                      !string.IsNullOrEmpty(currentGameDto.Publisher) &&
+                      currentGameDto.ReleaseDate != default &&
+                      currentGameDto.Price > 0 &&
+                      (availableConsoles?.Any(c => c.IsChecked) == true ||
+                       availableCategories?.Any(c => c.IsChecked) == true ||
+                       availableGenres?.Any(g => g.IsChecked) == true);
+    }
+
+    private async Task DeleteGame(Guid id)
+    {
+        var response = await Http.DeleteAsync($"game/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            _games = _games?.Where(g => g.GameId != id).ToList();
+            StateHasChanged();
+            _showSuccessMessageDelete = true;
+        }
+    }
+
+    public class SelectableItem
+    {
+        public string Name { get; set; }
+        public bool IsChecked { get; set; }
+    }
+}
