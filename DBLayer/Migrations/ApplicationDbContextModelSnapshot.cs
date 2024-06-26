@@ -22,6 +22,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+<<<<<<< HEAD
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Favorite", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -70,6 +71,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("Games");
                 });
 
+=======
+>>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
                 {
                     b.Property<Guid>("PermissionId")
@@ -216,11 +219,14 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
                 {
                     b.Navigation("Favorites");
                 });
 
+=======
+>>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
                 {
                     b.Navigation("RolePermissions");

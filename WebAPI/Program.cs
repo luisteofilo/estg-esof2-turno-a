@@ -1,6 +1,9 @@
 using ESOF.WebApp.DBLayer.Context;
+<<<<<<< HEAD
 using ESOF.WebApp.WebAPI.Controllers;
 using Microsoft.EntityFrameworkCore;
+=======
+>>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +34,15 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
+<<<<<<< HEAD
 app.MapEnumController();
 app.MapFavoriteController();
 app.Run();
+=======
+app.Run();
+
+record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+{
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}
+>>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
