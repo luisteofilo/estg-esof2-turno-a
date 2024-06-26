@@ -1,23 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Add Authorization services
 builder.Services.AddAuthorization();
-
-// Add Controller services
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ESOF WebApp WebAPI", Version = "v1" });
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+});
+
+// Add ApplicationDbContext with connection string from configuration
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
@@ -27,17 +31,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        c.RoutePrefix = string.Empty; // Define o Swagger UI como a página inicial
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ESOF WebApp WebAPI V1");
+        c.RoutePrefix = string.Empty; // Set Swagger UI at app's root
     });
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();
 
+// Example endpoints
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -62,7 +67,7 @@ app.MapGet("/users/emails", async (ApplicationDbContext db) =>
 {
     return await db.Users.Select(u => u.Email).ToListAsync();
 })
-.WithName("GetUsersNames")
+.WithName("GetUsersEmails")
 .WithOpenApi();
 
 app.MapGet("/users", async (ApplicationDbContext db) =>
@@ -77,34 +82,6 @@ app.MapGet("/games", async (ApplicationDbContext db) =>
     return await db.Games.ToListAsync();
 })
 .WithName("GetGames")
-.WithOpenApi();
-
-app.MapGet("/api/gamereport/order", async (ApplicationDbContext db, [FromQuery] string orderBy) =>
-{
-    IQueryable<Game> query = (IQueryable<Game>)db.Games;
-
-    switch (orderBy.ToLower())
-    {
-        case "name":
-            query = query.OrderBy(g => g.Name);
-            break;
-        case "genre":
-            query = query.OrderBy(g => g.Genre);
-            break;
-        case "platform":
-            query = query.OrderBy(g => g.Platform);
-            break;
-        case "releasedate":
-            query = query.OrderBy(g => g.ReleaseDate);
-            break;
-        default:
-            query = query.OrderBy(g => g.Name);
-            break;
-    }
-
-    return await query.ToListAsync();
-})
-.WithName("GetOrderedGames")
 .WithOpenApi();
 
 app.Run();

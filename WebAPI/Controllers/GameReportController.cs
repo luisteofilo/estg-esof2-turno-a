@@ -2,7 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace ESOF.WebApp.WebAPI.Controllers
 {
@@ -21,75 +24,74 @@ namespace ESOF.WebApp.WebAPI.Controllers
 
         [HttpGet("order")]
         public async Task<ActionResult<IEnumerable<Game>>> GetOrderedGames(
-            string orderBy = "name",
-            string? name = null,
-            string? genre = null,
-            string? platform = null,
-            DateTime? releaseDate = null)
+            [FromQuery] string orderBy = "name",
+            [FromQuery] string? name = null,
+            [FromQuery] string? genre = null,
+            [FromQuery] string? platform = null,
+            [FromQuery] DateTime? releaseDate = null)
         {
             try
             {
-                _logger.LogDebug("Fetching games with filters: orderBy={OrderBy}, name={Name}, genre={Genre}, platform={Platform}, releaseDate={ReleaseDate}",
-                    orderBy, name, genre, platform, releaseDate);
-
                 IQueryable<Game> query = _context.Games.AsQueryable();
 
                 if (!string.IsNullOrEmpty(name))
                 {
-                    _logger.LogDebug("Applying name filter: {Name}", name);
-                    query = query.Where(g => g.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+                    query = query.Where(g => g.Name.Contains(name));
                 }
 
                 if (!string.IsNullOrEmpty(genre))
                 {
-                    _logger.LogDebug("Applying genre filter: {Genre}", genre);
                     query = query.Where(g => g.Genre == genre);
                 }
 
                 if (!string.IsNullOrEmpty(platform))
                 {
-                    _logger.LogDebug("Applying platform filter: {Platform}", platform);
                     query = query.Where(g => g.Platform == platform);
                 }
 
                 if (releaseDate.HasValue)
                 {
-                    _logger.LogDebug("Applying release date filter: {ReleaseDate}", releaseDate);
-                    query = query.Where(g => g.ReleaseDate.Date == releaseDate.Value.Date);
+                    _logger.LogInformation("Release date provided: {ReleaseDate}", releaseDate.Value);
+                    var releaseDateUtc = DateTime.SpecifyKind(releaseDate.Value, DateTimeKind.Utc);
+                    _logger.LogInformation("Converted to UTC: {ReleaseDateUtc}", releaseDateUtc);
+                    query = query.Where(g => g.ReleaseDate.Date == releaseDateUtc.Date);
                 }
 
                 switch (orderBy.ToLower())
                 {
                     case "name":
-                        _logger.LogDebug("Ordering by name");
                         query = query.OrderBy(g => g.Name);
                         break;
                     case "genre":
-                        _logger.LogDebug("Ordering by genre");
                         query = query.OrderBy(g => g.Genre);
                         break;
                     case "platform":
-                        _logger.LogDebug("Ordering by platform");
                         query = query.OrderBy(g => g.Platform);
                         break;
                     case "releasedate":
-                        _logger.LogDebug("Ordering by release date");
                         query = query.OrderBy(g => g.ReleaseDate);
                         break;
                     default:
-                        _logger.LogDebug("Ordering by default (name)");
                         query = query.OrderBy(g => g.Name);
                         break;
                 }
 
-                var result = await query.ToListAsync();
-                _logger.LogDebug("Fetched {Count} games", result.Count);
-                return result;
+                var games = await query.ToListAsync();
+
+                if (games == null || !games.Any())
+                {
+                    _logger.LogInformation("No games found with the specified criteria");
+                    return NotFound("No games found with the specified criteria");
+                }
+
+                _logger.LogInformation("Returning {Count} games", games.Count);
+
+                return Ok(games);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching games");
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "An error occurred while getting ordered games");
+                return StatusCode(500, "An error occurred while processing your request.");
             }
         }
     }
