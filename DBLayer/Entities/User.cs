@@ -17,8 +17,13 @@ public class User
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
 
+
     //Novo parametro 
     public ICollection<PlayerAchievement> PlayerAchievements { get; set; }
     
+
+
+    
+    public ICollection<Game> GamesDeveloped { get; set; }
 
 }
