@@ -243,8 +243,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _reviews = await ApiHelper.GetFromApiAsync<Reviews[]>($"/Reviews/{GameId}");
-        _game = await ApiHelper.GetFromApiAsync<Game>($"/Games/{GameId}");
+        _reviews = await ApiHelper.GetFromApiAsync<Reviews[]>($"Reviews/{GameId}");
+        _game = await ApiHelper.GetFromApiAsync<Game>($"Game/{GameId}");
 
         if (_reviews != null)
         {
@@ -255,7 +255,7 @@ else
                     if (rev.GameId.Equals(GameId))
                     {
                         string id = rev.UserId;
-                        _user = await ApiHelper.GetFromApiAsync<User>($"/Users/{id}");
+                        _user = await ApiHelper.GetFromApiAsync<User>($"User/{id}");
                         
                         _countReviews[_user.tipo_user]++;
                         _total[_user.tipo_user] += rev.Evaluation;

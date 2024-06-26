@@ -186,8 +186,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _games = await ApiHelper.GetFromApiAsync<Games[]>("/Games");
-        _reviews = await ApiHelper.GetFromApiAsync<Reviews[]>("/Reviews");
+        _games = await ApiHelper.GetFromApiAsync<Games[]>("Game");
+        _reviews = await ApiHelper.GetFromApiAsync<Reviews[]>("Reviews");
 
         if (_reviews != null && _games != null)
         {

@@ -8,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -19,6 +23,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 var summaries = new[]
 {
@@ -46,51 +52,6 @@ app.MapGet("/users/emails", () =>
         return db.Users.Select(u => u.Email);
     })
     .WithName("GetUsersNames")
-    .WithOpenApi();
-
-app.MapGet("/Games", () =>
-    {
-        var db = new ApplicationDbContext();
-        return  db.Games;
-    })
-    .WithName("GetGames")
-    .WithOpenApi();
-
-app.MapGet("/Reviews", () =>
-    {
-        var db = new ApplicationDbContext();
-        return  db.Reviews;
-    })
-    .WithName("GetReviews")
-    .WithOpenApi();
-
-app.MapGet("/Reviews/{gameId}", async (string gameId) =>
-    {
-        var db = new ApplicationDbContext();
-        var reviews = await db.Reviews.Where(r => r.GameId.ToString() == gameId).ToListAsync();
-        return  reviews;
-    })
-    .WithName("GetReviewsFromGame")
-    .WithOpenApi();
-
-app.MapGet("/Games/{gameId}", async (string gameId) =>
-    {
-        var db = new ApplicationDbContext();
-        var game = await db.Games.FirstAsync(g => g.GameId.ToString() == gameId);
-        
-        return  game;
-    })
-    .WithName("GetGameName")
-    .WithOpenApi();
-
-app.MapGet("/Users/{userid}", async (string userid) =>
-    {
-        var db = new ApplicationDbContext();
-        var user = await db.Users.FirstAsync(u => u.UserId.ToString() == userid);
-        
-        return  user;
-    })
-    .WithName("GetUserBuId")
     .WithOpenApi();
 
 app.Run();
