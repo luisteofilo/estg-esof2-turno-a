@@ -21,7 +21,7 @@ public partial class ApplicationDbContext
             .HasIndex(g => g.Genre);
 
         modelBuilder.Entity<Game>()
-            .HasIndex(g => g.Platform);
+            .HasIndex(g => g.Consoles);
 
         modelBuilder.Entity<Game>()
             .Property(p => p.GameId)

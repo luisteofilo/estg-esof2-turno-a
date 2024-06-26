@@ -57,7 +57,7 @@ else
                                         <img src="https://picsum.photos/500/700" class="card-img" alt="...">
                                         <div class="card-img-overlay d-flex flex-column justify-content-end">
                                             <h3 class="card-title text-orange mb-0">@game.Name</h3>
-                                            <h5 class="card-text text-orange">@game.Genre - @game.Platform</h5>@*mudar para game.Genres - @game.Consoles*@
+                                            <h5 class="card-text text-orange">@game.Genre - @game.Consoles</h5>
                                         </div>
                                         <div class="card-button">
                                             <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(game)">
@@ -91,7 +91,7 @@ else
                                             <img src="https://picsum.photos/500/700" class="card-img" alt="...">
                                             <div class="card-img-overlay d-flex flex-column justify-content-end">
                                                 <h3 class="card-title text-orange mb-0">@fav.Name</h3>
-                                                <h5 class="card-text text-orange">@fav.Genre - @fav.Platform</h5>@*mudar para fav.Genres - @fav.Consoles*@
+                                                <h5 class="card-text text-orange">@fav.Genre - @fav.Consoles</h5>
                                             </div>
                                             <div class="card-button">
                                                 <button type="button" class="btn btn-outline-orange" @onclick="() => ToggleFavorite(fav)">
@@ -296,13 +296,13 @@ else
     private IEnumerable<Game> FilteredGames =>
         _gamesCatalog?.Where(game =>
             (selectedGenres.Count == 0 || selectedGenres.Contains(game.Genre.ToString())) &&
-            (selectedConsoles.Count == 0 || selectedConsoles.Contains(game.Platform.ToString())) &&
+            (selectedConsoles.Count == 0 || selectedConsoles.Contains(game.Consoles.ToString())) &&
             (string.IsNullOrEmpty(searchText) || game.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
 
     private IEnumerable<Game> FilteredFavorites =>
         _gamesFavoritesById?.Where(fav =>
             (selectedGenres.Count == 0 || selectedGenres.Contains(fav.Genre.ToString())) &&
-            (selectedConsoles.Count == 0 || selectedConsoles.Contains(fav.Platform.ToString())) &&
+            (selectedConsoles.Count == 0 || selectedConsoles.Contains(fav.Consoles.ToString())) &&
             (string.IsNullOrEmpty(searchText) || fav.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
     
     

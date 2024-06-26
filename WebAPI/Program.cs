@@ -50,7 +50,7 @@ app.MapGet("/games", async () =>
                 g.GameId,
                 g.Name,
                 g.Genre,
-                g.Platform
+                g.Consoles
             })
             .ToListAsync();
         return games;
@@ -68,7 +68,7 @@ app.MapGet("/games/{gameId:guid}", async (Guid GameId) =>
                 g.GameId,
                 g.Name,
                 g.Genre,
-                g.Platform
+                g.Consoles
             })
             .FirstOrDefaultAsync();
         return game;

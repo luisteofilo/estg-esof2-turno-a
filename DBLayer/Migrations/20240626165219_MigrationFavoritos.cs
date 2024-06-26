@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationName : Migration
+    public partial class MigrationFavoritos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     GameId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Genre = table.Column<string>(type: "text", nullable: false),
-                    Platform = table.Column<string>(type: "text", nullable: false)
+                    Consoles = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -152,9 +152,9 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_Platform",
+                name: "IX_Games_Consoles",
                 table: "Games",
-                column: "Platform");
+                column: "Consoles");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolePermissions_PermissionId",

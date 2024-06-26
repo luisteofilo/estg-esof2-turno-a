@@ -54,7 +54,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Platform")
+                    b.Property<string>("Consoles")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -65,7 +65,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("Platform");
+                    b.HasIndex("Consoles");
 
                     b.ToTable("Games");
                 });
