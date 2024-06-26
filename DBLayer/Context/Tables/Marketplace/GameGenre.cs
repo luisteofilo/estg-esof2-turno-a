@@ -12,13 +12,13 @@ public partial class ApplicationDbContext{
 			
 			entity.HasKey(e => new { e.game_id, e.genre_id });
 			
-			entity.HasOne(e => e.genre)
+			entity.HasOne(gg => gg.MarketPlaceGame)
 				.WithMany(g => g.gameGenres)
-				.HasForeignKey(e => e.genre_id);
-
-			entity.HasOne(e => e.MarketPlaceGame)
+				.HasForeignKey(gg => gg.game_id);
+			
+			entity.HasOne(gg => gg.genre)
 				.WithMany(g => g.gameGenres)
-				.HasForeignKey(e => e.genre_id);
+				.HasForeignKey(gg => gg.genre_id);
 		});
 	}
 }
