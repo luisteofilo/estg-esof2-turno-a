@@ -1,20 +1,15 @@
+@using ESOF.WebApp.WebAPI.DtoClasses.Response
 @typeparam TItem
 
-<a href="/marketplace/listing/@ListingId" class="card position-relative">
+<a href="/marketplace/listing/@game.id" class="card position-relative">
     <img src="https://picsum.photos/500/700" class="card-img" alt="...">
     <div class="card-img-overlay d-flex flex-column justify-content-end">
-        <h5 class="card-title text-white mb-0">@name</h5>
-        <p class="card-text text-white">@description</p>
+        <h5 class="card-title text-white mb-0">@game.name</h5>
+        <p class="card-text text-white">@game.price€</p>
     </div>
 </a>
 
 @code {
     [Parameter]
-    public Guid ListingId { get; set; }
-
-    [Parameter]
-    public string name { get; set; }
-
-    [Parameter]
-    public string description { get; set; }
+    public ResponseMKP_GameDto game { get; set; }
 }

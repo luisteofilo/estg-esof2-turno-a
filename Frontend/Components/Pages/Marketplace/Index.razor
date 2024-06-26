@@ -25,7 +25,7 @@
         {
             @foreach (var game in _games)
             {
-                <ListingCard TItem="ResponseMKP_GameDto" ListingId="@game.id" Name="@game.name" Description="@game.description" />
+                <ListingCard TItem="ResponseMKP_GameDto" Game="@game" />
             }
         }
     </div>
