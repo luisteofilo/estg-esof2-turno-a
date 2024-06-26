@@ -4,7 +4,7 @@ namespace Helpers.Models
     {
         public Guid CategoryID { get; set; }
         public Guid GameID { get; set; }
-        public DateTime CreationDate { get; set; }
+        public DateTimeOffset CreationDate { get; set; }
         public string CategoryName { get; set; }
         public string CategoryDescription { get; set; }
         public string CategoryRules { get; set; }

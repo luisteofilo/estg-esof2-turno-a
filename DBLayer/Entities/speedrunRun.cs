@@ -25,7 +25,7 @@ public class SpeedrunRun
     public int runTime { get; set; }
     
     [Required]
-    public DateTime SubmissionDate { get; set; }
+    public DateTimeOffset SubmissionDate { get; set; }
     
     [DefaultValue("false")]
     public bool verified { get; set; }

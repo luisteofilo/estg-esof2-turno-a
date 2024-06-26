@@ -15,7 +15,7 @@ public class SpeedrunCategory
     public Game Game { get; set; }
     
     [Required]
-    public DateTime creationDate { get; set; }
+    public DateTimeOffset creationDate { get; set; }
     
     [Required]
     public string categoryName { get; set; }

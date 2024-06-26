@@ -6,7 +6,7 @@ namespace Helpers.Models
         public Guid PlayerID { get; set; }
         public Guid CategoryID { get; set; }
         public int RunTime { get; set; }
-        public DateTime SubmissionDate { get; set; }
+        public DateTimeOffset SubmissionDate { get; set; }
         public bool Verified { get; set; }
         public Guid? verifierID { get; set; }
         public string VideoLink { get; set; }

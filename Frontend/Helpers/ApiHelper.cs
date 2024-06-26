@@ -20,6 +20,7 @@ public class ApiHelper(HttpClient httpClient)
             throw new ApplicationException($"Error fetching data from {url}: {e.Message}");
         }
     }
+    
     public async Task<T?> PostToApiAsync<T>(string url)
     {
         try

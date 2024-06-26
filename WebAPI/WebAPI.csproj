@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\SpeedRuns\" />
+      <None Remove="ScaffoldingReadMe.txt" />
     </ItemGroup>
 
 </Project>

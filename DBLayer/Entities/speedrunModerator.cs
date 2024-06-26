@@ -19,7 +19,7 @@ public class SpeedrunModerator
     public Game game { get; set; }
     
     [Required]
-    public DateTime roleGivenDate { get; set; }
+    public DateTimeOffset roleGivenDate { get; set; }
     
     public ICollection<SpeedrunRun> SpeedRuns { get; set; }
 }
