@@ -43,32 +43,23 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
-    
     public DbSet<Game> Games { get; set; }
-    public DbSet<SpeedrunRun> SpeedrunRuns { get; set; }
-    public DbSet<SpeedrunCategory> SpeedrunCategories { get; set; }
-    public DbSet<SpeedrunModerator> SpeedrunModerators { get; set; }
-
+    public DbSet<Shops> Shop { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
-
-
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        BuildShops(modelBuilder);
+        BuildGame(modelBuilder);
         BuildUsers(modelBuilder);
         BuildRoles(modelBuilder);
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
-        
-        BuildGames(modelBuilder);
-        BuildSpeedrunCategories(modelBuilder);
-        BuildSpeedrunModerators(modelBuilder);
-        BuildSpeedrunRuns(modelBuilder);
-        
         base.OnModelCreating(modelBuilder);
     }
 }

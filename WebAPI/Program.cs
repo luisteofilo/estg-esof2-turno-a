@@ -1,8 +1,8 @@
+using ESOF.WebApp.DBLayer.AutoMapper;
 using ESOF.WebApp.DBLayer.Context;
 using ESOF.WebApp.DBLayer.Entities;
-using Helpers.Models;
-using ESOF.WebApp.WebAPI.Controllers;
-using ESOF.WebApp.WebAPI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 var app = builder.Build();
 
@@ -53,7 +53,9 @@ app.MapGet("/users/emails", () =>
     .WithOpenApi();
 
 app.MapControllers();
+
 app.Run();
+
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {

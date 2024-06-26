@@ -17,7 +17,5 @@ public class User
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
     
-    public ICollection<SpeedrunRun> speedrunRuns { get; set; }
-    
-    public ICollection<SpeedrunModerator> speedrunModerators { get; set; }
+    public ICollection<Game> GamesDeveloped { get; set; }
 }
