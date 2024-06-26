@@ -16,13 +16,7 @@ public class User
     [Required]
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
-<<<<<<< HEAD
-<<<<<<< HEAD
     
     // Add this line
     public ICollection<Favorite> Favorites { get; set; }
-=======
->>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
-=======
->>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
 }

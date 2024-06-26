@@ -38,15 +38,9 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     public DbSet<Game> Games { get; set; }
     public DbSet<Favorite> Favorites { get; set; }
-=======
->>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
-=======
->>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);

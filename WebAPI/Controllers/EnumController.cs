@@ -4,21 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESOF.WebApp.WebAPI.Controllers;
 
 
-public class EnumController : ControllerBase
+public static class EnumController
 {
-    
-    private static readonly List<string> ConsoleNames = Enum.GetNames(typeof(Consoles)).ToList();
-    private static readonly List<string> GenreNames = Enum.GetNames(typeof(Genre)).ToList();
-        
-    [HttpGet("consoles")]
-    public ActionResult<List<string>> GetConsoles()
+    public static void MapEnumController(this WebApplication app){
+    app.MapGet("/consoles", () =>
     {
-        return Ok(ConsoleNames);
-    }
+        var consoles = Enum.GetNames(typeof(Consoles)).ToList();
+        return consoles;
+    })
+    .WithName("GetConsoles")
+        .WithOpenApi();
 
-    [HttpGet("genres")]
-    public ActionResult<List<string>> GetGenres()
+    app.MapGet("/genres", () =>
     {
-        return Ok(GenreNames);
-    }
+        var genres = Enum.GetNames(typeof(Genre)).ToList();
+        return genres;
+    })
+    .WithName("GetGenres")
+        .WithOpenApi();
+}
+    
 }

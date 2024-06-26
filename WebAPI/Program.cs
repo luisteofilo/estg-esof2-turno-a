@@ -1,17 +1,7 @@
 using ESOF.WebApp.DBLayer.Context;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-using ESOF.WebApp.WebAPI.Controllers;
-=======
 using ESOF.WebApp.DBLayer.Entities;
-using Microsoft.AspNetCore.Mvc;
->>>>>>> parent of e555e4b (endpoints)
+using ESOF.WebApp.WebAPI.Controllers;
 using Microsoft.EntityFrameworkCore;
-=======
->>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
-=======
->>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,11 +32,7 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-app.MapEnumController();
-=======
+
 app.MapGet("/users", () =>
     {
         var db = new ApplicationDbContext();
@@ -90,32 +76,8 @@ app.MapGet("/games/{gameId:guid}", async (Guid GameId) =>
     .WithName("GetGamesById")
     .WithOpenApi();
 
-app.MapGet("/consoles", () =>
-    {
-        var consoles = Enum.GetNames(typeof(Consoles)).ToList();
-        return consoles;
-    })
-    .WithName("GetConsoles")
-    .WithOpenApi();
-
-app.MapGet("/genres", () =>
-    {
-        var genres = Enum.GetNames(typeof(Genre)).ToList();
-        return genres;
-    })
-    .WithName("GetGenres")
-    .WithOpenApi();
-
->>>>>>> parent of e555e4b (endpoints)
+app.MapEnumController();
 app.MapFavoriteController();
 app.Run();
-=======
-=======
->>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
-app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
->>>>>>> parent of 59e745d (Grupo A18 - Games Crud (#27))
+
