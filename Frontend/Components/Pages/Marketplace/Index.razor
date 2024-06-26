@@ -13,16 +13,36 @@
         <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search...">
     </div>
     <div class="game-card-container">
-        @foreach (var game in _games) {  
-                <ListingCard ListingId="@game.id" />
+        @if (_games == null)
+        {
+            <p>Loading...</p>
+        }
+        else if (_games.Count == 0)
+        {
+            <p>No games found.</p>
+        }
+        else
+        {
+            @foreach (var game in _games)
+            {
+                <ListingCard TItem="ResponseMKP_GameDto" ListingId="@game.id" Name="@game.name" Description="@game.description" />
+            }
         }
     </div>
 </div>
 
 @code {
-    private List<ResponseMKP_GameDto> _games = [];
-    
-    protected override async Task OnInitializedAsync() {
-        _games = await ApiHelper.GetFromApiAsync<List<ResponseMKP_GameDto>>("/marketplace/Game") ?? [];
+    private List<ResponseMKP_GameDto> _games;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _games = await ApiHelper.GetFromApiAsync<List<ResponseMKP_GameDto>>("marketplace/Game");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching games: {ex.Message}");
+        }
     }
 }
