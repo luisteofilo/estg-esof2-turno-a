@@ -6,13 +6,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class GameReviews : Migration
+    public partial class ModificationsDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "reviews");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Username",
+                table: "Users",
+                type: "character varying(20)",
+                maxLength: 20,
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.CreateTable(
                 name: "Games",
+                schema: "reviews",
                 columns: table => new
                 {
                     GameId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
@@ -25,6 +37,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Reviews",
+                schema: "reviews",
                 columns: table => new
                 {
                     ReviewId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
@@ -43,6 +56,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     table.ForeignKey(
                         name: "id_game___fk",
                         column: x => x.GameId,
+                        principalSchema: "reviews",
                         principalTable: "Games",
                         principalColumn: "GameId",
                         onDelete: ReferentialAction.Cascade);
@@ -56,11 +70,13 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_GameId",
+                schema: "reviews",
                 table: "Reviews",
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_UserId",
+                schema: "reviews",
                 table: "Reviews",
                 column: "UserId");
         }
@@ -69,10 +85,16 @@ namespace ESOF.WebApp.DBLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Reviews");
+                name: "Reviews",
+                schema: "reviews");
 
             migrationBuilder.DropTable(
-                name: "Games");
+                name: "Games",
+                schema: "reviews");
+
+            migrationBuilder.DropColumn(
+                name: "Username",
+                table: "Users");
         }
     }
 }

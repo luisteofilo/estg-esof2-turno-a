@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
@@ -29,12 +30,12 @@ public class Review
 
     public DateTime? EditedDate { get; set; }
 
-    public DateTime CreationDate { get; set; } = DateTime.Now;
+    public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     
     [ForeignKey(nameof(UserId))]
     public User User { get; set; }
     
     [ForeignKey(nameof(GameId))]
     public Game Game { get; set; }
-        
+            
 }

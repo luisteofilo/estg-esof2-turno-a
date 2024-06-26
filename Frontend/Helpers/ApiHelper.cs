@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Frontend.Helpers;
 
 public class ApiHelper(HttpClient httpClient)
@@ -15,5 +17,48 @@ public class ApiHelper(HttpClient httpClient)
             // Handle exception
             throw new ApplicationException($"Error fetching data from {url}: {e.Message}");
         }
+    }
+
+    public async Task PostToApiAsync<T>(string url, T data)
+    {
+        try
+        {
+            var response = await httpClient.PostAsJsonAsync(url, data);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            // Handle exception
+            throw new Exception($"Error posting to API: {e.Message}");
+        }
+    }
+    
+    public async Task PutToApiAsync<T>(string url, T data)
+    {
+        try
+        {
+            var response = await httpClient.PutAsJsonAsync(url, data);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            // Handle exception
+            throw new Exception($"Error updating to API: {e.Message}");
+        }
+    }
+    
+    public async Task DeleteFromApiAsync<T>(string url)
+    {
+        try
+        {
+            var response = await httpClient.DeleteAsync(url);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            // Handle exception
+            throw new Exception($"Error deleting from API: {e.Message}");
+        }
+
     }
 }

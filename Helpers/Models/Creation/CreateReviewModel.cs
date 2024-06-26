@@ -7,7 +7,5 @@ public class CreateReviewModel
     
     public Guid UserId { get; set; }
     
-    public Guid ReviewId { get; set; }
-    
     public int Rating { get; set; }
 }

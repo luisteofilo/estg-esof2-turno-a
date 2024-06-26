@@ -8,6 +8,11 @@ public partial class ApplicationDbContext
 {
     private void BuildReviews(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.ToTable("Reviews", schema: "reviews");
+        });
+        
         modelBuilder.Entity<Review>()
             .HasKey(r => r.ReviewId);
 

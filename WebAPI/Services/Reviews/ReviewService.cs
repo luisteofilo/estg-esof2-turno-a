@@ -8,7 +8,7 @@ namespace ESOF.WebApp.WebAPI.Services;
 
 public class ReviewService(ApplicationDbContext db)
 {
-    public async void AddReview(CreateReviewModel model)
+    public async Task AddReview(CreateReviewModel model)
     {
         var game = db.Games.FirstOrDefault(g => g.GameId == model.GameId);
         if (game == null)
@@ -16,21 +16,19 @@ public class ReviewService(ApplicationDbContext db)
             throw new Exception("Selected game does not exist");
         }
 
-        game.Reviews.Add(new Review()
+        var review = new Review()
         {
             WrittenReview = model.WrittenReview,
             GameId = model.GameId,
             UserId = model.UserId,
-            ReviewId = model.ReviewId,
             Rating = model.Rating,
-            CreationDate = DateTime.Now,
-            ApprovedStatus = false
-        });
-
+        };
+        game.Reviews.Add(review);
+        
         await db.SaveChangesAsync();
     }
 
-    public async void UpdateReview(UpdateReviewModel model)
+    public async Task UpdateReview(UpdateReviewModel model)
     {
         var review = db.Reviews.FirstOrDefault(r => r.ReviewId == model.ReviewId);
         if (review == null)
@@ -42,12 +40,12 @@ public class ReviewService(ApplicationDbContext db)
         review.Rating = model.Rating;
         review.ApprovedStatus = false;
         review.EditedStatus = true;
-        review.EditedDate = DateTime.Now;
+        review.EditedDate = DateTime.UtcNow;
 
         await db.SaveChangesAsync();
     }
 
-    public async void ApproveReview(UpdateReviewModel model)
+    public async Task ApproveReview(ApproveReviewModel model)
     {
         var review = db.Reviews.FirstOrDefault(r => r.ReviewId == model.ReviewId);
         if (review == null)
@@ -60,7 +58,7 @@ public class ReviewService(ApplicationDbContext db)
         await db.SaveChangesAsync();
     }
 
-    public async void DeleteReview(UpdateReviewModel model)
+    public async Task DeleteReview(DeleteReviewModel model)
     {
         var review = db.Reviews.FirstOrDefault(r => r.ReviewId == model.ReviewId);
         if (review == null)
@@ -73,26 +71,27 @@ public class ReviewService(ApplicationDbContext db)
         await db.SaveChangesAsync();
     }
     
-    public async Task<IEnumerable<Review>> GetGameReviews(ReviewViewModel model)
+    public async Task<IEnumerable<ReviewViewModel>> GetGameReviews(ReviewViewModel model)
     {
-        var reviews = db.Reviews.Where(g => g.GameId == model.GameId);
-        if (!reviews.Any())
-        {
-            throw new Exception("This game does not have reviews");
-        }
+        var reviews = await db.Reviews
+            .Where(g => g.GameId == model.GameId)
+            .Include(r => r.User) // Include the related User entity
+            .Select(r => new ReviewViewModel
+            {
+                ReviewId = r.ReviewId,
+                GameId = r.GameId,
+                UserId = r.UserId,
+                Username = r.User.Username, 
+                Rating = r.Rating,
+                WrittenReview = r.WrittenReview,
+                CreationDate = r.CreationDate,
+                EditedDate = r.EditedDate,
+                EditedStatus = r.EditedStatus,
+                ApprovedStatus = r.ApprovedStatus
+            })
+            .ToListAsync();
 
-        return reviews.ToList();
-    }
-    
-    public async Task<IEnumerable<Review>> GetUserReviews(ReviewViewModel model)
-    {
-        var reviews = db.Reviews.Where(r => r.UserId == model.UserId);
-        if (!reviews.Any())
-        {
-            throw new Exception("This user does not have reviews");
-        }
-
-        return reviews.ToList();
+        return reviews;
     }
 
     public async Task<Review> GetReviewById(ReviewViewModel model)

@@ -1,10 +1,4 @@
-﻿using System.Globalization;
-
-namespace Helpers.Models.View;
-
-using System;
-using System.Collections.Generic;
-
+﻿namespace Helpers.Models.View;
 
 public class ViewGameByIdModel
 {
