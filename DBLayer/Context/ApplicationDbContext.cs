@@ -45,18 +45,16 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<GameReplay> GameReplays { get; set; }
     public DbSet<UserGameReplay> UserGameReplays { get; set; }
-    public DbSet<Game> Games { get; set; }
-    public DbSet<Shops> Shop { get; set; }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
+
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        BuildShops(modelBuilder);
-        BuildGame(modelBuilder);
         BuildUsers(modelBuilder);
         BuildRoles(modelBuilder);
         BuildPermissions(modelBuilder);
