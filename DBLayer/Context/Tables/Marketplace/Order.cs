@@ -12,7 +12,9 @@ public partial class ApplicationDbContext{
 			
 			entity.HasKey(e => e.order_id);
 			
-			entity.HasKey(e => e.user_id);
+			entity.Property(e => e.order_id).HasDefaultValueSql("gen_random_uuid()");
+			
+			entity.HasKey(e => e.order_id);
 			
 			entity.Property(e => e.completed).IsRequired();
 			
