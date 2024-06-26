@@ -14,20 +14,24 @@ else if (!games.Any())
 }
 else
 {
-    <ul>
-        @foreach (var game in games)
-        {
-            <li>
-                <b>@game.Name</b> - @game.Description
-                <button @onclick="@(async () => await PostVote(userId, game.GameId))" disabled="@hasVoted">Votar</button>
-
-                @if (votePercentages.TryGetValue(game.GameId, out var percentage))
-                {
-                    <span>(@percentage%)</span>
-                }
-            </li>
-        }
-    </ul>
+    <form @onsubmit="PostVote">
+        <ul>
+            @foreach (var game in games)
+            {
+                <li>
+                    <label>
+                        <input type="radio" name="selectedGame" value="@game.GameId" @onchange="() => selectedGameId = game.GameId" />
+                        <b>@game.Name</b> - @game.Description
+                    </label>
+                    @if (votePercentages.TryGetValue(game.GameId, out var percentage))
+                    {
+                        <span>(@percentage%)</span>
+                    }
+                </li>
+            }
+        </ul>
+        <button type="submit" disabled="@hasVoted">Submeter Voto</button>
+    </form>
 }
 
 <p>@message</p>
@@ -39,6 +43,7 @@ else
     private bool hasVoted = false;
     private Dictionary<Guid, double> votePercentages = new();
     private bool isVotingPeriod = false;
+    private Guid selectedGameId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,7 +80,7 @@ else
         return await Http.GetFromJsonAsync<bool>($"api/vote/HasVoted/{userId}");
     }
 
-    private async Task PostVote(Guid userId, Guid gameId)
+    private async Task PostVote()
     {
         if (!isVotingPeriod)
         {
@@ -91,8 +96,8 @@ else
                 return;
             }
 
-            var vote = new Vote { UserId = userId, GameId = gameId, VoteTime = DateTime.Now };
-            var response = await Http.PostAsJsonAsync("api/vote", vote);
+            var vote = new Vote { UserId = userId, GameId = selectedGameId, VoteTime = DateTime.Now };
+            var response = await PostVote(vote);
 
             if (response.IsSuccessStatusCode)
             {
@@ -103,7 +108,7 @@ else
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                message = errorContent.Contains("Já votou este mês.") ? "Já votou este mês." : "Erro ao registar voto.";
+                message = $"Erro ao registar voto. Detalhes: {errorContent}";
             }
         }
         catch (Exception ex)
@@ -113,7 +118,14 @@ else
 
         StateHasChanged();
     }
-    
+
+    private async Task<HttpResponseMessage> PostVote(Vote vote)
+    {
+        var jsonVote = System.Text.Json.JsonSerializer.Serialize(vote);
+        message = $"Enviando voto: {jsonVote}";
+        return await Http.PostAsJsonAsync("api/vote", vote);
+    }
+
     private async Task UpdateVotePercentages()
     {
         var voteCounts = await Http.GetFromJsonAsync<Dictionary<Guid, int>>("api/vote/Counts");
@@ -127,5 +139,11 @@ else
         }
     }
 }
+
+
+
+
+
+
 
 
