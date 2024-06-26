@@ -1,0 +1,62 @@
+﻿@page "/games/{GameId:guid}/reviews"
+@using System.Runtime.InteropServices
+@using Frontend.Helpers
+@using global::Helpers.Models
+@using global::Helpers.Models.View
+@using global::Helpers.Models.Creation
+@attribute [StreamRendering]
+@inject ApiHelper ApiHelper
+@rendermode InteractiveServer
+
+<PageTitle>Game Reviews</PageTitle>
+
+<h1>Reviews for Game @GameId</h1>
+
+@if (_reviews == null)
+{
+    <p class="loading-message">
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    @foreach (var review in _reviews)
+    {
+        <div class="review-container">
+            <div class="review-header">
+                <span class="review-user">User ID: @review.UserId</span>
+                <span class="review-date">@review.CreationDate.ToString("yyyy-MM-dd HH:mm:ss")</span>
+            </div>
+            <div class="review-content">
+                <p><strong>Rating:</strong> @review.Rating/10</p>
+                <p><strong>Review:</strong> @review.WrittenReview</p>
+                @if (review.EditedStatus)
+                {
+                    <p><em>(Edited on @review.EditedDate?.ToString("yyyy-MM-dd HH:mm:ss"))</em></p>
+                }
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public Guid GameId { get; set; }
+
+    private ReviewViewModel[] _reviews;
+    private CreateReviewModel _newReview = new CreateReviewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Fetch reviews from API
+            _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/Review/games/{GameId}/reviews");
+            Console.WriteLine("Success fetching reviews");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error initializing Reviews component: {ex.Message}");
+        }
+    }
+}

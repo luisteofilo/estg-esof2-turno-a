@@ -19,5 +19,6 @@ namespace ESOF.WebApp.WebAPI.Controllers.Reviews
             IEnumerable<Review> reviews = await _reviewService.GetGameReviews(new ReviewViewModel { GameId = gameId });
             return new ActionResult<IEnumerable<Review>>(reviews);
         }
+
     }
 }

@@ -20,5 +20,10 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<User>()
             .Property(p => p.UserId)
             .HasDefaultValueSql("gen_random_uuid()");
+        
+        modelBuilder.Entity<User>()
+            .Property(p => p.Username)
+            .IsRequired()
+            .HasMaxLength(20);
     }
 }
