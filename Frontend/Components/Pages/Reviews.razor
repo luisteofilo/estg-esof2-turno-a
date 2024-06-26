@@ -1,0 +1,120 @@
+﻿@page "/games/{GameId:guid}/reviews"
+
+@using System.Runtime.InteropServices
+@using System.Text.RegularExpressions
+@using Frontend.Helpers
+@using global::Helpers.Models.View
+@using global::Helpers.Models.Creation
+@attribute [StreamRendering]
+@inject ApiHelper ApiHelper
+@rendermode InteractiveServer
+
+<PageTitle>Game Reviews</PageTitle>
+
+@if (_gamedetails == null)
+{
+    <p class="loading-message">
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <h1>Reviews for @_gamedetails.Title</h1>
+    
+    <h2>Leave a Review:</h2>
+
+
+    <form class="review-form">
+
+        <div class="form-group">
+            <label for="rating">Rating:@newReview.Rating</label>
+            <input type="range" id="rating" min="0" max="10" @bind="newReview.Rating" class="form-control" />
+        </div>
+
+        <div class="form-group">
+
+            <label for="written-review">Written Review:</label>
+
+            <textarea id="written-review" @bind="newReview.WrittenReview" class="form-control" rows="5"></textarea>
+
+        </div>
+
+        <button type="submit" @onclick="CreateReview" class="btn btn-primary">Submit Review</button>
+
+    </form>
+    
+    @if (_reviews == null)
+    {
+        <p class="loading-message">
+            <em>Loading reviews...</em>
+        </p>
+    }
+    else
+    {
+        @foreach (var review in _reviews)
+        {
+            <div class="review-container">
+                <div class="review-header">
+                    <span class="review-user">Username: @review.Username</span>
+                    <span class="review-date">@review.CreationDate.ToString("yyyy-MM-dd HH:mm")</span>
+                </div>
+                <div class="review-content">
+                    <p><strong>Rating:</strong> @review.Rating/10</p>
+                    <p><strong>Review:</strong> @review.WrittenReview</p>
+                    @if (review.EditedStatus)
+                    {
+                        <p><em>(Edited on @review.EditedDate?.ToString("yyyy-MM-dd HH:mm"))</em></p>
+                    }
+                </div>
+            </div>
+        }
+    }
+}
+
+@code 
+{
+    [Parameter] public Guid GameId { get; set; }
+    public Guid UserId { get; set; }
+    
+    private ViewGameByIdModel _gamedetails;
+    private ReviewViewModel[] _reviews;
+    private CreateReviewModel newReview = new CreateReviewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Fetch game details from API
+            _gamedetails = await ApiHelper.GetFromApiAsync<ViewGameByIdModel>($"http://localhost:5295/games/{GameId}");
+            Console.WriteLine("Success fetching game details");
+
+            // Fetch reviews from API
+            _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
+            Console.WriteLine("Success fetching reviews");
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error initializing component: {ex.Message}");
+        }
+
+    }
+
+    private async Task CreateReview()
+    {
+        newReview.GameId = GameId;
+        newReview.UserId = UserId;
+
+        try
+        {
+            await ApiHelper.PostToApiAsync($"http://localhost:5295/reviews/games/{GameId}/reviews/create", newReview);
+            _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
+            newReview = new CreateReviewModel();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating review: {ex.Message}");
+        }
+    }
+    
+}
