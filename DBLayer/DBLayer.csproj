@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
       <PackageReference Include="DotNetEnv" Version="3.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
@@ -21,4 +22,18 @@
     <ItemGroup>
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Helpers\AchievementMethods.cs" />
+      <Compile Remove="Context\Tables\TestChallengeUser.cs" />
+      <Compile Remove="Context\Tables\TestChallenges.cs" />
+      <Compile Remove="Entities\TestChallenge.cs" />
+      <Compile Remove="Entities\TestChallengeUser.cs" />
+      <Compile Remove="Migrations\20240621162758_TestScores.cs" />
+      <Compile Remove="Migrations\20240621162758_TestScores.Designer.cs" />
+      <Compile Remove="Context\Tables\Games.cs" />
+      <Compile Remove="Migrations\20240626165727_SpeedRuns.cs" />
+      <Compile Remove="Migrations\20240626165727_SpeedRuns.Designer.cs" />
+    </ItemGroup>
+
 </Project>

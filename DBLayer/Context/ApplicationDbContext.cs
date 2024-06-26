@@ -29,21 +29,19 @@ public partial class ApplicationDbContext : DbContext
         return optionsBuilder.Options;
     })();
     
-    public ApplicationDbContext()   
-        : base(DefaultOptions)
-    {
-    }
+    public ApplicationDbContext() : base(DefaultOptions) { }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
+    //Para os achievements
+    public DbSet<Achievement> Achievements { get; set; }
+    public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
+    public DbSet<TestUserScore> TestUserScores { get; set; }
     
     public DbSet<MarketPlace_Game> MarketPlaceGames { get; set; }
     public DbSet<GameGenre> GameGenres { get; set; }
@@ -54,9 +52,13 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Platform> Platforms { get; set; }
     public DbSet<OrderReview> OrderReviews { get; set; }
 
-
+    public DbSet<Game> Games { get; set; }
+    public DbSet<Shops> Shop { get; set; }
+    public DbSet<SpeedrunRun> SpeedrunRuns { get; set; }
+    public DbSet<SpeedrunCategory> SpeedrunCategories { get; set; }
+    public DbSet<SpeedrunModerator> SpeedrunModerators { get; set; }
     
-
+    public DbSet<Favorite> Favorites { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
@@ -66,12 +68,21 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
         BuildUsers(modelBuilder);
         BuildRoles(modelBuilder);
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        BuildSpeedrunCategories(modelBuilder);
+        BuildSpeedrunModerators(modelBuilder);
+        BuildSpeedrunRuns(modelBuilder);
+        BuildGames(modelBuilder); 
+        BuildFavorites(modelBuilder); 
+        //Build para os Achievements
+        BuildAchievements(modelBuilder);
+        BuildPlayerAchievements(modelBuilder);
+        //Build para tabelas de teste de scores
+        BuildTestUserScores(modelBuilder);
         
         BuildMarketPlace_Game(modelBuilder);
         BuildGameGenre(modelBuilder);
