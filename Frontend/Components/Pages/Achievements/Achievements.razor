@@ -47,6 +47,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _achievements = await ApiHelper.GetFromApiAsync<AchievementsViewModel[]>("achievements");
+        _achievements = await ApiHelper.GetFromApiAsync<AchievementsViewModel[]>("api/achievements");
     }
 }
