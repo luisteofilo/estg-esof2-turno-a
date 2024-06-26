@@ -34,6 +34,4 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
-.env
-
 .idea/config/applicationhost.config
