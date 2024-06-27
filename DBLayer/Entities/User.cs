@@ -33,4 +33,10 @@ public class User
 
     public ICollection<OrderReview> UserOrderReviews { get; set; }
     public ICollection<OrderItem> UserOrderItems { get; set; }
+    
+    //Branch review-process
+    public ICollection<Review> Reviews { get; set; }
+    
+    [Required, StringLength(20)]
+    public String Username { get; set; }
 }

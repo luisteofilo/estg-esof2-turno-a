@@ -19,7 +19,7 @@
 }
 else
 {
-    <h1>Reviews for @_gamedetails.Title</h1>
+    <h1>Reviews for @_gamedetails.Name</h1>
 
     <h2>Leave a Review:</h2>
 
@@ -103,8 +103,9 @@ else
 @code 
 {
     [Parameter] public Guid GameId { get; set; }
-    private Guid UserId { get; set; } = new Guid("58053709-86aa-4771-8516-6b6b148ff1a6");
+    private Guid UserId { get; set; } = new Guid("b22741ad-ba40-4005-902f-26aa2f21de80");
     private Guid AdminId { get; set; } = new Guid("b22741ad-ba40-4005-902f-26aa2f21de80");
+    //normal user : 58053709-86aa-4771-8516-6b6b148ff1a6
     //Can be changed once authentication is added
     
     private ViewGameByIdModel _gamedetails;
@@ -112,7 +113,7 @@ else
     private CreateReviewModel newReview = new CreateReviewModel();
     private UpdateReviewModel editedReview = new UpdateReviewModel();
     private bool isEditing = false;
-    private ReviewViewModel editingReview;
+    private UpdateReviewModel editingReview = new UpdateReviewModel();
 
     protected override async Task OnInitializedAsync()
     {
@@ -151,21 +152,22 @@ else
         }
     }
 
+
+
     public async Task EditReview(ReviewViewModel review)
     {
         isEditing = true;
-        editingReview = new ReviewViewModel { 
-            ReviewId = review.ReviewId, 
-            Rating = review.Rating, 
-            WrittenReview = review.WrittenReview, 
-        };
+        editingReview.ReviewId = review.ReviewId;
+        editingReview.UserId = review.UserId;
+        editingReview.WrittenReview = review.WrittenReview;
+        editingReview.Rating = review.Rating;
     }
 
     private async Task SaveEditReview()
     {
         try
         {
-            await ApiHelper.PutToApiAsync($"http://localhost:5295/reviews/edit", editingReview);
+            await ApiHelper.PutToApiAsync($"http://localhost:5295/reviews/edit/", editingReview);
             _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
             isEditing = false;
         }
@@ -192,7 +194,7 @@ else
     {
         try
         {
-            await ApiHelper.PutToApiAsync($"http://localhost:5295/reviews/approve", approveModel);
+            await ApiHelper.PutToApiAsync($"http://localhost:5295/reviews/approve/approve/", approveModel);
             _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
         }
         catch (Exception ex)

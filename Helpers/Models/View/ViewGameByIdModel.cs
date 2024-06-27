@@ -4,6 +4,6 @@ public class ViewGameByIdModel
 {
     public Guid GameId { get; set; }
     
-    public string Title { get; set; }
+    public string Name { get; set; }
     
 }
