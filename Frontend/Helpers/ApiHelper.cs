@@ -58,15 +58,24 @@ public class ApiHelper(HttpClient httpClient)
     {
         try
         {
-            // Enviar a solicitação PUT para a API
             var response = await httpClient.PutAsync(url, null);
-
-            // Verificar se a solicitação foi bem-sucedida
             response.EnsureSuccessStatusCode();
         }
         catch (HttpRequestException e)
         {
-            // Tratar exceções de solicitação HTTP
+            throw new ApplicationException($"Error putting data to {url}: {e.Message}");
+        }
+    }
+    
+    public async Task PatchToApiAsync(string url)
+    {
+        try
+        {
+            var response = await httpClient.PatchAsync(url, null);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
             throw new ApplicationException($"Error putting data to {url}: {e.Message}");
         }
     }

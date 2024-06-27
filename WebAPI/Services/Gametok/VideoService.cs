@@ -31,7 +31,7 @@ public class VideoService {
                 {
                     videoid = video.VideoId,
                     userid = video.UserId,
-                    username = _context.Users.Where(u => u.UserId == video.UserId).Select(u => u.Email).FirstOrDefault(),
+                    username = video.User.Email,
                     videoquestid = video.VideoQuestId,
                     videopath = video.VideoPath,
                     caption = video.Caption,
@@ -118,9 +118,9 @@ public class VideoService {
         {
             videoid = video.VideoId,
             videoquestid = video.VideoQuestId,
-            description = _context.VideoQuests.Find(video.VideoQuestId).Description,
+            description = video.VideoQuest.Description,
             userid = video.UserId,
-            username = _context.Users.Find(video.UserId).Email,
+            username = video.User.Email,
             caption = video.Caption,
             videopath = video.VideoPath,
             viewcount = video.ViewCount,
@@ -203,9 +203,9 @@ public class VideoService {
             {
                 videoid = video.VideoId,
                 videoquestid = video.VideoQuestId,
-                description = _context.VideoQuests.Find(video.VideoQuestId).Description,
+                description = video.VideoQuest.Description,
                 userid = video.UserId,
-                username = _context.Users.Find(video.UserId).Email,
+                username = video.User.Email,
                 caption = video.Caption,
                 videopath = video.VideoPath,
                 viewcount = video.ViewCount,
@@ -239,7 +239,7 @@ public class VideoService {
         {
             videoid = video.VideoId,
             videoquestid = video.VideoQuestId,
-            description = _context.VideoQuests.Find(video.VideoQuestId).Description,
+            description = video.VideoQuest.Description,
             userid = video.UserId,
             caption = video.Caption,
             videopath = video.VideoPath,
@@ -287,6 +287,50 @@ public class VideoService {
         }
     }
     
+    public ResponseVideoDto IncrementViewCount(Guid videoId)
+    {
+        var video = _context.Videos
+            .Include(v => v.VideoQuest)
+            .Include(v => v.Likes)
+            .Include(v => v.Comments)
+            .FirstOrDefault(v => v.VideoId == videoId);
+
+        if (video == null)
+        {
+            throw new ArgumentException("Video not found.");
+        }
+
+        video.ViewCount++;
+
+        _context.SaveChanges();
+
+        return new ResponseVideoDto
+        {
+            videoid = video.VideoId,
+            videoquestid = video.VideoQuestId,
+            description = video.VideoQuest?.Description,
+            userid = video.UserId,
+            caption = video.Caption,
+            videopath = video.VideoPath,
+            viewcount = video.ViewCount,
+            like_ids = video.Likes?.Select(l => l.UserId).ToList(),
+            comment_ids = video.Comments?.Select(c => c.UserId).ToList(),
+            likes = video.Likes?.Select(l => new ResponseLikeDto
+            {
+                userid = l.UserId,
+                videoid = l.VideoId,
+                created_at = l.CreatedAt
+            }).ToList() ?? new List<ResponseLikeDto>(),
+            comments = video.Comments?.Select(c => new ResponseCommentDto
+            {
+                userid = c.UserId,
+                videoid = c.VideoId,
+                comment = c.Text,
+                created_at = c.CreatedAt
+            }).ToList() ?? new List<ResponseCommentDto>()
+        };
+    }
+    
     public ResponseVideoDto GetRandomVideo()
     {
         try
@@ -308,9 +352,9 @@ public class VideoService {
             {
                 videoid = video.VideoId,
                 userid = video.UserId,
-                username = _context.Users.Find(video.UserId).Email,
+                username = video.User.Email,
                 videoquestid = video.VideoQuestId,
-                description = _context.VideoQuests.Find(video.VideoQuestId).Description,
+                description = video.VideoQuest.Description,
                 videopath = video.VideoPath,
                 caption = video.Caption,
                 viewcount = video.ViewCount,

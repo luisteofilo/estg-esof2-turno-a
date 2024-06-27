@@ -31,7 +31,7 @@ public class VideoQuestService {
                 {
                     videoquestid = videoQuest.VideoQuestId,
                     gameid = videoQuest.GameId,
-                    game = _context.Games.Find(videoQuest.GameId).Name,
+                    game = videoQuest.Game.Name,
                     description = videoQuest.Description,
                     created_at = videoQuest.CreatedAt,
                     video_ids = videoQuest.Videos.Select(v => v.VideoId).ToList(),
@@ -59,7 +59,7 @@ public class VideoQuestService {
         {
             videoquestid = videoQuest.VideoQuestId,
             gameid = videoQuest.GameId,
-            game = _context.Games.Find(videoQuest.GameId).Name,
+            game = videoQuest.Game.Name,
             description = videoQuest.Description,
             created_at = videoQuest.CreatedAt,
             video_ids = videoQuest.Videos.Select(v => v.VideoId).ToList(),
@@ -119,7 +119,7 @@ public class VideoQuestService {
         {
             videoquestid = videoQuest.VideoQuestId,
             gameid = videoQuest.GameId,
-            game = _context.Games.Find(videoQuest.GameId).Name,
+            game = videoQuest.Game.Name,
             description = videoQuest.Description,
             created_at = videoQuest.CreatedAt,
             video_ids = videoQuest.Videos.Select(v => v.VideoId).ToList()

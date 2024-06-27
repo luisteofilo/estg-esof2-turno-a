@@ -71,6 +71,29 @@ public class VideoController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+    
+    [HttpPatch("{id:guid}/increment")]
+    public ActionResult<ResponseVideoDto> IncrementViewCount(Guid id)
+    {
+        try
+        {
+            Console.WriteLine($"IncrementViewCount method called for video id: {id}");
+            var result = _videoService.IncrementViewCount(id);
+            Console.WriteLine($"View count incremented successfully for video id: {id}");
+
+            return result;
+        }
+        catch (ArgumentException)
+        {
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+
+            Console.WriteLine($"Error incrementing view count for video id {id}: {ex.Message}");
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 
     [HttpDelete("{id:guid}")]
     public IActionResult DeleteVideo(Guid id)
