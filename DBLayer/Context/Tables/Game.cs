@@ -22,13 +22,8 @@ public partial class ApplicationDbContext
             entity.Property(e => e.ReleaseDate)
                 .IsRequired();
 
-            entity.Property(e => e.DeveloperID)
+            entity.Property(e => e.Developer)
                 .IsRequired();
-            
-            //chave estrangeira de DeveloperID
-            entity.HasOne(e => e.Developer)
-                .WithMany(u => u.GamesDeveloped)
-                .HasForeignKey(e => e.DeveloperID);
 
             entity.Property(e => e.Publisher)
                 .IsRequired();
@@ -42,8 +37,6 @@ public partial class ApplicationDbContext
             entity.HasMany(e => e.Shops)
                 .WithOne(s => s.Game)
                 .HasForeignKey(s => s.GameId);
-            
-            
         });
     }
 }

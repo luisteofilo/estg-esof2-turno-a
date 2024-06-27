@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace ESOF.WebApp.DBLayer.Entities;
@@ -18,10 +17,8 @@ public class Game
     [Required]
     public String Url_Image { get; set; }
     
-    public Guid DeveloperID { get; set; }
-    
-    [ForeignKey("DeveloperID")]
-    public User Developer { get; set; }
+    [Required]
+    public String Developer { get; set; }
 
     [Required]
     public String Publisher { get; set; }
@@ -44,15 +41,6 @@ public class Game
     public List<Consoles> Consoles { get; set; } = new List<Consoles>();
 
     public ICollection<Shops> Shops { get; set; }
-    
-    public ICollection<SpeedrunCategory> speedrunCategories { get; set; }
-
-    public ICollection<SpeedrunModerator> speedrunModerators { get; set; }
-        // Navigation properties
-    public ICollection<Favorite> Favorites { get; set; }
-        
-    
-    }
 }
 
 

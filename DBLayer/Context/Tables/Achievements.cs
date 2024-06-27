@@ -19,7 +19,6 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<Achievement>()
             .Property(a => a.RequiredScore)
             .IsRequired();
-        
         modelBuilder.Entity<Achievement>()
             .Property(p => p.IdAchievement)
             .HasDefaultValueSql("gen_random_uuid()");

@@ -1,27 +1,31 @@
-﻿using ESOF.WebApp.DBLayer.Entities;
+using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESOF.WebApp.WebAPI.Controllers;
 
 
-public static class EnumController
+public class EnumController : ControllerBase
 {
-    public static void MapEnumController(this WebApplication app){
-    app.MapGet("/consoles", () =>
-    {
-        var consoles = Enum.GetNames(typeof(Consoles)).ToList();
-        return consoles;
-    })
-    .WithName("GetConsoles")
-        .WithOpenApi();
-
-    app.MapGet("/genres", () =>
-    {
-        var genres = Enum.GetNames(typeof(Genre)).ToList();
-        return genres;
-    })
-    .WithName("GetGenres")
-        .WithOpenApi();
-}
     
+    private static readonly List<string> ConsoleNames = Enum.GetNames(typeof(Consoles)).ToList();
+    private static readonly List<string> CategoryNames = Enum.GetNames(typeof(Category)).ToList();
+    private static readonly List<string> GenreNames = Enum.GetNames(typeof(Genre)).ToList();
+        
+    [HttpGet("consoles")]
+    public ActionResult<List<string>> GetConsoles()
+    {
+        return Ok(ConsoleNames);
+    }
+
+    [HttpGet("categories")]
+    public ActionResult<List<string>> GetCategories()
+    {
+        return Ok(CategoryNames);
+    }
+
+    [HttpGet("genres")]
+    public ActionResult<List<string>> GetGenres()
+    {
+        return Ok(GenreNames);
+    }
 }

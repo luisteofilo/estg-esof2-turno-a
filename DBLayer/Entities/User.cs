@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using ESOF.WebApp.DBLayer.Entities.Marketplace;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
@@ -26,19 +25,5 @@ public class User
 
     
     public ICollection<Game> GamesDeveloped { get; set; }
-    
-    
-    public ICollection<SpeedrunRun> speedrunRuns { get; set; }
 
-    public ICollection<SpeedrunModerator> speedrunModerators { get; set; }
-    public ICollection<Favorite> Favorites { get; set; }
-
-    //Novo parametro 
-    public ICollection<PlayerAchievement> PlayerAchievements { get; set; }
-    
-    public ICollection<TestUserScore> TestUserScores { get; set; }
-    
-
-    public ICollection<OrderReview> UserOrderReviews { get; set; }
-    public ICollection<OrderItem> UserOrderItems { get; set; }
 }

@@ -22,10 +22,4 @@ public partial class ApplicationDbContext
             .HasDefaultValueSql("gen_random_uuid()");
     }
     
-    private void BuildPlayerAchievements(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<PlayerAchievement>()
-            .HasKey(p => new { p.UserId , p.AchievementId });
-
-    }
 }
