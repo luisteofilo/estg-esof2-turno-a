@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -18,7 +18,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     gameId = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     releaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    developer = table.Column<string>(type: "text", nullable: false),
+                    developer = table.Column<Guid>(type: "uuid", nullable: false),
                     publisher = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     price = table.Column<float>(type: "real", nullable: false),
@@ -37,7 +37,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 {
                     table.PrimaryKey("PK_Games", x => x.gameId);
                 });
-
+            
             migrationBuilder.CreateTable(
                 name: "Shops",
                 columns: table => new

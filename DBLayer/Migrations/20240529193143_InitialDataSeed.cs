@@ -1,4 +1,4 @@
-﻿using ESOF.WebApp.DBLayer.Helpers;
+using ESOF.WebApp.DBLayer.Helpers;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -12,7 +12,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             
-       // Adding roles
+       /*// Adding roles
         var adminRoleId = Guid.NewGuid();
         var normalRoleId = Guid.NewGuid();
 
@@ -76,17 +76,17 @@ namespace ESOF.WebApp.DBLayer.Migrations
             {
                 { adminUserId, adminRoleId },
                 { normalUserId, normalRoleId }
-            });
+            });*/
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DELETE FROM UserRoles");
+            /*migrationBuilder.Sql("DELETE FROM UserRoles");
             migrationBuilder.Sql("DELETE FROM Users");
             migrationBuilder.Sql("DELETE FROM RolePermissions");
             migrationBuilder.Sql("DELETE FROM Permissions");
-            migrationBuilder.Sql("DELETE FROM Roles");
+            migrationBuilder.Sql("DELETE FROM Roles");*/
         }
     }
 }

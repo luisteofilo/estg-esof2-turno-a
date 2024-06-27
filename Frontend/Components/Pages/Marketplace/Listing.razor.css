@@ -1,0 +1,32 @@
+.main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16rem;
+    line-height: 1;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.listing-info-row {
+    display: flex;
+    flex-direction: row;
+    gap: .25rem;
+}
+
+.listing-info-col {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}

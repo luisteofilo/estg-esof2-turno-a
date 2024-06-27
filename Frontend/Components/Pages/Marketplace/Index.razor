@@ -1,0 +1,51 @@
+@page "/marketplace"
+@using Frontend.Components.Pages.Marketplace.Components
+@using ESOF.WebApp.WebAPI.DtoClasses
+@using ESOF.WebApp.WebAPI.DtoClasses.Response
+@using Frontend.Helpers
+@inject ApiHelper ApiHelper
+@rendermode InteractiveServer
+
+<PageTitle>Marketplace</PageTitle>
+
+<div class="main">
+    <div class="title">Marketplace</div>
+    <div>
+        <input 
+            type="text" 
+            class="form-control form-control-lg" 
+            placeholder="Search..." 
+            @bind-value="SearchText"
+            @bind-value:event="oninput">
+    </div>
+    <div class="game-card-container">
+        @if (_games == null) {
+            <p>Loading...</p>
+        }
+        else if (_games.Count == 0) {
+            <p>No games found.</p>
+        }
+        else {
+            @foreach (var game in FilteredGames) {
+                <ListingCard TItem="ResponseMKP_GameDto" Game="@game"/>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private List<ResponseMKP_GameDto> _games;
+    string SearchText { get; set; } = "";
+    
+    protected override async Task OnInitializedAsync() {
+        try {
+            _games = await ApiHelper.GetFromApiAsync<List<ResponseMKP_GameDto>>("marketplace/Game");
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error fetching games: {ex.Message}");
+        }
+    }
+    
+    List<ResponseMKP_GameDto> FilteredGames => _games.Where(
+        game => game.name.ToLower().Contains(SearchText.ToLower())).ToList();
+}
