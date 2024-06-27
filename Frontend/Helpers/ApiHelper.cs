@@ -25,7 +25,7 @@ public class ApiHelper
         }
     }
 
-    public async Task<HttpResponseMessage> PostToApiAsync(string url, HttpContent content)
+    public async Task<HttpResponseMessage> PostToApiAsyncGameReplays (string url, HttpContent content)
     {
         try
         {
