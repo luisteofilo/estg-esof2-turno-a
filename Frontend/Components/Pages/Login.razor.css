@@ -1,0 +1,136 @@
+@font-face {
+    font-family: 'RetroGaming';
+    src: url("fonts/portersansinlineblock/porter-sans-inline-block-webfont.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+html,body {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #fdb42e;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
+
+body::before,
+body::after {
+    content: '';
+    position: absolute;
+    width: 1050px;
+    height: 1050px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 1;
+}
+
+body::before {
+    background-image: url('Imgs/joystick.png');
+    top: 75px;
+    left: -75px;
+    transform: rotate(65deg);
+}
+
+body::after {
+    background-image: url('Imgs/joystick.png');
+    bottom: 75px;
+    right: -75px;
+    transform: rotate(-65deg);
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 650px;
+    height: 760px;
+    z-index: 2;
+}
+.login-container img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 20px;
+}
+.login-container h1 {
+    font-size: 45px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #FF525E, #FDB42E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-family: 'RetroGaming', cursive;
+}
+
+.login-container h2 {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.login-container text{
+    margin-left: 5px;
+    text-align: left;
+}
+
+.login-container button {
+    padding: 10px;
+    margin: 20px 0;
+    background-color: #ffa726;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    color: #444444;
+    z-index: 3;
+}
+.login-container button:hover {
+    background-color: #fb8c00;
+}
+
+.password-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+}
+.password-container span {
+    text-align: left;
+}
+
+.toggle-password {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 3;
+}
+
+.toggle-password input {
+    width: auto;
+}
+
+.register-link {
+    margin-top: 20px;
+}
+
+.new-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputs{
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    z-index: 3;
+}

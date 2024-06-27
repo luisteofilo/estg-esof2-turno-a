@@ -21,6 +21,12 @@
     <ItemGroup>
       <ProjectReference Include="..\DBLayer\DBLayer.csproj" />
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
+      <ProjectReference Include="..\WebAPI\WebAPI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Components\Pages\Achievements\index.razor.css" />
+      <None Remove="Components\Pages\Achievements\TestUserScores.css" />
     </ItemGroup>
 
 </Project>
