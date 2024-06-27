@@ -121,7 +121,7 @@ else
         {
             if (isLiked)
             {
-                await ApiHelper.DeleteFromApiAsync($"Gametok/Like/{videoId}/29b30427-3e9c-4881-a9c2-928519deb2ff");
+                await ApiHelper.DeleteFromApiAsync<CreateLikeDto>($"Gametok/Like/{videoId}/29b30427-3e9c-4881-a9c2-928519deb2ff");
             }
             else
             {
@@ -130,7 +130,7 @@ else
                     userid = Guid.Parse("29b30427-3e9c-4881-a9c2-928519deb2ff"),
                     videoid = videoId
                 };
-                await ApiHelper.PostToApiAsync("Gametok/Like", likeDto);
+                await ApiHelper.PostToApiAsync<CreateLikeDto>("Gametok/Like");
             }
             likeStatus[videoId] = !isLiked;
         }

@@ -1,6 +1,7 @@
 using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
+// ReSharper disable once CheckNamespace
 namespace ESOF.WebApp.DBLayer.Context;
 
 public partial class ApplicationDbContext
@@ -21,8 +22,13 @@ public partial class ApplicationDbContext
             entity.Property(e => e.ReleaseDate)
                 .IsRequired();
 
-            entity.Property(e => e.Developer)
+            entity.Property(e => e.DeveloperID)
                 .IsRequired();
+            
+            //chave estrangeira de DeveloperID
+            entity.HasOne(e => e.Developer)
+                .WithMany(u => u.GamesDeveloped)
+                .HasForeignKey(e => e.DeveloperID);
 
             entity.Property(e => e.Publisher)
                 .IsRequired();
@@ -33,6 +39,11 @@ public partial class ApplicationDbContext
             entity.Property(e => e.Price)
                 .IsRequired();
 
+            entity.HasMany(e => e.Shops)
+                .WithOne(s => s.Game)
+                .HasForeignKey(s => s.GameId);
+            
+            
             entity.HasMany(e => e.VideoQuests)
                 .WithOne(c => c.Game)
                 .HasForeignKey(c => c.GameId);

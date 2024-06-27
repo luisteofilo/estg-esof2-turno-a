@@ -1,5 +1,6 @@
 @page "/gametok/upload/{id:guid?}"
 @using System.IO
+@using System.Net
 @using ESOF.WebApp.WebAPI.DtoClasses.Create
 @using ESOF.WebApp.WebAPI.DtoClasses.Response
 @inject HttpClient HttpClient
@@ -42,6 +43,7 @@ else
             <textarea id="description" @bind="createVideoQuestDto.description"></textarea>
         </div>
         
+        <button @onclick="CreateVideoQuest">Upload Quest</button>
         <h4>Create New Video</h4>
     }
     else
@@ -100,6 +102,7 @@ else
         catch (Exception ex)
         {
             uploadError = $"Error creating video quest: {ex.Message}";
+            Console.WriteLine($"Exception occurred: {ex}");
         }
     }
 
@@ -112,27 +115,27 @@ else
                 await CreateVideoQuest();
             }
             
-            // var formData = new MultipartFormDataContent();
-            // formData.Add(new StringContent(createVideoDto.videoquestid.ToString()), "challengeid");
-            // formData.Add(new StringContent(createVideoDto.userid.ToString()), "userid");
-            // formData.Add(new StringContent(createVideoDto.caption), "caption");
-            //
-            // var memoryStream = new MemoryStream();
-            // await selectedFile.OpenReadStream(maxAllowedSize: 419430400).CopyToAsync(memoryStream);
-            // Console.WriteLine($"{selectedFile.ContentType}");
-            // var fileContent = new ByteArrayContent(memoryStream.ToArray());
-            // fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
-            //
-            // // Log the Content-Type header
-            // Console.WriteLine($"File Content-Type set to: {fileContent.Headers.ContentType}");
-            //
-            // formData.Add(fileContent, "VideoFile", selectedFile.Name);
-            //
-            //
-            //
-            // var response = await HttpClient.PostAsync("Gametok/Video", formData);
-            // response.EnsureSuccessStatusCode();
-            // uploadResult = "Video uploaded successfully!";
+            var formData = new MultipartFormDataContent();
+            formData.Add(new StringContent(createVideoDto.videoquestid.ToString()), "challengeid");
+            formData.Add(new StringContent(createVideoDto.userid.ToString()), "userid");
+            formData.Add(new StringContent(createVideoDto.caption), "caption");
+            
+            var memoryStream = new MemoryStream();
+            await selectedFile.OpenReadStream(maxAllowedSize: 419430400).CopyToAsync(memoryStream);
+            Console.WriteLine($"{selectedFile.ContentType}");
+            var fileContent = new ByteArrayContent(memoryStream.ToArray());
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+            
+            // Log the Content-Type header
+            Console.WriteLine($"File Content-Type set to: {fileContent.Headers.ContentType}");
+            
+            formData.Add(fileContent, "VideoFile", selectedFile.Name);
+            
+            
+            
+            var response = await HttpClient.PostAsync("Gametok/Video", formData);
+            response.EnsureSuccessStatusCode();
+            uploadResult = "Video uploaded successfully!";
         }
         catch (Exception ex)
         {
