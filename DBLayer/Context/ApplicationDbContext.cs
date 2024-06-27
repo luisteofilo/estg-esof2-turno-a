@@ -44,6 +44,14 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<GameReplay> GameReplays { get; set; }
+
+    //Para os achievements
+    public DbSet<Achievement> Achievements { get; set; }
+    public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
+
+
+    public DbSet<Game> Games { get; set; }
+    public DbSet<Shops> Shop { get; set; }
     
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -60,6 +68,9 @@ public partial class ApplicationDbContext : DbContext
         BuildPermissions(modelBuilder);
         BuildRolePermissions(modelBuilder);
         BuildUserRoles(modelBuilder);
+        //Build para os Achievements
+        BuildAchievements(modelBuilder);
+        BuildPlayerAchievements(modelBuilder);
         base.OnModelCreating(modelBuilder);
         // New Model
         BuildGameReplays(modelBuilder);

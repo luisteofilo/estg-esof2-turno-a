@@ -16,6 +16,13 @@ public class User
     [Required]
     public byte[] PasswordSalt { get; set; }
     public ICollection<UserRole> UserRoles { get; set; }
+
+
+    //Novo parametro 
+    public ICollection<PlayerAchievement> PlayerAchievements { get; set; }
+    
+
+
     
     public ICollection<GameReplay> UserGameReplays { get; set; }
 
@@ -23,4 +30,7 @@ public class User
     {
         UserGameReplays = new List<GameReplay>();
     }
+
+    public ICollection<Game> GamesDeveloped { get; set; }
+    
 }

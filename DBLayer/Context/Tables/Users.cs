@@ -20,5 +20,7 @@ public partial class ApplicationDbContext
         modelBuilder.Entity<User>()
             .Property(p => p.UserId)
             .HasDefaultValueSql("gen_random_uuid()");
+        
+
     }
 }
