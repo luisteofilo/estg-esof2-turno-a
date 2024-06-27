@@ -83,6 +83,7 @@ else
     private Dictionary<Guid, bool> likeStatus = new Dictionary<Guid, bool>();
     private bool moreVideosAvailable = true;
     private bool isLoading = false;
+    private Guid tempuser = Guid.Parse("03b77560-c0b8-459a-9069-5d97f60270a5");
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,7 +98,7 @@ else
             var video = await ApiHelper.GetFromApiAsync<ResponseVideoDto>($"Gametok/video/{Id}");
             if (video != null)
             {
-                var isLiked = await ApiHelper.GetFromApiAsync<bool>($"Gametok/Like/{video.videoid}/29b30427-3e9c-4881-a9c2-928519deb2ff");
+                var isLiked = await ApiHelper.GetFromApiAsync<bool>($"Gametok/Like/{video.videoid}/{tempuser}");
                 likeStatus[video.videoid] = isLiked;
                 videos.Add(video);
             }
@@ -107,7 +108,7 @@ else
             var video = await ApiHelper.GetFromApiAsync<ResponseVideoDto>($"Gametok/video/random");
             if (video != null)
             {
-                var isLiked = await ApiHelper.GetFromApiAsync<bool>($"Gametok/Like/{video.videoid}/29b30427-3e9c-4881-a9c2-928519deb2ff");
+                var isLiked = await ApiHelper.GetFromApiAsync<bool>($"Gametok/Like/{video.videoid}/{tempuser}");
                 likeStatus[video.videoid] = isLiked;
                 videos.Add(video);
             }
@@ -121,16 +122,16 @@ else
         {
             if (isLiked)
             {
-                await ApiHelper.DeleteFromApiAsync<CreateLikeDto>($"Gametok/Like/{videoId}/29b30427-3e9c-4881-a9c2-928519deb2ff");
+                await ApiHelper.DeleteFromApiAsync<CreateLikeDto>($"Gametok/Like/{videoId}/{tempuser}");
             }
             else
             {
                 var likeDto = new CreateLikeDto
                 {
-                    userid = Guid.Parse("29b30427-3e9c-4881-a9c2-928519deb2ff"),
+                    userid = tempuser,
                     videoid = videoId
                 };
-                await ApiHelper.PostToApiAsync<CreateLikeDto>("Gametok/Like");
+                await ApiHelper.PostToApiAsync("Gametok/Like", likeDto);
             }
             likeStatus[videoId] = !isLiked;
         }
