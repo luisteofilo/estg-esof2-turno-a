@@ -1,9 +1,12 @@
 using System.Text;
+using System.Text.Json;
 
 namespace Frontend.Helpers;
 
 public class ApiHelper(HttpClient httpClient)
 {
+    private JsonSerializerOptions? _jsonOptions;
+
     public async Task<T?> GetFromApiAsync<T>(string url)
     {
         try
@@ -18,46 +21,127 @@ public class ApiHelper(HttpClient httpClient)
             throw new ApplicationException($"Error fetching data from {url}: {e.Message}");
         }
     }
+    
+    public async Task<T?> PostToApiAsync<T>(string url)
+    {
+        try
+        {
+            var response = await httpClient.PostAsync(url, null);
+            response.EnsureSuccessStatusCode();
 
-    public async Task PostToApiAsync<T>(string url, T data)
-    {
-        try
-        {
-            var response = await httpClient.PostAsJsonAsync(url, data);
-            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"API Response: {responseContent}");
+
+            return JsonSerializer.Deserialize<T>(responseContent);
         }
         catch (HttpRequestException e)
         {
             // Handle exception
-            throw new Exception($"Error posting to API: {e.Message}");
+            Console.WriteLine($"HTTP Request Error: {e.Message}");
+            throw new ApplicationException($"Error posting data to {url}: {e.Message}");
+        }
+        catch (JsonException e)
+        {
+            // Handle JSON deserialization exception
+            Console.WriteLine($"JSON Deserialization Error: {e.Message}");
+            throw new ApplicationException($"Error deserializing response from {url}: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"General Error: {e.Message}");
+            throw;
+        }
+    }
+
+    
+    public async Task PutToApiAsync(string url)
+    {
+        try
+        {
+            var response = await httpClient.PutAsync(url, null);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            throw new ApplicationException($"Error putting data to {url}: {e.Message}");
         }
     }
     
-    public async Task PutToApiAsync<T>(string url, T data)
+    public async Task PatchToApiAsync(string url)
     {
         try
         {
-            var response = await httpClient.PutAsJsonAsync(url, data);
+            var response = await httpClient.PatchAsync(url, null);
             response.EnsureSuccessStatusCode();
         }
         catch (HttpRequestException e)
         {
-            // Handle exception
-            throw new Exception($"Error updating to API: {e.Message}");
+            throw new ApplicationException($"Error putting data to {url}: {e.Message}");
         }
     }
     
-    public async Task DeleteFromApiAsync<T>(string url)
+    public async Task<T> DeleteFromApiAsync<T>(string url)
+    {
+        using (var response = await httpClient.DeleteAsync(url))
+        {
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrWhiteSpace(content))
+                {
+                    return JsonSerializer.Deserialize<T>(content, _jsonOptions);
+                }
+                else
+                {
+                    return default; 
+                }
+            }
+            else
+            {
+                throw new HttpRequestException($"Erro ao chamar a API. Status code: {response.StatusCode}");
+            }
+        }
+    }
+    
+    public async Task<T?> PostToApiAsync<T>(string url, T data)
     {
         try
         {
-            var response = await httpClient.DeleteAsync(url);
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"API Response: {responseContent}");
+            
+            return await response.Content.ReadFromJsonAsync<T>();
         }
         catch (HttpRequestException e)
         {
             // Handle exception
-            throw new Exception($"Error deleting from API: {e.Message}");
+            Console.WriteLine($"HTTP Request Error: {e.Message}");
+            throw new ApplicationException($"Error posting data to {url}: {e.Message}");
+        }
+        catch (JsonException e)
+        {
+            // Handle JSON deserialization exception
+            Console.WriteLine($"JSON Deserialization Error: {e.Message}");
+            throw new ApplicationException($"Error deserializing response from {url}: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"General Error: {e.Message}");
+            throw;
         }
     }
+
+
+    public async Task DeleteFromApiAsync(string url)
+    {
+        var response = await httpClient.DeleteAsync(url);
+        response.EnsureSuccessStatusCode();
+    }
+
 }
