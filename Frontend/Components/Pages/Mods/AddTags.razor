@@ -4,8 +4,6 @@
 @using System.Collections.Generic
 @inject ApiHelper ApiHelper
 
-<h3>Add Tags to Mod</h3>
-
 @if (mod == null)
 {
     <p><em>Loading...</em></p>
@@ -13,8 +11,7 @@
 else
 {
     <div>
-        <h4>@mod.Name</h4>
-        <h5>Tags</h5>
+        <h4>Add Tags to Mod: @mod.Name</h4>
         <EditForm Model=@tags OnValidSubmit=@HandleValidSubmit FormName="AddTags">
             <table class="table">
                 <thead>
@@ -74,12 +71,13 @@ else
             }
         }
     }
+    
     private async Task HandleValidSubmit()
     {
-        var tag = tags.FirstOrDefault(t => t.TagId == new Guid("922c3cf9-92d2-4c27-b30e-6e50a9e6e4af"));
-        var tag2 = tags.FirstOrDefault(t => t.TagId == new Guid("05e4447e-a308-4f18-b261-0b4954c7fade"));
-        //var tag = tags.FirstOrDefault(t => t.TagId == new Guid("292bd67c-0b4e-45e8-8200-b52e24044c0a"));
-        //var tag2 = tags.FirstOrDefault(t => t.TagId == new Guid("e571ab56-7ab9-4277-be93-79ccedf2b821"));
+        //var tag = tags.FirstOrDefault(t => t.TagId == new Guid("922c3cf9-92d2-4c27-b30e-6e50a9e6e4af"));
+        //var tag2 = tags.FirstOrDefault(t => t.TagId == new Guid("05e4447e-a308-4f18-b261-0b4954c7fade"));
+        var tag = tags.FirstOrDefault(t => t.TagId == new Guid("292bd67c-0b4e-45e8-8200-b52e24044c0a"));
+        var tag2 = tags.FirstOrDefault(t => t.TagId == new Guid("e571ab56-7ab9-4277-be93-79ccedf2b821"));
         Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(tag2));
 
         if (tag != null && tag2 != null)
