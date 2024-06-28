@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class RomFieldNoRequired : Migration
+    public partial class AddGameReplaysTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

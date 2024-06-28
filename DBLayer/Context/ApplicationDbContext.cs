@@ -62,6 +62,7 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<SpeedrunRun> SpeedrunRuns { get; set; }
     public DbSet<SpeedrunCategory> SpeedrunCategories { get; set; }
     public DbSet<SpeedrunModerator> SpeedrunModerators { get; set; }
+    public DbSet<GameReplay> GameReplays { get; set; }
     
     public DbSet<Favorite> Favorites { get; set; }
     
@@ -70,12 +71,12 @@ public partial class ApplicationDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
-
-
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        BuildShops(modelBuilder);
+        BuildGame(modelBuilder);
         BuildUsers(modelBuilder);
         BuildRoles(modelBuilder);
         BuildPermissions(modelBuilder);

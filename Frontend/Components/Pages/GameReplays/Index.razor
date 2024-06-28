@@ -1,0 +1,183 @@
+@page "/gamereplays"
+@using Frontend.Helpers
+@using Frontend.ViewModels
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@inject ApiHelper ApiHelper
+@inject NavigationManager Navigation
+
+<PageTitle>Game Replays</PageTitle>
+
+<h1>Game Replays</h1>
+
+<p></p>
+
+@if (!string.IsNullOrEmpty(uploadError))
+{
+    <div class="alert alert-danger">
+        @uploadError
+    </div>
+}
+@if (!string.IsNullOrEmpty(uploadResult))
+{
+    <div class="alert alert-success">
+        @uploadResult
+    </div>
+}
+
+<div class="form-container">
+    <label for="videoTitle" class="form-label">Title</label>
+    <input type="text" class="form-control" id="videoTitle" @bind="videoTitle" />
+    
+    <label for="videoFile" class="form-label">Select Video</label>
+    <InputFile id="videoFile" class="form-control-file" OnChange="HandleFileSelected" />
+
+    <button class="btn btn-primary" @onclick="UploadFile" disabled="@isUploading">Upload</button>
+</div>
+
+@if (isUploading)
+{
+    <div class="spinner-container">
+        <div class="spinner-border" role="status"></div>
+        <p class="loading-message">Uploading video, please wait...</p>
+    </div>
+}
+
+@if (_gameReplays == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (!_gameReplays.Any())
+{
+    <p>
+        <em>No game replays found.</em>
+    </p>
+}
+else
+{
+    <div class="video-container">
+        @foreach (var replay in _gameReplays)
+        {
+            <div class="video-item" @onclick="() => NavigateToReplay(replay.Id)">
+                <h3>@replay.Title</h3>
+                <h3>@replay.UploadDate</h3>
+                <h3>@replay.Email</h3>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private string videoTitle = string.Empty;
+    private IBrowserFile? selectedFile;
+    private GameReplayViewModel[]? _gameReplays;
+    private string? uploadError;
+    private string? uploadResult;
+    private bool isUploading = false;
+    private Guid UserID = UserState.LoggedInUserId ?? Guid.Empty;
+    
+    private readonly List<string> validVideoMimeTypes = new List<string>
+    {
+        "video/mp4",
+        "video/x-msvideo",
+        "video/x-matroska",
+        "video/webm",
+        "video/ogg"
+    };
+
+    private async Task UploadFile()
+    {
+        uploadError = null; // Reset any previous errors
+        uploadResult = null; // Reset previous result
+        isUploading = true; // Set uploading state to true
+
+        if (selectedFile != null && !string.IsNullOrEmpty(videoTitle))
+        {
+            try
+            {
+                if (!validVideoMimeTypes.Contains(selectedFile.ContentType))
+                {
+                    uploadError = "Invalid file type. Please select a valid video file.";
+                    Console.WriteLine("Invalid file type selected.");
+                    isUploading = false;
+                    return;
+                }
+                
+                Console.WriteLine($"Selected file: {selectedFile.Name}, size: {selectedFile.Size}");
+                Console.WriteLine("Preparing to upload file...");
+                
+                var content = new MultipartFormDataContent();
+                var memoryStream = new MemoryStream();
+                await selectedFile.OpenReadStream(maxAllowedSize: 1073741824).CopyToAsync(memoryStream); // 1GB limit
+                
+                Console.WriteLine($"MemoryStream length after reading file: {memoryStream.Length}");
+
+                var fileContent = new ByteArrayContent(memoryStream.ToArray());
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+                
+                // Log the Content-Type header
+                Console.WriteLine($"File Content-Type set to: {fileContent.Headers.ContentType}");
+                
+                content.Add(fileContent, "VideoFile", selectedFile.Name);
+                content.Add(new StringContent(videoTitle), "Title");
+                content.Add(new StringContent(UserID.ToString()), "UserID");
+
+                var response = await ApiHelper.PostToApiAsyncGameReplays("gamereplays", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    uploadResult = "Video uploaded successfully!";
+                    Console.WriteLine("Video uploaded successfully!");
+                    await OnInitializedAsync();
+                }
+                else
+                {
+                    uploadError = $"Failed to upload video. Status code: {response.StatusCode}";
+                    Console.WriteLine($"Failed to upload video. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+                Console.WriteLine($"Exception during upload: {ex.Message}");
+            }
+        }
+        else
+        {
+            uploadError = "Please select a video file to upload and enter a title.";
+            Console.WriteLine("Video file or title is missing.");
+        }
+
+        isUploading = false; // Set uploading state to false
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _gameReplays = await ApiHelper.GetFromApiAsync<GameReplayViewModel[]>("gamereplays");
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        Console.WriteLine($"Selected file: {selectedFile.Name}, size: {selectedFile.Size}");
+        
+        if (!validVideoMimeTypes.Contains(selectedFile.ContentType))
+        {
+            uploadError = "Invalid file type. Please select a valid video file.";
+            selectedFile = null;
+            Console.WriteLine("Invalid file type selected.");
+        }
+    }
+
+    private void HandleException(Exception ex)
+    {
+        uploadError = $"An error occurred: {ex.Message}";
+        Console.WriteLine($"Exception: {ex.Message}");
+    }
+
+    private void NavigateToReplay(Guid id)
+    {
+        Navigation.NavigateTo($"/gamereplays/{id}");
+    }
+}

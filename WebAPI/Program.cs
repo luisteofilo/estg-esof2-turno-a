@@ -1,16 +1,27 @@
-using ESOF.WebApp.DBLayer.AutoMapper;
+using AutoMapper;
 using ESOF.WebApp.DBLayer.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Helpers.Models;
+using Helpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Aumentar o tamanho máximo permitido para uploads no Kestrel
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 1073741824; // 1 GB
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>();

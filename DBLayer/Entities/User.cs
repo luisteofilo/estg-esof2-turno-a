@@ -33,6 +33,12 @@ public class User
 
     public ICollection<OrderReview> UserOrderReviews { get; set; }
     public ICollection<OrderItem> UserOrderItems { get; set; }
+    public ICollection<GameReplay> UserGameReplays { get; set; }
+
+    public User()
+    {
+        UserGameReplays = new List<GameReplay>();
+    }
     
     //Branch review-process
     public ICollection<Review> Reviews { get; set; }

@@ -42,6 +42,28 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Pages\Gametok\Index.razor" />
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+      <ProjectReference Include="..\WebAPI\WebAPI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\Gametok\Index.razor" />
+      <None Remove="Components\Pages\Achievements\index.razor.css" />
+      <None Remove="Components\Pages\Achievements\TestUserScores.css" />
+      <ProjectReference Include="..\DBLayer\DBLayer.csproj" />
+      <ProjectReference Include="..\WebAPI\WebAPI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Components\Pages\Achievements\index.razor.css" />
+      <None Remove="Components\Pages\Achievements\TestUserScores.css" />
+      <ProjectReference Include="..\WebAPI\WebAPI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\Gametok\Index.razor" />
     </ItemGroup>
 
 </Project>

@@ -100,6 +100,40 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.ToTable("Games");
                 });
+            
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameReplay", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
+
+                b.Property<string>("FilePath")
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnType("character varying(500)");
+
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnType("character varying(255)");
+
+                b.Property<DateTime>("UploadDate")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid>("UserId")
+                    .HasColumnType("uuid");
+
+                b.Property<byte[]>("VideoData")
+                    .IsRequired()
+                    .HasColumnType("bytea");
+
+                b.HasKey("Id");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("GameReplays");
+            });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Achievement", b =>
                 {
@@ -611,6 +645,17 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("Video");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameReplay", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                        .WithMany("UserGameReplays")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Permission", "Permission")
@@ -800,6 +845,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
+                    b.Navigation("UserGameReplays");
+
                     b.Navigation("PlayerAchievements");
 
                     b.Navigation("TestUserScores");
