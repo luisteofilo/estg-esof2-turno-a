@@ -8,14 +8,11 @@
     if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
 }
-
-
+    
     const responseText = await response.text();
-
-
+    
     const roms = JSON.parse(responseText);
-
-
+    
     const rom = roms.find(r => r.gameId === gameId);
 
     if (rom) {
