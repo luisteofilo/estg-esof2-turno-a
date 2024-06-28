@@ -23,13 +23,18 @@ public partial class ApplicationDbContext : DbContext
             throw new InvalidOperationException(
                 "Database connection information not fully specified in environment variables.");
         }
+        
 
         var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
         optionsBuilder.UseNpgsql(connectionString);
         return optionsBuilder.Options;
     })();
     
-    public ApplicationDbContext() : base(DefaultOptions) { }
+    
+    public ApplicationDbContext()
+        : base(DefaultOptions)
+    {
+    }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     
@@ -56,6 +61,11 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Like> Likes { get; set; }
     public DbSet<Video> Videos { get; set; }
     public DbSet<VideoQuest> VideoQuests { get; set; }
+    public DbSet<Roms> Roms { get; set; }
+    public DbSet<SaveStates> SaveStates { get; set; }
+    
+  
+
 
     public DbSet<Game> Games { get; set; }
     public DbSet<Shops> Shop { get; set; }
@@ -108,6 +118,8 @@ public partial class ApplicationDbContext : DbContext
         BuildVideo(modelBuilder);
         
         BuildReviews(modelBuilder);
+        BuildRoms(modelBuilder);
+        BuildSaveStates(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }

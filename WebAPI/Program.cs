@@ -1,44 +1,21 @@
-using AutoMapper;
 using ESOF.WebApp.DBLayer.Context;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using ESOF.WebApp.DBLayer.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Helpers.Models;
-using Helpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Aumentar o tamanho máximo permitido para uploads no Kestrel
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.Limits.MaxRequestBodySize = 1073741824; // 1 GB
-});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
-builder.Services.AddDbContext<ApplicationDbContext>();
-// builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
-builder.Services.AddDbContext<ApplicationDbContext>();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
     {
-        options.Cookie.Name = "auth_token";
-        options.LoginPath = "/";
-        options.Cookie.MaxAge = TimeSpan.FromMinutes(120);
-        options.AccessDeniedPath = "/";
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
-builder.Services.AddAuthorization();
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddHttpContextAccessor();
+});
 
 
 var app = builder.Build();
@@ -51,8 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseCors("AllowAllOrigins");
 
 var summaries = new[]
 {
@@ -82,7 +58,6 @@ app.MapGet("/users/emails", () =>
     .WithName("GetUsersNames")
     .WithOpenApi();
 
-app.MapControllers();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

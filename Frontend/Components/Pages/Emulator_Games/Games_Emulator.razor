@@ -1,0 +1,69 @@
+@page "/games"
+@using System.Collections.Generic
+@using System.ComponentModel.DataAnnotations
+@using System.Net
+@using System.Reflection.Metadata
+@using System.Text.Json
+@using System.Threading.Tasks
+@inject HttpClient Http
+@using Frontend.Helpers
+@using global::Helpers.Models
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject ApiHelper ApiHelper
+@inject NavigationManager Navigation
+
+<link rel="stylesheet" href="Games_Emulator/Style/Games_Emulator.css"/>
+
+<h1 class="text-center mt-4 retro-title">Games Emulator RetroGaming</h1>
+
+<div class="container mt-5">
+    <div style="width: 100%; height: 700px; overflow: hidden;">
+        <div id="game"></div>
+    </div>
+
+    <h2 class="mt-5 retro-subtitle" style="text-align: left;">Explore Games:</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card-scroll-container">
+                @if (_games == null)
+                {
+                <p><em>Loading...</em></p>
+                }
+                else
+                {
+                <div class="card-deck">
+                    @foreach (var game in _games)
+                    {
+                    var id = game.GameId.ToString();
+                    <div class="card retro-card">
+                        <img class="card-img-top img-fluid" src="@game.UrlImage" alt="@game.Name">
+                        <div class="card-body">
+                            <h5 class="card-title retro-card-title">@game.Name</h5>
+                            <button onclick='playGame("@game.GameId")' class="btn btn-primary btn-block retro-btn">Play Now</button>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+private GamesViewModel[] _games;
+private RomsViewModel[] _roms;
+
+protected override async Task OnInitializedAsync()
+{
+
+_games = await ApiHelper.GetFromApiAsync<GamesViewModel[]>("games");
+}
+
+}
+
+<script src="Games_Emulator/Script/Games_Emulator.js" ></script> 
+
+

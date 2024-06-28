@@ -11,6 +11,9 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+      <Content Remove="Components\Pages\games.cshtml" />
+      <Content Remove="Components\Pages\Emulator_Games\data\**" />
+      <Content Remove="Components\Pages\Emulator_Games\Emulator_Games\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -18,6 +21,7 @@
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
       <PackageReference Include="DotNetEnv" Version="3.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -64,6 +68,81 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Pages\Gametok\Index.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Components\Pages\games.cshtml.cs" />
+      <Compile Remove="Components\Pages\Emulator_Games\data\**" />
+      <Compile Remove="Components\Pages\Emulator_Games\Emulator_Games\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\FicheirosJS\Nostalgist.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\FicheirosJS\Scripts.js" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\af-FR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ar-AR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ben-BEN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\de-GER.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\el-GR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\en.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\es-ES.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\hi-HI.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\it-IT.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ja-JA.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\jv-JV.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ko-KO.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\pt-BR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\retroarch.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\ru-RU.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\tr-TR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\vi-VN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\localization\zh-CN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\minify\package.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\Emulator\data\version.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\af-FR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\ar-AR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\ben-BEN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\de-GER.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\el-GR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\en.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\es-ES.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\hi-HI.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\it-IT.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\ja-JA.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\jv-JV.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\ko-KO.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\pt-BR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\retroarch.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\ru-RU.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\tr-TR.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\vi-VN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\localization\zh-CN.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\minify\package.json" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Emulator_Games\data\version.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\Final_Fantasy.nes" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\mario.nes" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\Metal_Gear.nes" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\Mortal_Kombat_4.nes" />
+      <_ContentIncludedByDefault Remove="wwwroot\roms\Super_Tank_(Battle_City_Pirate).nes" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Components\Pages\Emulator_Games\data\**" />
+      <EmbeddedResource Remove="Components\Pages\Emulator_Games\Emulator_Games\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Components\Pages\Emulator_Games\data\**" />
+      <None Remove="Components\Pages\Emulator_Games\Emulator_Games\**" />
+      <None Remove="Components\Pages\Emulator_Games\efv.js" />
+      <None Remove="Components\Pages\Emulator_Games\Games_Emulator.css" />
+      <None Remove="Components\Pages\Emulator_Games\Games_Emulator.js" />
+      <None Include="wwwroot\Games_Emulator\Script\Games_Emulator.js" />
+      <None Include="wwwroot\Games_Emulator\Style\Games_Emulator.css" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\Games_Emulator\" />
     </ItemGroup>
 
 </Project>
