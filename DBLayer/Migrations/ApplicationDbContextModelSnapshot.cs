@@ -22,26 +22,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
-                {
-                    b.Property<Guid>("GameId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("GameId");
-
-                    b.ToTable("Games");
-                });
-
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
                 {
                     b.Property<Guid>("PermissionId")
@@ -131,31 +111,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Vote", b =>
-                {
-                    b.Property<Guid>("VoteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<Guid>("GameId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("VoteTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("VoteId");
-
-                    b.HasIndex("GameId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Votes");
-                });
-
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Permission", "Permission")
@@ -194,26 +149,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Vote", b =>
-                {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", null)
-                        .WithMany("Votes")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", null)
-                        .WithMany("Votes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
-                {
-                    b.Navigation("Votes");
-                });
-
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -229,8 +164,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
                     b.Navigation("UserRoles");
-
-                    b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618
         }
