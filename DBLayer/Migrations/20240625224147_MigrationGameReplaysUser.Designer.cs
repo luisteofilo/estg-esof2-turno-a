@@ -24,7 +24,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
+            
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameReplay", b =>
                 {
                     b.Property<Guid>("Id")
@@ -42,12 +42,41 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<DateTime>("UploadDate")
+                    b.Property<DateTime>("UploadDate");
+                        
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DeveloperID")
+                        .IsRequired()
+                        .HasColumnType("text");
+                        
+                    b.Property<string>("Genre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int[]>("Genres")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Publisher")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
-
+                    
                     b.Property<byte[]>("VideoData")
                         .IsRequired()
                         .HasColumnType("bytea");

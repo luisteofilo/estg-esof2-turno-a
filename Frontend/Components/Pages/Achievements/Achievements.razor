@@ -1,0 +1,52 @@
+﻿@page "/achievements"
+@using Frontend.Helpers
+@using global::Helpers.Models
+@attribute [StreamRendering]
+@inject ApiHelper ApiHelper
+@rendermode InteractiveServer
+
+<PageTitle>My Achievements</PageTitle>
+
+<h1>Achievements list</h1>
+
+@if (_achievements == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Required Score</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var achievements in _achievements.GroupBy(a => a.Name))
+        {
+            @foreach (var achievement in achievements.OrderBy(x => x))
+            {
+                <tr>
+                    <td>@achievement.Name</td>
+                    <td>@achievement.Description</td>
+                    <td>@achievement.RequiredScore</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+}
+
+@code
+{
+    private AchievementsViewModel[]? _achievements;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _achievements = await ApiHelper.GetFromApiAsync<AchievementsViewModel[]>("api/achievements");
+    }
+}

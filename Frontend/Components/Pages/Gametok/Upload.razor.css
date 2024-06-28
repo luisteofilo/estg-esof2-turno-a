@@ -1,0 +1,29 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    
+    width: 100%;
+    align-items: center;
+}
+
+button {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0.5rem;
+    background: rgb(253,180,46);
+    cursor: pointer;
+
+    transition: background-color 0.3s ease-in-out;
+    border: none;
+
+    border-radius: 10px;
+    margin: 0;
+}
+
+button:hover {
+    background: rgb(255, 210, 136);
+}
