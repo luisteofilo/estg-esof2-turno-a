@@ -39,4 +39,10 @@ public class User
     {
         UserGameReplays = new List<GameReplay>();
     }
+    
+    //Branch review-process
+    public ICollection<Review> Reviews { get; set; }
+    
+    [Required, StringLength(20)]
+    public String Username { get; set; }
 }

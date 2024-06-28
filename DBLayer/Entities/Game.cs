@@ -51,4 +51,6 @@ public class Game
     public ICollection<Favorite> Favorites { get; set; }
     
     public ICollection<VideoQuest> VideoQuests { get; set; }
+    
+    public ICollection<Review> Reviews { get; set; }
 }

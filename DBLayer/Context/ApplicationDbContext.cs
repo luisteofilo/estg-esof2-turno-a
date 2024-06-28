@@ -65,6 +65,9 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<GameReplay> GameReplays { get; set; }
     
     public DbSet<Favorite> Favorites { get; set; }
+    
+    public DbSet<Review> Reviews { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
@@ -103,6 +106,8 @@ public partial class ApplicationDbContext : DbContext
         BuildComment(modelBuilder);
         BuildLike(modelBuilder);
         BuildVideo(modelBuilder);
-        base.OnModelCreating(modelBuilder); 
+        
+        BuildReviews(modelBuilder);
+        base.OnModelCreating(modelBuilder);
     }
 }

@@ -165,4 +165,17 @@ public class ApiHelper(HttpClient httpClient)
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task PutToApiAsync<T>(string url, T data)
+    {
+        try
+        {
+            var response = await httpClient.PutAsJsonAsync(url, data);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            // Handle exception
+            throw new Exception($"Error updating to API: {e.Message}");
+        }
+    }
 }
