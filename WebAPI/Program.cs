@@ -1,30 +1,13 @@
 using ESOF.WebApp.DBLayer.Context;
-using ESOF.WebApp.DBLayer.Entities;
-using Helpers.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure CORS policy
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins", builder =>
-    {
-        builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
-
-
 var app = builder.Build();
-
-app.UseCors("AllowAllOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -40,71 +23,31 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-// Define endpoints
-app.MapGet("/games", () =>
+app.MapGet("/weatherforecast", () =>
     {
-        var db = new ApplicationDbContext();
-        return db.Games.Select(g => new GamesViewModel
-        {
-            GameId = g.GameId,
-            Name = g.Name,
-            Description = g.Description,
-            UrlImage = g.Url_Image,
-            Developer = g.Developer,
-            Publisher = g.Publisher
-        }).ToArray();
+        var forecast = Enumerable.Range(1, 5).Select(index =>
+                new WeatherForecast
+                (
+                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    Random.Shared.Next(-20, 55),
+                    summaries[Random.Shared.Next(summaries.Length)]
+                ))
+            .ToArray();
+        return forecast;
     })
-    .WithName("GetGames")
+    .WithName("GetWeatherForecast")
     .WithOpenApi();
 
-app.MapGet("/games/{GameID:guid}", async (Guid GameID) =>
+app.MapGet("/users/emails", () =>
     {
         var db = new ApplicationDbContext();
-        var roms = await db.Roms
-            .Where(r => r.GameId == GameID)
-            .Select(r => new RomsViewModel
-            {
-                RomId = r.RomId,
-                GameId = r.GameId,
-                ROM = r.ROM,
-                File_name = r.File_name
-            })
-            .ToArrayAsync();
-
-        return Results.Ok(roms);
+        return db.Users.Select(u => u.Email);
     })
-    .WithName("GetRoms")
+    .WithName("GetUsersNames")
     .WithOpenApi();
-
-// Run the app
-
-app.MapPost("/games", async (Games newGame) =>
-    {
-        var db = new ApplicationDbContext();
-
-        var game = new Games
-        {
-            GameId = newGame.GameId,
-            Name = newGame.Name,
-            Description = newGame.Description,
-            Url_Image = newGame.Url_Image,
-            Developer = newGame.Developer,
-            Publisher = newGame.Publisher,
-            ReleaseDate = newGame.ReleaseDate,
-            Price = newGame.Price
-        };
-
-        db.Games.Add(game);
-        await db.SaveChangesAsync();
-    })
-    .WithName("AddGame")
-    .WithOpenApi();
-
 
 app.Run();
 
-
-// WeatherForecast record (if needed)
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);

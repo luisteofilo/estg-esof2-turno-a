@@ -1,0 +1,90 @@
+a, p {
+    margin: 0;
+}
+
+.main {
+    display: flex;
+    width: 100%;
+    height: 90vh;
+    align-items: end;
+    justify-content: center;
+    padding: 0.5rem;
+    gap: 0.5rem;
+}
+
+.video {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFDC9B;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    
+    height: 100%;
+    aspect-ratio: 9/16;
+    
+    position: relative;
+}
+
+.video video {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+}
+
+.caption-box {
+    position: absolute;
+    bottom: 0;
+
+    background: rgb(253,180,46);
+    background: linear-gradient(0deg, rgba(253,180,46,1) 0%, rgba(253,180,46,0.6) 80%, rgba(0,212,255,0) 100%);
+    color: Black;
+    border-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+
+    padding: 1.5rem 0.5rem 0.5rem;
+    width: 100%;
+}
+
+.caption-box .caption {
+    font-size: 1.5rem;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}
+
+.button{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-button{
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.8rem;
+
+    cursor: pointer;
+
+    background-color: #FDB42E;
+    font-weight: bold;
+    border: none;
+    border-radius: 100%;
+}
+
+
+
+.challenge-details {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 2fr 1fr;
+}

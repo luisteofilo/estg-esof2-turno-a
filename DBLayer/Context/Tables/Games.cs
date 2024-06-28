@@ -1,44 +1,63 @@
 using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESOF.WebApp.DBLayer.Context
+namespace ESOF.WebApp.DBLayer.Context;
+
+// TODO: Implement context for the Games table
+public partial class ApplicationDbContext
 {
-    public partial class ApplicationDbContext
+    private void BuildGames(ModelBuilder modelBuilder)
     {
-        private void BuildGames(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Games>(entity =>
-            {
-                // Define a chave primária
-                entity.HasKey(e => e.GameId);
+        modelBuilder.Entity<Game>()
+            .HasMany(g => g.Favorites)
+            .WithOne(f => f.Game)
+            .HasForeignKey(f => f.GameId);
 
-                // Define a propriedade GameId com valor padrão SQL
-                entity.Property(e => e.GameId)
-                    .HasDefaultValueSql("gen_random_uuid()");
+        modelBuilder.Entity<Game>()
+            .HasIndex(g => g.Name)
+            .IsUnique();
 
-                // Define propriedades obrigatórias
-                entity.Property(e => e.Name)
-                    .IsRequired();
+        modelBuilder.Entity<Game>()
+            .HasIndex(g => g.Genre);
 
-                entity.Property(e => e.ReleaseDate)
-                    .IsRequired();
+        modelBuilder.Entity<Game>()
+            .HasIndex(g => g.Consoles);
 
-                entity.Property(e => e.Url_Image)
-                    .IsRequired();
+        modelBuilder.Entity<Game>()
+            .Property(p => p.GameId)
+            .HasDefaultValueSql("gen_random_uuid()");
 
-                entity.Property(e => e.Developer)
-                    .IsRequired();
+        modelBuilder.Entity<Favorite>()
+            .HasKey(f => new { f.UserId, f.GameId });
 
-                entity.Property(e => e.Publisher)
-                    .IsRequired();
+        modelBuilder.Entity<Favorite>()
+            .HasOne(f => f.User)
+            .WithMany(u => u.Favorites)
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-                entity.Property(e => e.Description)
-                    .IsRequired();
+        modelBuilder.Entity<Favorite>()
+            .HasOne(f => f.Game)
+            .WithMany(g => g.Favorites)
+            .HasForeignKey(f => f.GameId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-                entity.Property(e => e.Price)
-                    .IsRequired();
+        modelBuilder.Entity<Game>(entity => {
+            entity.HasKey(e => e.game_id);
 
-                // Configura o relacionamento de um jogo (Games) com um único ROM (Roms)
+            entity.Property(e => e.name).IsRequired();
+
+            entity.Property(e => e.description).IsRequired();
+
+            entity.Property(e => e.stock).IsRequired();
+
+            entity.Property(e => e.price).IsRequired();
+
+            entity.Property(e => e.release_date).IsRequired();
+            
+        });
+    }
+}
                 entity.HasOne(g => g.Rom)
                     .WithOne(r => r.Game)
                     .HasForeignKey<Roms>(r => r.GameId);
