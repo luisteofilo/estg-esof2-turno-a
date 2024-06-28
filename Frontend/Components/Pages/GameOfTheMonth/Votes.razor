@@ -6,9 +6,12 @@
 
 @if (gameOfTheMonth != null)
 {
-    <div>
-        <b>@gameOfTheMonth.Name</b>
-        <p>@gameOfTheMonth.Description</p>
+    <div class="game-card">
+        <img src="@gameOfTheMonth.Url_Image" alt="Game Image" class="game-image" />
+        <div class="game-info">
+            <h4>@gameOfTheMonth.Name</h4>
+            <p>@gameOfTheMonth.Description</p>
+        </div>
     </div>
 }
 else

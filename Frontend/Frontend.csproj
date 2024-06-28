@@ -29,4 +29,8 @@
       <Compile Remove="Services\AuthenticationService.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Components\Pages\GameOfTheMonth\Index.css" />
+    </ItemGroup>
+
 </Project>

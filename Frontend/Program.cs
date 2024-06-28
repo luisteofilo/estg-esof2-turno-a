@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 
+
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,7 +19,7 @@ builder.Services.AddRazorComponents()
 // Configure HttpClient with API base URL
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5295/") });
 
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ApiHelper>();
 builder.Services.AddScoped<VoteService>();
 

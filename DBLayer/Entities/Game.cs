@@ -1,21 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-<<<<<<< HEAD
 
-namespace ESOF.WebApp.DBLayer.Entities;
-
-public class Game{
-    [Key]
-    public Guid GameId{ get; set; }
-	
-    [Required]
-    public String Name{ get; set; }
-	
-    [Required]
-    public String Description{ get; set; }
-	
-    public ICollection<Vote> Votes { get; set; }
-}
-=======
 using System.Runtime.InteropServices.JavaScript;
 
 namespace ESOF.WebApp.DBLayer.Entities;
@@ -58,8 +42,10 @@ public class Game
     public List<Consoles> Consoles { get; set; } = new List<Consoles>();
 
     public ICollection<Shops> Shops { get; set; }
+    
+    public ICollection<Vote> Votes { get; set; }
+
 }
 
 
 //guid-> dizer que é o id principal
->>>>>>> origin/master

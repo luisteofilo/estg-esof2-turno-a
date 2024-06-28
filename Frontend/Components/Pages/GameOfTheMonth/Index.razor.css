@@ -1,0 +1,23 @@
+.game-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.game-item {
+    margin-bottom: 10px;
+}
+
+.game-name {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.game-name:hover {
+    color: darkblue;
+}
+
+.game-percentage {
+    margin-left: 10px;
+    color: gray;
+}

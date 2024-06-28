@@ -14,9 +14,9 @@ namespace Frontend.Services
             _httpClient = httpClient;
         }
 
-        public async Task<bool> PostVoteAsync(VoteDTO voteDTO)
+        public async Task<bool> PostVoteAsync(VoteDTO voteDto)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/vote", voteDTO);
+            var response = await _httpClient.PostAsJsonAsync("api/vote", voteDto);
             return response.IsSuccessStatusCode;
         }
     }

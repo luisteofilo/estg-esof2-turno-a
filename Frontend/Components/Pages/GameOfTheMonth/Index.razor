@@ -2,8 +2,10 @@
 @using ESOF.WebApp.DBLayer.Entities
 @using Frontend.Services
 @using ESOF.WebApp.DBLayer.Dto
+@using System.Security.Claims
 @inject HttpClient Http
 @inject VoteService VoteService
+@inject IHttpContextAccessor HttpContextAccessor
 
 <h3>Vote no Jogo do Mês</h3>
 
@@ -17,24 +19,22 @@ else if (!games.Any())
 }
 else
 {
-    <form onsubmit="HandleSubmit">
-        <ul>
-            @foreach (var game in games)
-            {
-                <li>
-                    <label>
-                        <input type="radio" name="selectedGame" value="@game.GameId" @onchange="() => selectedGameId = game.GameId" />
-                        <b>@game.Name</b> - @game.Description
-                    </label>
-                    @if (votePercentages.TryGetValue(game.GameId, out var percentage))
-                    {
-                        <span>(@percentage%)</span>
-                    }
-                </li>
-            }
-        </ul>
-        <button type="submit" disabled="@hasVoted">Submeter Voto</button>
-    </form>
+    <ul class="game-list">
+        @foreach (var game in games)
+        {
+            <li class="game-item">
+                <label>
+                    <a href="/votes" @onclick="() => HandleSubmit(game.GameId, userId)">
+                        <span class="game-name"><b>@game.Name</b></span>
+                    </a> - <span class="game-description">@game.Description</span>
+                </label>
+                @if (votePercentages.TryGetValue(game.GameId, out var percentage))
+                {
+                    <span class="game-percentage">(@percentage.ToString("0.##")%)</span>
+                }
+            </li>
+        }
+    </ul>
 }
 
 <p>@message</p>
@@ -42,7 +42,7 @@ else
 @code {
     private List<Game> games;
     private string message;
-    private Guid userId = Guid.NewGuid();
+    private Guid userId;
     private bool hasVoted = false;
     private Dictionary<Guid, double> votePercentages = new();
     private bool isVotingPeriod = false;
@@ -52,6 +52,16 @@ else
     {
         try
         {
+            var user = HttpContextAccessor.HttpContext.User;
+            if (user.Identity.IsAuthenticated)
+            {
+                var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    userId = Guid.Parse(userIdClaim.Value);
+                }
+            }
+
             games = await Http.GetFromJsonAsync<List<Game>>("api/game");
             hasVoted = await CheckIfUserHasVoted();
             isVotingPeriod = IsVotingPeriod();
@@ -83,21 +93,24 @@ else
         return await Http.GetFromJsonAsync<bool>($"api/vote/HasVoted/{userId}");
     }
 
-    private async Task HandleSubmit()
+    private async Task HandleSubmit(Guid gameId, Guid userId)
     {
-        // Prevent default form submission
-        await Task.Delay(1);
+        if (hasVoted || !isVotingPeriod)
+        {
+            message = "Você já votou ou a votação não está aberta.";
+            return;
+        }
 
-        var voteDTO = new VoteDTO
+        var voteDto = new VoteDTO
         {
             UserId = userId,
-            GameId = selectedGameId,
+            GameId = gameId,
             VoteTime = DateTime.Now
         };
 
         try
         {
-            bool result = await VoteService.PostVoteAsync(voteDTO);
+            bool result = await VoteService.PostVoteAsync(voteDto);
 
             if (result)
             {
@@ -129,6 +142,9 @@ else
         }
     }
 }
+
+
+
 
 
 

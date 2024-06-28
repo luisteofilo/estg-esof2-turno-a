@@ -21,34 +21,24 @@ public class VoteController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostVote([FromBody] VoteDTO voteDTO)
+    public async Task<IActionResult> PostVote(VoteDTO voteDto)
     {
-        try
+        if (voteDto == null)
         {
-            var vote = new Vote
-            {
-                UserId = voteDTO.UserId,
-                GameId = voteDTO.GameId,
-                VoteTime = voteDTO.VoteTime
-            };
-
-            // Check if the user has already voted this month
-            bool hasVoted = await _voteRepository.HasUserVotedThisMonth(vote.UserId);
-
-            if (hasVoted)
-            {
-                return BadRequest("Já votou este mês.");
-            }
-
-            // Insert the vote data into the database
-            await _voteRepository.AddVote(vote);
-
-            return Ok("Voto registado com sucesso!");
+            return BadRequest("Invalid data.");
         }
-        catch (Exception ex)
+
+        var vote = new Vote
         {
-            return StatusCode(500, $"Erro ao registar voto: {ex.Message}");
-        }
+            UserId = voteDto.UserId,
+            GameId = voteDto.GameId,
+            VoteTime = voteDto.VoteTime
+        };
+
+        _context.Votes.Add(vote);
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 
     [HttpGet("GameOfTheMonth")]

@@ -11,18 +11,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Games",
-                columns: table => new
-                {
-                    GameId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Games", x => x.GameId);
-                });
 
             migrationBuilder.CreateTable(
                 name: "Votes",
@@ -51,11 +39,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Votes_GameId",
-                table: "Votes",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Votes_UserId",
                 table: "Votes",
                 column: "UserId");
@@ -66,9 +49,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Votes");
-
-            migrationBuilder.DropTable(
-                name: "Games");
         }
     }
 }
