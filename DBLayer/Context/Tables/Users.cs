@@ -44,7 +44,11 @@ public partial class ApplicationDbContext
             .WithOne(g => g.Developer)
             .HasForeignKey(g => g.DeveloperID);
             
-        
+        // Display name
+        modelBuilder.Entity<User>()
+            .Property(p => p.Username)
+            .IsRequired()
+            .HasMaxLength(20);
 
     }
 }
