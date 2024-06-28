@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
@@ -31,7 +32,6 @@ public class Game
     [Required]
     public double Price { get; set; }
     
-    public byte[] Rom { get; set; }
 
     [Required]
     public List<GenreEnum> Genres { get; set; } = new List<GenreEnum>(); 
@@ -50,7 +50,11 @@ public class Game
         // Navigation properties
     public ICollection<Favorite> Favorites { get; set; }
     
+    
     public ICollection<VideoQuest> VideoQuests { get; set; }
     
     public ICollection<Review> Reviews { get; set; }
+    
+    
+    public Roms Roms { get; set; }
 }

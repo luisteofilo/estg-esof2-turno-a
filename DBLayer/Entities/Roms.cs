@@ -18,7 +18,7 @@ public class Roms
     [Required]
     public string File_name { get; set; }
 
-    public Games Game { get; set; }
+    public Game Game { get; set; }
 
     public ICollection<SaveStates> SaveStates { get; set;}
 }

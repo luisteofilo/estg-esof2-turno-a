@@ -9,13 +9,18 @@ namespace ESOF.WebApp.DBLayer.Context
         {
             modelBuilder.Entity<Roms>(entity =>
             {
-            
                 entity.HasKey(e => e.RomId);
+
+                entity.Property(e => e.GameId)
+                    .IsRequired();
                 
+                entity.HasOne(r => r.Game)
+                    .WithOne(g => g.Roms)
+                    .HasForeignKey<Roms>(r => r.GameId);
+
                 entity.HasMany(r => r.SaveStates)
                     .WithOne(s => s.Rom)
                     .HasForeignKey(s => s.RomId);
-    
             });
         }
     }

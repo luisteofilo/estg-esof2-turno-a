@@ -46,4 +46,8 @@
       <None Remove="ScaffoldingReadMe.txt" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Controllers\Emulator\Emulator_Roms.cs" />
+    </ItemGroup>
+
 </Project>
