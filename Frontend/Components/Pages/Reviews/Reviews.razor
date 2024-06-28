@@ -103,9 +103,10 @@ else
 @code 
 {
     [Parameter] public Guid GameId { get; set; }
-    private Guid UserId { get; set; } = new Guid("b22741ad-ba40-4005-902f-26aa2f21de80");
-    private Guid AdminId { get; set; } = new Guid("b22741ad-ba40-4005-902f-26aa2f21de80");
-    //normal user : 58053709-86aa-4771-8516-6b6b148ff1a6
+    private Guid UserId { get; set; } = new Guid("b9aa3991-7438-4ff3-9d22-61cb2b775761");
+    private Guid AdminId { get; set; } = new Guid("b9aa3991-7438-4ff3-9d22-61cb2b775761");
+    //normal user : 18667d21-605d-4df9-987b-b97c9baee023
+    //admin user : b9aa3991-7438-4ff3-9d22-61cb2b775761
     //Can be changed once authentication is added
     
     private ViewGameByIdModel _gamedetails;
@@ -194,7 +195,7 @@ else
     {
         try
         {
-            await ApiHelper.PutToApiAsync($"http://localhost:5295/reviews/approve/approve/", approveModel);
+            await ApiHelper.PutToApiAsync($"http://localhost:5295/reviews/approve/", approveModel);
             _reviews = await ApiHelper.GetFromApiAsync<ReviewViewModel[]>($"http://localhost:5295/reviews/games/{GameId}/reviews");
         }
         catch (Exception ex)
