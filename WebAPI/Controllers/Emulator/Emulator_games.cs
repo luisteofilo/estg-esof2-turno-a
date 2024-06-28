@@ -1,27 +1,17 @@
-using ESOF.WebApp.DBLayer.Context;
-using ESOF.WebApp.WebAPI.DtoClasses;
-using ESOF.WebApp.WebAPI.DtoClasses.Response;
-using ESOF.WebApp.WebAPI.DtoClasses.Update;
-using ESOF.WebApp.WebAPI.DtoClasses.Create;
 using ESOF.WebApp.WebAPI.Services;
 using Helpers.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ESOF.WebApp.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GamesController : ControllerBase
+    public class EmulatorGamesController : ControllerBase
     {
         private readonly GameEmulatorService _gameEmulatorService;
         private readonly RomEmulatorService _romEmulatorService;
 
-        public GamesController(GameEmulatorService gameEmulatorService, RomEmulatorService romEmulatorService)
+        public EmulatorGamesController(GameEmulatorService gameEmulatorService, RomEmulatorService romEmulatorService)
         {
             _gameEmulatorService = gameEmulatorService;
             _romEmulatorService = romEmulatorService;
