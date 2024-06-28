@@ -1,5 +1,6 @@
 using DotNetEnv;
 using ESOF.WebApp.DBLayer.Entities;
+using ESOF.WebApp.DBLayer.Entities.Marketplace;
 using Helpers;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +32,7 @@ public partial class ApplicationDbContext : DbContext
         : base(DefaultOptions)
     {
     }
-    
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
@@ -44,6 +45,30 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<Mod> Mods { get; set; }
     public DbSet<ModTag> ModTags { get; set; }
+    //Para os achievements
+    public DbSet<Achievement> Achievements { get; set; }
+    public DbSet<PlayerAchievement> PlayerAchievements { get; set; }
+    public DbSet<TestUserScore> TestUserScores { get; set; }
+    public DbSet<MarketPlace_Game> MarketPlaceGames { get; set; }
+    public DbSet<GameGenre> GameGenres { get; set; }
+    public DbSet<GamePlatform> GamePlatforms { get; set; }
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Platform> Platforms { get; set; }
+    public DbSet<OrderReview> OrderReviews { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Like> Likes { get; set; }
+    public DbSet<Video> Videos { get; set; }
+    public DbSet<VideoQuest> VideoQuests { get; set; }
+    public DbSet<Game> Games { get; set; }
+    public DbSet<Shops> Shop { get; set; }
+    public DbSet<SpeedrunRun> SpeedrunRuns { get; set; }
+    public DbSet<SpeedrunCategory> SpeedrunCategories { get; set; }
+    public DbSet<SpeedrunModerator> SpeedrunModerators { get; set; }
+    public DbSet<GameReplay> GameReplays { get; set; }
+    public DbSet<Favorite> Favorites { get; set; }
+    public DbSet<Review> Reviews { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -52,6 +77,8 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        BuildShops(modelBuilder);
+        BuildGame(modelBuilder);
         BuildUsers(modelBuilder);
         BuildRoles(modelBuilder);
         BuildPermissions(modelBuilder);
@@ -59,7 +86,6 @@ public partial class ApplicationDbContext : DbContext
         BuildUserRoles(modelBuilder);
         BuildMods(modelBuilder);
         BuildModTags(modelBuilder);
-        
         // Configurar relacionamento muitos-para-muitos entre Mod e ModTag
         modelBuilder.Entity<Mod>()
             .HasMany(m => m.Tags)
@@ -68,8 +94,7 @@ public partial class ApplicationDbContext : DbContext
                 "ModModTag",
                 j => j.HasOne<ModTag>().WithMany().HasForeignKey("TagId"),
                 j => j.HasOne<Mod>().WithMany().HasForeignKey("ModId"));
-        
-        
+
         modelBuilder.Entity<ModTag>().HasData(
             new ModTag { TagId = Guid.NewGuid(), Name = "Graphics", Description = "Mods that enhance graphics, textures, or overall visual appeal." },
             new ModTag { TagId = Guid.NewGuid(), Name = "Adventure", Description = "Mods that add new quests, missions, or enhance exploration." },
@@ -77,7 +102,7 @@ public partial class ApplicationDbContext : DbContext
             new ModTag { TagId = Guid.NewGuid(), Name = "Exploration", Description = "Mods that expand the game world or add new areas to explore." },
             new ModTag { TagId = Guid.NewGuid(), Name = "Characters", Description = "Mods that introduce new characters or alter existing ones." },
             new ModTag { TagId = Guid.NewGuid(), Name = "Weapons and Armor", Description = "Mods that add new weapons, armor, or equipment." },
-            new ModTag { TagId = Guid.NewGuid(), Name = "Story", Description = "Mods that introduce new storylines, missions, or quests." },
+            new ModTag { TagId = Guid.NewGuid(), Name = "Story", Description = "Mods that introduce new storylines, missions, ou quests." },
             new ModTag { TagId = Guid.NewGuid(), Name = "Immersion", Description = "Mods that increase the overall immersive experience of the game." },
             new ModTag { TagId = Guid.NewGuid(), Name = "Quality of Life", Description = "Mods that improve the overall user experience with small but impactful changes." },
             new ModTag { TagId = Guid.NewGuid(), Name = "Survival", Description = "Mods that add survival elements or make the game more challenging." },
@@ -85,7 +110,29 @@ public partial class ApplicationDbContext : DbContext
             new ModTag { TagId = Guid.NewGuid(), Name = "Crafting", Description = "Mods that expand or enhance the crafting system in the game." }
         );
 
+        BuildSpeedrunCategories(modelBuilder);
+        BuildSpeedrunModerators(modelBuilder);
+        BuildSpeedrunRuns(modelBuilder);
+        BuildFavorites(modelBuilder);
+        //Build para os Achievements
+        BuildAchievements(modelBuilder);
+        BuildPlayerAchievements(modelBuilder);
+        //Build para tabelas de teste de scores
+        BuildTestUserScores(modelBuilder);
+        BuildMarketPlace_Game(modelBuilder);
+        BuildGameGenre(modelBuilder);
+        BuildGamePlatform(modelBuilder);
+        BuildGenreMarketplace(modelBuilder);
+        BuildOrder(modelBuilder);
+        BuildOrderItem(modelBuilder);
+        BuildPlatform(modelBuilder);
+        BuildReview(modelBuilder);
+        BuildVideoQuest(modelBuilder);
+        BuildComment(modelBuilder);
+        BuildLike(modelBuilder);
+        BuildVideo(modelBuilder);
+        BuildReviews(modelBuilder);
+
         base.OnModelCreating(modelBuilder);
-        
     }
 }
