@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 using ESOF.WebApp.DBLayer.Entities;
-=======
-﻿using ESOF.WebApp.DBLayer.Entities;
->>>>>>> origin/master
 using Microsoft.EntityFrameworkCore;
 
 namespace ESOF.WebApp.DBLayer.Context;
@@ -60,5 +56,12 @@ public partial class ApplicationDbContext
             entity.Property(e => e.release_date).IsRequired();
             
         });
+    }
+}
+                entity.HasOne(g => g.Rom)
+                    .WithOne(r => r.Game)
+                    .HasForeignKey<Roms>(r => r.GameId);
+            });
+        }
     }
 }

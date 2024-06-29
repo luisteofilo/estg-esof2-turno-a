@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices.JavaScript;
+using System.Collections.Generic;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
@@ -32,10 +32,9 @@ public class Game
     [Required]
     public double Price { get; set; }
     
-    public byte[] Rom { get; set; }
 
     [Required]
-    public List<Genre> Genres { get; set; } = new List<Genre>(); 
+    public List<GenreEnum> Genres { get; set; } = new List<GenreEnum>(); 
 
     [Required]
     public List<Category> Categories { get; set; } = new List<Category>(); 
@@ -50,10 +49,12 @@ public class Game
     public ICollection<SpeedrunModerator> speedrunModerators { get; set; }
         // Navigation properties
     public ICollection<Favorite> Favorites { get; set; }
-        
     
-    }
+    
+    public ICollection<VideoQuest> VideoQuests { get; set; }
+    
+    public ICollection<Review> Reviews { get; set; }
+    
+    
+    public Roms Roms { get; set; }
 }
-
-
-//guid-> dizer que é o id principal

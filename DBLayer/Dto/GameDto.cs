@@ -23,7 +23,7 @@ public class GameDto
 
     public string RomBase64 { get; set; } 
 
-    public List<Genre> Genres { get; set; }
+    public List<GenreEnum> Genres { get; set; }
 
     public List<Category> Categories { get; set; }
 

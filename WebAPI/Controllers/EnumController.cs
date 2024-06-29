@@ -17,7 +17,7 @@ public static class EnumController
 
     app.MapGet("/genres", () =>
     {
-        var genres = Enum.GetNames(typeof(Genre)).ToList();
+        var genres = Enum.GetNames(typeof(GenreEnum)).ToList();
         return genres;
     })
     .WithName("GetGenres")

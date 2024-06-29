@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
@@ -18,6 +19,8 @@
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+        <PackageReference Include="Supabase" Version="1.0.4" />
+        <PackageReference Include="Supabase.Storage" Version="2.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
@@ -33,6 +36,18 @@
 
     <ItemGroup>
       <None Remove="ScaffoldingReadMe.txt" />
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+        <PackageReference Include="Supabase" Version="1.0.4" />
+        <PackageReference Include="Supabase.Storage" Version="2.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="ScaffoldingReadMe.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Controllers\Emulator\Emulator_Roms.cs" />
     </ItemGroup>
 
 </Project>

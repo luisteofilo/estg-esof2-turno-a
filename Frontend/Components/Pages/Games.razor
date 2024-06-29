@@ -286,7 +286,7 @@ else
         currentGameDto.ReleaseDate = currentGameDto.ReleaseDate.ToUniversalTime();
         currentGameDto.Consoles = availableConsoles?.Where(c => c.IsChecked).Select(c => Enum.Parse<Consoles>(c.Name)).ToList() ?? new List<Consoles>();
         currentGameDto.Categories = availableCategories?.Where(c => c.IsChecked).Select(c => Enum.Parse<Category>(c.Name)).ToList() ?? new List<Category>();
-        currentGameDto.Genres = availableGenres?.Where(g => g.IsChecked).Select(g => Enum.Parse<Genre>(g.Name)).ToList() ?? new List<Genre>();
+        currentGameDto.Genres = availableGenres?.Where(g => g.IsChecked).Select(g => Enum.Parse<GenreEnum>(g.Name)).ToList() ?? new List<GenreEnum>();
 
         HttpResponseMessage response;
         if (currentGameDto.GameId == Guid.Empty)

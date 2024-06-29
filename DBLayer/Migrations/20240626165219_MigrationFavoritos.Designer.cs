@@ -52,6 +52,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Property<int[]>("Categories")
                         .IsRequired()
                         .HasColumnType("integer[]");
+                    
+                    b.Property<String>("Platform")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int[]>("Consoles")
                         .IsRequired()

@@ -22,9 +22,11 @@ namespace ESOF.WebApp.WebAPI.Controllers
             }
 
             using var hmac = new HMACSHA512();
+            var emailParts = userDTO.Email.Split('@');
             var user = new User
             {
                 UserId = Guid.NewGuid(),
+                Username = emailParts[0],
                 Email = userDTO.Email,
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(userDTO.Password)),
                 PasswordSalt = hmac.Key

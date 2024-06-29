@@ -1,49 +1,56 @@
 using ESOF.WebApp.DBLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
-// ReSharper disable once CheckNamespace
-namespace ESOF.WebApp.DBLayer.Context;
-
-public partial class ApplicationDbContext
+namespace ESOF.WebApp.DBLayer.Context
 {
-    private void BuildGame(ModelBuilder modelBuilder)
+    public partial class ApplicationDbContext
     {
-        modelBuilder.Entity<Game>()
-            .Property(g => g.GameId)
-            .HasDefaultValueSql("gen_random_uuid()");
-        
-        modelBuilder.Entity<Game>(entity =>
+        private void BuildGame(ModelBuilder modelBuilder)
         {
-            entity.HasKey(e => e.GameId);
+            modelBuilder.Entity<Game>()
+                .Property(g => g.GameId)
+                .HasDefaultValueSql("gen_random_uuid()");
 
-            entity.Property(e => e.Name)
-                .IsRequired();
+            modelBuilder.Entity<Game>(entity =>
+            {
+                entity.HasKey(e => e.GameId);
 
-            entity.Property(e => e.ReleaseDate)
-                .IsRequired();
+                entity.Property(e => e.Name)
+                    .IsRequired();
 
-            entity.Property(e => e.DeveloperID)
-                .IsRequired();
-            
-            //chave estrangeira de DeveloperID
-            entity.HasOne(e => e.Developer)
-                .WithMany(u => u.GamesDeveloped)
-                .HasForeignKey(e => e.DeveloperID);
+                entity.Property(e => e.ReleaseDate)
+                    .IsRequired();
+                
 
-            entity.Property(e => e.Publisher)
-                .IsRequired();
+                entity.Property(e => e.DeveloperID)
+                    .IsRequired();
 
-            entity.Property(e => e.Description)
-                .IsRequired();
+                entity.HasOne(e => e.Developer)
+                    .WithMany(u => u.GamesDeveloped)
+                    .HasForeignKey(e => e.DeveloperID);
 
-            entity.Property(e => e.Price)
-                .IsRequired();
+                entity.Property(e => e.Publisher)
+                    .IsRequired();
 
-            entity.HasMany(e => e.Shops)
-                .WithOne(s => s.Game)
-                .HasForeignKey(s => s.GameId);
-            
-            
-        });
+                entity.Property(e => e.Description)
+                    .IsRequired();
+
+                entity.Property(e => e.Price)
+                    .IsRequired();
+
+                entity.HasMany(e => e.Shops)
+                    .WithOne(s => s.Game)
+                    .HasForeignKey(s => s.GameId);
+
+                entity.HasMany(e => e.VideoQuests)
+                    .WithOne(c => c.Game)
+                    .HasForeignKey(c => c.GameId);
+
+
+                entity.HasOne(g => g.Roms)
+                    .WithOne(r => r.Game)
+                    .HasForeignKey<Roms>(r => r.GameId);
+            });
+        }
     }
 }

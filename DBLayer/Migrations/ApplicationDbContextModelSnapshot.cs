@@ -100,6 +100,40 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
                     b.ToTable("Games");
                 });
+            
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameReplay", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
+
+                b.Property<string>("FilePath")
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnType("character varying(500)");
+
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnType("character varying(255)");
+
+                b.Property<DateTime>("UploadDate")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid>("UserId")
+                    .HasColumnType("uuid");
+
+                b.Property<byte[]>("VideoData")
+                    .IsRequired()
+                    .HasColumnType("bytea");
+
+                b.HasKey("Id");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("GameReplays");
+            });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Achievement", b =>
                 {
@@ -122,6 +156,88 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasKey("IdAchievement");
 
                     b.ToTable("Achievements");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VideoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "VideoId");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("Comments", "gametok");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
+                {
+                    b.Property<Guid>("GameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Developer")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Publisher")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ReleaseDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Url_Image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("GameId");
+
+                    b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Like", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VideoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("UserId", "VideoId");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("Likes", "gametok");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
@@ -425,6 +541,121 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Video", b =>
+                {
+                    b.Property<Guid>("VideoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("Caption")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("VideoPath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("VideoQuestId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ViewCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("VideoId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VideoQuestId");
+
+                    b.ToTable("Videos", "gametok");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.VideoQuest", b =>
+                {
+                    b.Property<Guid>("VideoQuestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("VideoQuestId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("VideoQuests", "gametok");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Comment", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Video", "Video")
+                        .WithMany("Comments")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Video");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Like", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Video", "Video")
+                        .WithMany("Likes")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Video");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameReplay", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                        .WithMany("UserGameReplays")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.RolePermission", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.Permission", "Permission")
@@ -540,6 +771,41 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Video", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.VideoQuest", "VideoQuest")
+                        .WithMany("Videos")
+                        .HasForeignKey("VideoQuestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("VideoQuest");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.VideoQuest", b =>
+                {
+                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
+                        .WithMany("VideoQuests")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
+                {
+                    b.Navigation("VideoQuests");
+                });
+
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Achievement", b =>
                 {
                     b.Navigation("PlayerAchievements");
@@ -579,6 +845,8 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
+                    b.Navigation("UserGameReplays");
+
                     b.Navigation("PlayerAchievements");
 
                     b.Navigation("TestUserScores");
@@ -592,6 +860,18 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("speedrunModerators");
 
                     b.Navigation("speedrunRuns");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Video", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Likes");
+                });
+
+            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.VideoQuest", b =>
+                {
+                    b.Navigation("Videos");
                 });
 #pragma warning restore 612, 618
         }

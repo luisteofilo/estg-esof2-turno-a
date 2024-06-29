@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ESOF.WebApp.DBLayer.Entities.Marketplace;
 
 namespace ESOF.WebApp.DBLayer.Entities;
 
@@ -30,4 +31,18 @@ public class User
     public ICollection<TestUserScore> TestUserScores { get; set; }
     
 
+    public ICollection<OrderReview> UserOrderReviews { get; set; }
+    public ICollection<OrderItem> UserOrderItems { get; set; }
+    public ICollection<GameReplay> UserGameReplays { get; set; }
+
+    public User()
+    {
+        UserGameReplays = new List<GameReplay>();
+    }
+    
+    //Branch review-process
+    public ICollection<Review> Reviews { get; set; }
+    
+    [Required, StringLength(20)]
+    public String Username { get; set; }
 }
