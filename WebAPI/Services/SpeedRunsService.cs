@@ -31,6 +31,18 @@ public class SpeedRunService (ApplicationDbContext db)
             UserName = u.Email
         }).ToArray();
     }
+    
+    // retornar user por email
+    public UserSpeedRunsViewModel GetUserByEmail(string email)
+    {
+        var user = db.Users.FirstOrDefault(u => u.Email == email);
+        if (user == null) return null;
+        return new UserSpeedRunsViewModel()
+        {
+            UserID = user.UserId,
+            UserName = user.Email
+        };
+    }
 
     public IEnumerable<SpeedrunModeratorViewModel> GetSpeedRunModerators()
     {

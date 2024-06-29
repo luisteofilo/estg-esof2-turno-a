@@ -3,6 +3,9 @@
 @using Frontend.Helpers
 @using global::Helpers.Models
 @using System.Text.Json
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [StreamRendering]
 @inject ApiHelper ApiHelper
 @inject HttpClient httpClient
@@ -41,7 +44,7 @@
 
 
 <div class="container">
-    <!-- Barra Lateral à direita -->
+    <!-- Filtros -->
     <div class="filter">
         <form method="get">
                
@@ -164,7 +167,7 @@
     </div>
 </div>
 
-<!-- Modal para Inserir Nova Run -->
+<!-- Modal para inserir uma run -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -233,6 +236,7 @@
     </div>
 </div>
 
+<!-- Modal de verificações-->
 <div class="modal fade large-modal" id="verifyModal" tabindex="-1" role="dialog" aria-labelledby="verifyModalLabel" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -300,6 +304,7 @@
     </div>
 </div>
 
+<!-- Modal de runs do user-->
 <div class="modal fade large-modal" id="myRunsModal" tabindex="-1" role="dialog" aria-labelledby="myRunsModalLabel" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -350,6 +355,7 @@
     </div>
 </div>
 
+<!-- Modal de administração-->
 <div class="modal fade" id="administrationModal" tabindex="-1" role="dialog" aria-labelledby="administrationModalLabel" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -650,7 +656,7 @@
     private string userInput = string.Empty;
     
  
-    private Guid userId = Guid.Parse("8d59f878-81fe-4186-a106-cf32ee5ecf9a");
+    private Guid? userId;
     private List<GameViewModel> _moderatorGames;
     private List<SpeedrunRunViewModel> _runsToVerify;
     private Guid _gameSelectedVerifyRuns;
@@ -659,8 +665,20 @@
     
     
     protected override async Task OnInitializedAsync()
-    {
-       
+    { 
+        // get user
+        //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        //var userEmail = authState.User.FindFirst(ClaimTypes.Email)?.Value;
+        
+        
+        //TO DO: Atualizar para o user logado 
+        
+        var userEmail = "root@example.com";
+        var user = await ApiHelper.GetFromApiAsync<UserSpeedRunsViewModel>($"api/speedRuns/user/{userEmail}");
+        
+        if (user != null)
+            userId = user.UserID;
+        
         await LoadData();
 
         //_categories = await ApiHelper.GetFromApiAsync<List<SpeedrunCategoryViewModel>>("speedRuns/categories");
@@ -956,7 +974,6 @@
         }
     }
     
-    // search moderator
     private async void SearchModerator(ChangeEventArgs e)
     {
         userInput = e.Value.ToString();
@@ -970,7 +987,7 @@
         }
     }
     
-    // select moderator
+  
     private async void SelectModerator(ChangeEventArgs e)
     {
         if (e.Value.ToString() == "")
@@ -982,7 +999,7 @@
         _selectedModerator = Guid.Parse(e.Value.ToString());
     }
     
-    // delete moderator
+ 
     private async void DeleteModerator()
     {
         if (_selectedModerator == null)
@@ -1002,8 +1019,8 @@
             Console.WriteLine($"Error to delete! {ex.Message}");
         }
     }
+
     
-    // search user
     private async void SearchUser(ChangeEventArgs e)
     {
         userInput = e.Value.ToString();
@@ -1017,7 +1034,7 @@
         }
     }
     
-    // select user
+ 
     private async void SelectUser(ChangeEventArgs e)
     {
         if (e.Value.ToString() == "")
@@ -1029,7 +1046,7 @@
         _selectedUser = Guid.Parse(e.Value.ToString());
     }
     
-    // add moderator
+   
     private async void AddModerator()
     {
         if (_selectedUser == Guid.Empty)

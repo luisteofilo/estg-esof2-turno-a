@@ -22,6 +22,13 @@ public class SpeedRunsController : ControllerBase
         return Ok(_speedRunService.GetGames());
     }
     
+    // user por email
+    [HttpGet("user/{email}")]
+    public ActionResult<UserSpeedRunsViewModel> GetUserByEmail(string email)
+    {
+        return Ok(_speedRunService.GetUserByEmail(email));
+    }
+    
     // users
     [HttpGet("users")]
     public ActionResult<IEnumerable<UserSpeedRunsViewModel>> GetUsers()
