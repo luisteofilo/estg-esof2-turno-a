@@ -1,0 +1,50 @@
+@page "/gamereplays/{id:guid}"
+@using Frontend.Helpers
+@inject ApiHelper ApiHelper
+@inject NavigationManager Navigation
+
+<PageTitle>Game Replay</PageTitle>
+
+@if (gameReplay == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <h1>@gameReplay.Title</h1>
+
+    <div class="video-item">
+        <video width="768" height="432" controls>
+            <source src="data:video/mp4;base64,@Convert.ToBase64String(gameReplay.VideoData)" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    
+    <p>Uploaded on: @gameReplay.UploadDate.ToString("yyyy-MM-dd")</p>
+}
+
+@code {
+    [Parameter]
+    public Guid id { get; set; }
+
+    private GameReplayViewModel? gameReplay;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGameReplay();
+    }
+
+    private async Task LoadGameReplay()
+    {
+        try
+        {
+            gameReplay = await ApiHelper.GetFromApiAsync<GameReplayViewModel>($"gamereplays/{id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception during loading game replay: {ex.Message}");
+        }
+    }
+}

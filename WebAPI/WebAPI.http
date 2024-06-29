@@ -3,4 +3,12 @@
 GET {{WebAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###
+GET {{WebAPI_HostAddress}}/games
+Accept: application/json
+
+POST {{WebAPI_HostAddress}}/games
+Accept: application/json
+
+GET {{WebAPI_HostAddress}}/games/{GameID}
+Accept: application/json
+
