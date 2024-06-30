@@ -12,13 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:DBLayer/Migrations/20240626201739_Data.Designer.cs
-    [Migration("20240626201739_Data")]
-    partial class Data
-========
     [Migration("20240626090319_ModificationsDB")]
     partial class ModificationsDB
->>>>>>>> master:DBLayer/Migrations/20240626090319_ModificationsDB.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,11 +32,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240626201739_Data.Designer.cs
-                    b.Property<string>("Name")
-========
                     b.Property<string>("Title")
->>>>>>>> master:DBLayer/Migrations/20240626090319_ModificationsDB.Designer.cs
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -73,14 +64,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240626201739_Data.Designer.cs
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Evaluation")
-                        .HasColumnType("integer");
-========
                     b.Property<bool>("ApprovedStatus")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
@@ -98,16 +81,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
->>>>>>>> master:DBLayer/Migrations/20240626090319_ModificationsDB.Designer.cs
 
                     b.Property<Guid>("GameId")
                         .HasColumnType("uuid");
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240626201739_Data.Designer.cs
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-========
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
@@ -119,18 +96,13 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
->>>>>>>> master:DBLayer/Migrations/20240626090319_ModificationsDB.Designer.cs
                     b.HasKey("ReviewId");
 
                     b.HasIndex("GameId");
 
                     b.HasIndex("UserId");
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240626201739_Data.Designer.cs
-                    b.ToTable("Reviews");
-========
                     b.ToTable("Reviews", "reviews");
->>>>>>>> master:DBLayer/Migrations/20240626090319_ModificationsDB.Designer.cs
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Role", b =>
@@ -183,15 +155,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240626201739_Data.Designer.cs
-                    b.Property<int>("tipo_user")
-                        .HasColumnType("integer");
-========
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
->>>>>>>> master:DBLayer/Migrations/20240626090319_ModificationsDB.Designer.cs
 
                     b.HasKey("UserId");
 

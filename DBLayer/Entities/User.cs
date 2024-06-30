@@ -16,6 +16,9 @@ public class User
     
     [Required]
     public byte[] PasswordSalt { get; set; }
+    
+    public int tipo_user { get; set; }
+    
     public ICollection<UserRole> UserRoles { get; set; }
     
     public ICollection<Game> GamesDeveloped { get; set; }

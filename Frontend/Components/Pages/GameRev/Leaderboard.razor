@@ -175,8 +175,8 @@ else
     public class Reviews
     {
         public string ReviewId { get; set; } = "";
-        public string Comment { get; set; } = "";
-        public int Evaluation { get; set; } = 0;
+        public string WrittenReview { get; set; } = "";
+        public int Rating { get; set; } = 0;
         public string UserId { get; set; } = "";
         public string GameId { get; set; } = "";
     }
@@ -198,7 +198,7 @@ else
                     if (rev.GameId.Equals(game.GameId))
                     {
                         game.CountReviews++;
-                        game.Total += rev.Evaluation;
+                        game.Total += rev.Rating;
                     }
                 }
 

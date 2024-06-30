@@ -12,13 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:DBLayer/Migrations/20240623000933_AddTipoUserToUser.Designer.cs
-    [Migration("20240623000933_AddTipoUserToUser")]
-    partial class AddTipoUserToUser
-========
     [Migration("20240625224147_MigrationGameReplaysUser")]
     partial class MigrationGameReplaysUser
->>>>>>>> master:DBLayer/Migrations/20240625224147_MigrationGameReplaysUser.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,8 +32,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240623000933_AddTipoUserToUser.Designer.cs
-========
                     b.Property<string>("FilePath")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -67,14 +60,10 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired()
                         .HasColumnType("integer[]");
 
->>>>>>>> master:DBLayer/Migrations/20240625224147_MigrationGameReplaysUser.Designer.cs
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240623000933_AddTipoUserToUser.Designer.cs
-                    b.HasKey("GameId");
-========
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
@@ -93,7 +82,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasColumnType("bytea");
 
                     b.HasKey("Id");
->>>>>>>> master:DBLayer/Migrations/20240625224147_MigrationGameReplaysUser.Designer.cs
 
                     b.HasIndex("UserId");
 
@@ -114,35 +102,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.HasKey("PermissionId");
 
                     b.ToTable("Permissions");
-                });
-
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Review", b =>
-                {
-                    b.Property<Guid>("ReviewId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Evaluation")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("GameId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ReviewId");
-
-                    b.HasIndex("GameId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Role", b =>
@@ -195,9 +154,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
-                    b.Property<int>("tipo_user")
-                        .HasColumnType("integer");
-
                     b.HasKey("UserId");
 
                     b.HasIndex("Email")
@@ -221,25 +177,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.ToTable("UserRoles");
                 });
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240623000933_AddTipoUserToUser.Designer.cs
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Review", b =>
-                {
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.Game", "Game")
-                        .WithMany("Reviews")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("id_game___fk");
-
-                    b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
-                        .WithMany("Reviews")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("id_user___fk");
-
-                    b.Navigation("Game");
-========
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.GameReplay", b =>
                 {
                     b.HasOne("ESOF.WebApp.DBLayer.Entities.User", "User")
@@ -247,7 +184,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
->>>>>>>> master:DBLayer/Migrations/20240625224147_MigrationGameReplaysUser.Designer.cs
 
                     b.Navigation("User");
                 });
@@ -290,14 +226,6 @@ namespace ESOF.WebApp.DBLayer.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<<< HEAD:DBLayer/Migrations/20240623000933_AddTipoUserToUser.Designer.cs
-            modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Game", b =>
-                {
-                    b.Navigation("Reviews");
-                });
-
-========
->>>>>>>> master:DBLayer/Migrations/20240625224147_MigrationGameReplaysUser.Designer.cs
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -312,11 +240,7 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             modelBuilder.Entity("ESOF.WebApp.DBLayer.Entities.User", b =>
                 {
-<<<<<<<< HEAD:DBLayer/Migrations/20240623000933_AddTipoUserToUser.Designer.cs
-                    b.Navigation("Reviews");
-========
                     b.Navigation("UserGameReplays");
->>>>>>>> master:DBLayer/Migrations/20240625224147_MigrationGameReplaysUser.Designer.cs
 
                     b.Navigation("UserRoles");
                 });

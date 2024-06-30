@@ -135,11 +135,11 @@ else
                                 {
                                     <div class="review card mb-3" data-rating="good">
                                         <div class="card-body">
-                                            <div class="@GetCollorReviewCritic(review.Evaluation)">
-                                                <span>@review.Evaluation</span>
+                                            <div class="@GetCollorReviewCritic(review.Rating)">
+                                                <span>@review.Rating</span>
                                             </div>
                                             <div class="review-comment">
-                                                <p>@review.Comment</p>
+                                                <p>@review.WrittenReview</p>
                                             </div>
                                         </div>
                                     </div>
@@ -168,11 +168,11 @@ else
                                 {
                                     <div class="review card mb-3" data-rating="good">
                                         <div class="card-body">
-                                            <div class="@GetCollorReviewUser(review.Evaluation)">
-                                                <span>@review.Evaluation</span>
+                                            <div class="@GetCollorReviewUser(review.Rating)">
+                                                <span>@review.Rating</span>
                                             </div>
                                             <div class="review-comment">
-                                                <p>@review.Comment</p>
+                                                <p>@review.WrittenReview</p>
                                             </div>
                                         </div>
                                     </div>
@@ -206,8 +206,8 @@ else
     public class Reviews
     {
         public string ReviewId { get; set; } = "";
-        public string Comment { get; set; } = "";
-        public int Evaluation { get; set; } = 0;
+        public string WrittenReview { get; set; } = "";
+        public int Rating { get; set; } = 0;
         public string UserId { get; set; } = "";
         public string GameId { get; set; } = "";
     }
@@ -258,7 +258,7 @@ else
                         _user = await ApiHelper.GetFromApiAsync<User>($"User/{id}");
                         
                         _countReviews[_user.tipo_user]++;
-                        _total[_user.tipo_user] += rev.Evaluation;
+                        _total[_user.tipo_user] += rev.Rating;
 
                         if (_user.tipo_user == 0)
                         {
@@ -270,7 +270,7 @@ else
                             _criticReviews.Add(rev);
                         }
                         
-                        switch (rev.Evaluation)
+                        switch (rev.Rating)
                         {
                             case <5 :
                                 _badReviews[_user.tipo_user]++;
@@ -379,11 +379,11 @@ else
         switch (filter)
         {
             case "good":
-                return _userReviews.Where(r => r.Evaluation >= 7);
+                return _userReviews.Where(r => r.Rating >= 7);
             case "average":
-                return _userReviews.Where(r => r.Evaluation >= 5 && r.Evaluation < 7);
+                return _userReviews.Where(r => r.Rating >= 5 && r.Rating < 7);
             case "bad":
-                return _userReviews.Where(r => r.Evaluation < 5);
+                return _userReviews.Where(r => r.Rating < 5);
             case "all":
             default:
                 return _userReviews;
@@ -398,11 +398,11 @@ else
         switch (filter)
         {
             case "good":
-                return _criticReviews.Where(r => r.Evaluation >= 7);
+                return _criticReviews.Where(r => r.Rating >= 7);
             case "average":
-                return _criticReviews.Where(r => r.Evaluation >= 5 && r.Evaluation < 7);
+                return _criticReviews.Where(r => r.Rating >= 5 && r.Rating < 7);
             case "bad":
-                return _criticReviews.Where(r => r.Evaluation < 5);
+                return _criticReviews.Where(r => r.Rating < 5);
             case "all":
             default:
                 return _criticReviews;

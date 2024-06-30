@@ -5,25 +5,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ESOF.WebApp.DBLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTipoUserToUser : Migration
+    public partial class RomFieldAdded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "tipo_user",
-                table: "Users",
-                type: "integer",
+            migrationBuilder.AddColumn<byte[]>(
+                name: "Rom",
+                table: "Games",
+                type: "bytea",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: new byte[0]);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "tipo_user",
-                table: "Users");
+                name: "Rom",
+                table: "Games");
         }
     }
 }

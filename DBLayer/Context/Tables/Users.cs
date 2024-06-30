@@ -23,12 +23,9 @@ public partial class ApplicationDbContext
             .IsUnique();
         
         modelBuilder.Entity<User>()
-            .Property(u => u.tipo_user)
-            .IsRequired();
-        
-        modelBuilder.Entity<User>()
             .Property(p => p.UserId)
             .HasDefaultValueSql("gen_random_uuid()");
+        
         
         // relação com a tabela SpeedrunRun
         modelBuilder.Entity<User>()
