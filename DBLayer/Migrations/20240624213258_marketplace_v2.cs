@@ -70,8 +70,13 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             migrationBuilder.RenameTable(
                 name: "MarketPlaceGames",
-                newName: "Games",
-                newSchema: "marketplace");
+                newSchema: "marketplace",
+                newName: "MarketPlaceGames");
+            
+            migrationBuilder.RenameTable(
+                schema: "marketplace",
+                name: "MarketPlaceGames",
+                newName: "Games");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Games",

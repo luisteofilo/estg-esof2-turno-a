@@ -74,8 +74,14 @@ namespace ESOF.WebApp.DBLayer.Migrations
 
             migrationBuilder.RenameTable(
                 name: "Game",
-                newName: "Games",
+                newName: "Game",
                 newSchema: "gametok");
+            
+            migrationBuilder.RenameTable(
+                name: "Game",
+                newName: "Games",
+                schema: "gametok");
+
 
             migrationBuilder.RenameTable(
                 name: "Comment",

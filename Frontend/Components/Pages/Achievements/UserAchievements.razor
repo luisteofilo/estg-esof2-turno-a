@@ -47,7 +47,7 @@ else
     private PlayerAchievementsViewModel[]? _user_achievements;
     
     //Como não foi possivel fazer a autenticação foi feito o pedido do id do utilizador atraves de uma variavel estatica
-    Guid teste = new Guid("1cd94aba-997a-490a-ac21-b1ea2cd2f6a4");
+    Guid teste = Guid.Parse("addcd892-2ffa-417b-ad05-abe1610a5fe9");
     protected override async Task OnInitializedAsync()
     {
         _user_achievements = await ApiHelper.GetFromApiAsync<PlayerAchievementsViewModel[]>($"/api/Achievements/UserAchievements/{teste}");
