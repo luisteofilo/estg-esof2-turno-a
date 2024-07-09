@@ -1,0 +1,213 @@
+﻿@page "/leaderboard"
+@using System.Diagnostics
+@using Frontend.Helpers
+@rendermode InteractiveServer
+@inject ApiHelper ApiHelper
+
+<PageTitle>Leaderboard</PageTitle>
+
+<h1>User Evaluation Leaderboard</h1>
+
+@if (_games is { Length: >= 3 })
+{
+    <div class="podium-section">
+        @{
+            var game1 = _games[1]; // Game 2 in your list
+            var game2 = _games[0]; // Game 1 in your list
+            var game3 = _games[2]; // Game 3 in your list
+        }
+
+        <!-- Game 2 - 2nd place -->
+        <div class="podium-game">
+            <div class="game-info2">
+                <NavLink class="card-link no-link-style" href="@($"game/{game1.GameId}/reviews")">
+                    <div class="game-icon">
+                        <img src="favicon.png" alt="Game Logo"> <!--Associar a imagem do jogo aqui--> 
+                    </div>
+                    <h3>@game1.Name</h3>
+                </NavLink>
+            </div>
+            <div class="podium-bar-container2">
+                <div class="podium-bar podium-silver" style="height: @(game1.Media * 10)%;">
+                    <div class="podium-rank">2</div>
+                    <div class="podium-rating">@game1.Media</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game 1 - 1st place -->
+        <div class="podium-game">
+            <div class="game-info">
+                <NavLink class="card-link no-link-style" href="@($"game/{game2.GameId}/reviews")">
+                    <div class="game-icon">
+                        <img src="favicon.png" alt="Game Logo">
+                    </div>
+                    <h3>@game2.Name</h3>
+                </NavLink>
+            </div>
+            <div class="podium-bar-container">
+                <div class="podium-bar podium-gold" style="height: @(game2.Media * 10)%;">
+                    <div class="podium-rank">1</div>
+                    <div class="podium-rating">@game2.Media</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game 3 - 3rd place -->
+        <div class="podium-game">
+            <div class="game-info3">
+                <NavLink class="card-link no-link-style" href="@($"game/{game3.GameId}/reviews")">
+                    <div class="game-icon">
+                        <img src="favicon.png" alt="Game Logo">
+                    </div>
+                    <h3>@game3.Name</h3>
+                </NavLink>
+            </div>
+            <div class="podium-bar-container3">
+                <div class="podium-bar podium-bronze" style="height: @(game3.Media * 10)%;">
+                    <div class="podium-rank">3</div>
+                    <div class="podium-rating">@game3.Media</div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+
+
+
+<div class="toggle-buttons">
+    <button @onclick="SwitchToGridView" class="@($"{(isGridView ? "active" : "")} btn btn-sm btn-outline-primary mx-1")">
+        Grid View
+    </button>
+    <button @onclick="SwitchToListView" class="@($"{(!isGridView ? "active" : "")} btn btn-sm btn-outline-primary mx-1")">
+        List View
+    </button>
+</div>
+
+
+
+<!-- Main Leaderboard Section -->
+<div class="row">
+    @if (isGridView)
+    {
+        @if (_games != null)
+        {
+            @foreach (var game in _games.Skip(3))
+            {
+            <div class="col-md-4">
+                <!-- Wrap the entire card with NavLink -->
+                <NavLink class="card-link no-link-style" href="@($"game/{game.GameId}/reviews")">
+                    <div class="card">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img src="favicon.png" class="card-img" alt="Game Logo">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">@game.Name</h5>
+                                    <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i> @game.Media</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </NavLink>
+            </div>
+            }
+        }
+    }
+    else
+    {
+    @if (_games != null)
+    {
+    <div class="col-md-12">
+        <ul class="list-group">
+            @foreach (var game in _games.Skip(3))
+            {
+            <li class="list-group-item">
+                <NavLink class="card-link no-link-style" href="@($"game/{game.GameId}/reviews")">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="favicon.png" class="card-img" alt="Game Logo">
+                        </div>
+                        <div class="col-md-10">
+                            <h5 class="card-title">@game.Name</h5>
+                            <p class="card-text">Rating: <i class="bi bi-hand-thumbs-up text-success"></i> @game.Media</p>
+                        </div>
+                    </div>
+                </NavLink>
+            </li>
+            }
+        </ul>
+    </div>
+    }
+    }
+</div>
+
+@code {
+    private bool isGridView = true;
+
+    private void SwitchToGridView()
+    {
+    isGridView = true;
+    }
+
+    private void SwitchToListView()
+    {
+    isGridView = false;
+    }
+
+
+    public class Games
+    {
+        public string GameId { get; set; } = "";
+        public string Name { get; set; } = "";
+
+        public int CountReviews = 0;
+        public int Total = 0;
+        public double Media = 0;
+    }
+
+    public class Reviews
+    {
+        public string ReviewId { get; set; } = "";
+        public string WrittenReview { get; set; } = "";
+        public int Rating { get; set; } = 0;
+        public string UserId { get; set; } = "";
+        public string GameId { get; set; } = "";
+    }
+    
+    private Games[]? _games;
+    private Reviews[]? _reviews;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _games = await ApiHelper.GetFromApiAsync<Games[]>("Game");
+        _reviews = await ApiHelper.GetFromApiAsync<Reviews[]>("Reviews");
+
+        if (_reviews != null && _games != null)
+        {
+            foreach (var game in _games)
+            {
+                foreach (var rev in _reviews)
+                {
+                    if (rev.GameId.Equals(game.GameId))
+                    {
+                        game.CountReviews++;
+                        game.Total += rev.Rating;
+                    }
+                }
+
+                game.Media = Math.Round((double)game.Total / game.CountReviews, 1); 
+            }
+
+            _games = _games.OrderByDescending(game => game.Media).ToArray();
+        }
+    }
+    
+    
+}

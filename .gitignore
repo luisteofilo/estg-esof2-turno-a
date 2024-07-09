@@ -35,5 +35,7 @@ Desktop.ini
 .DS_Store
 
 .env
+.idea/.idea.ESOF.WebApp/Docker/docker-compose.generated.override.yml
+
 
 .idea/config/applicationhost.config

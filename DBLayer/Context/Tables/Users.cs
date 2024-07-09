@@ -26,6 +26,7 @@ public partial class ApplicationDbContext
             .Property(p => p.UserId)
             .HasDefaultValueSql("gen_random_uuid()");
         
+        
         // relação com a tabela SpeedrunRun
         modelBuilder.Entity<User>()
             .HasMany(u => u.speedrunRuns)

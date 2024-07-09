@@ -39,6 +39,38 @@
       <Compile Remove="Context\Tables\Games.cs" />
       <Compile Remove="Migrations\20240626165727_SpeedRuns.cs" />
       <Compile Remove="Migrations\20240626165727_SpeedRuns.Designer.cs" />
+      <Compile Remove="Migrations\20240624213258_marketplace_v2.cs" />
+      <Compile Remove="Migrations\20240624213258_marketplace_v2.Designer.cs" />
+      <Compile Remove="Migrations\20240625221148_schema-gametok.cs" />
+      <Compile Remove="Migrations\20240625221148_schema-gametok.Designer.cs" />
+      <Compile Remove="Migrations\20240626081729_SmallRefactoring.cs" />
+      <Compile Remove="Migrations\20240626081729_SmallRefactoring.Designer.cs" />
+      <Compile Remove="Migrations\20240626105905_VideoQuestRefactoring.cs" />
+      <Compile Remove="Migrations\20240626105905_VideoQuestRefactoring.Designer.cs" />
+      <Compile Remove="Migrations\20240626110939_GuidGenerationGametok.cs" />
+      <Compile Remove="Migrations\20240626110939_GuidGenerationGametok.Designer.cs" />
+      <Compile Remove="Migrations\20240625203534_marketplace_v3.cs" />
+      <Compile Remove="Migrations\20240625203534_marketplace_v3.Designer.cs" />
+      <Compile Remove="Migrations\20240626103508_marketplace_v4.cs" />
+      <Compile Remove="Migrations\20240626103508_marketplace_v4.Designer.cs" />
+      <Compile Remove="Migrations\20240626111003_marketplace_v5.cs" />
+      <Compile Remove="Migrations\20240626111003_marketplace_v5.Designer.cs" />
+      <Compile Remove="Migrations\20240626192107_marketplace_v6.cs" />
+      <Compile Remove="Migrations\20240626192107_marketplace_v6.Designer.cs" />
+      <Compile Remove="Migrations\20240626192419_marketplace_v7.cs" />
+      <Compile Remove="Migrations\20240626192419_marketplace_v7.Designer.cs" />
+      <Compile Remove="Migrations\20240626194136_marketplace_v8.cs" />
+      <Compile Remove="Migrations\20240626194136_marketplace_v8.Designer.cs" />
+      <Compile Remove="Migrations\20240626195106_marketplace_v9.cs" />
+      <Compile Remove="Migrations\20240626195106_marketplace_v9.Designer.cs" />
+      <Compile Remove="Migrations\20240626145018_FixDefaultDate.cs" />
+      <Compile Remove="Migrations\20240626145018_FixDefaultDate.Designer.cs" />
+      <Compile Remove="Migrations\20240626165219_MigrationFavoritos.cs" />
+      <Compile Remove="Migrations\20240626165219_MigrationFavoritos.Designer.cs" />
+      <Compile Remove="Migrations\20240626184148_SpeedRunsData.cs" />
+      <Compile Remove="Migrations\20240626184148_SpeedRunsData.Designer.cs" />
+      <Compile Remove="Migrations\20240626204105_RemovedRom.cs" />
+      <Compile Remove="Migrations\20240626204105_RemovedRom.Designer.cs" />
     </ItemGroup>
 
     <ItemGroup>

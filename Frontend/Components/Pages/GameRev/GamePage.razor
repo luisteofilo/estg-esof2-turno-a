@@ -1,0 +1,411 @@
+﻿@page "/game/{gameid}/reviews"
+@rendermode InteractiveServer
+@using Frontend.Helpers
+@using Microsoft.Extensions.Logging.Console
+@inject ApiHelper ApiHelper
+
+@code
+{
+    [Parameter] public string? GameId { get; set; }
+}
+
+<PageTitle>Reviews</PageTitle>
+
+@if (_game != null)
+{
+    <h1>Reviews from @_game.Name</h1>
+}
+else
+{
+    <h1>Loading...</h1>
+}
+
+
+<div class="row">
+    <div class="reviews-section">
+
+        <!-- Critic Scores -->
+        <div class="critic-scores">
+            <h3>Critic Scores</h3>
+            @if (_countReviews[1]>0)
+            {
+            <!-- Display the critic score -->
+            <div class="critic-score">
+                <!-- Number contained in a colored square -->
+                <div class="@GetCollorMediaCritic(_media[1])"> <!-- Change the class name based on the score -->
+                    <h4><span class="score-placeholder">@_media[1]</span> @GetMediaLabel(_media[1])</h4>
+                </div>
+            </div>
+
+            <!-- Visual representation with bars -->
+            
+            <div class="score-bars">
+                <div class="bar bad-bar" style="width: @GetBarPercentage(_badReviews[1], _countReviews[1])%;"></div> <!-- Placeholder for bad scores -->
+                <div class="bar avg-bar" style="width: @GetBarPercentage(_averageReviews[1], _countReviews[1])%;"></div> <!-- Placeholder for average scores -->
+                <div class="bar good-bar" style="width: @GetBarPercentage(_goodReviews[1], _countReviews[1])%;"></div> <!-- Placeholder for good scores -->
+            </div>
+            }
+            else
+            {
+                <!-- Display the critic score -->
+                
+                <div class="critic-score">
+                    <!-- Number contained in a colored square -->
+                    <div class="square green"> <!-- Change the class name based on the score -->
+                        <h4><span class="score-placeholder">0</span><br>Sem Reviews</h4>
+                    </div>
+                </div>
+                
+                <!-- Visual representation with bars -->
+                
+                <div class="score-bars">
+                    <div class="bar bad-bar" style="width: 30%;"></div> <!-- Placeholder for bad scores -->
+                    <div class="bar avg-bar" style="width: 40%;"></div> <!-- Placeholder for average scores -->
+                    <div class="bar good-bar" style="width: 30%;"></div> <!-- Placeholder for good scores -->
+                </div>
+            }
+
+        </div>
+
+
+
+
+        <!-- User Scores -->
+        
+        <div class="user-scores">
+            <h3>User Scores</h3>
+            @if (_countReviews[0]>0)
+            {
+                <!-- Display the user score -->
+                <div class="user-score">
+                    <!-- Number contained in a colored circle -->
+                    <div class="@GetCollorMediaUser(_media[0])"> <!-- Change the class name based on the score -->
+                        <h4><span class="score-placeholder">@_media[0]</span> @GetMediaLabel(_media[0])</h4>
+                    </div>
+                </div>
+
+                <!-- Visual representation with bars -->
+            
+                <div class="score-bars">
+                    <div class="bar bad-bar" style="width: @GetBarPercentage(_badReviews[0], _countReviews[0])%;"></div> <!-- Placeholder for bad scores -->
+                    <div class="bar avg-bar" style="width: @GetBarPercentage(_averageReviews[0], _countReviews[0])%;"></div> <!-- Placeholder for average scores -->
+                    <div class="bar good-bar" style="width: @GetBarPercentage(_goodReviews[0], _countReviews[0])%;"></div> <!-- Placeholder for good scores -->
+                </div> 
+            }
+            else
+                {
+                    <!-- Display the user score -->
+                
+                    <div class="user-score">
+                        <!-- Number contained in a colored circle -->
+                        <div class="circle green"> <!-- Change the class name based on the score -->
+                            <h4><span class="score-placeholder">0</span><br>Sem Reviews</h4>
+                        </div>
+                    </div>
+                    <!-- Visual representation with bars -->
+                    <div class="score-bars">
+                        <div class="bar bad-bar" style="width: 30%;"></div> <!-- Placeholder for bad scores -->
+                        <div class="bar avg-bar" style="width: 40%;"></div> <!-- Placeholder for average scores -->
+                        <div class="bar good-bar" style="width: 30%;"></div> <!-- Placeholder for good scores -->
+                    </div>
+                }
+        </div>
+
+        <div class="latest-reviews card">
+            <h3 class="card-header">Latest Reviews</h3>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Latest Critic Reviews -->
+                    <div class="col-md-6">
+                        <h4>Critic Reviews</h4>
+                        <div class="review-filters">
+                            <label for="critic-filter">Filter by:</label>
+                            <select id="critic-filter" class="form-select" @onchange="HandleCriticFilterChange">
+                                <option value="all">All</option>
+                                <option value="good">Good</option>
+                                <option value="average">Average</option>
+                                <option value="bad">Bad</option>
+                            </select>
+                        </div>
+                        <div id="critic-reviews">
+                            <!-- Placeholder for reviews, dynamically filtered -->
+                            @if (_criticReviews != null)
+                            {
+                                foreach (var review in FilteredCriticReviews(_criticFilter))
+                                {
+                                    <div class="review card mb-3" data-rating="good">
+                                        <div class="card-body">
+                                            <div class="@GetCollorReviewCritic(review.Rating)">
+                                                <span>@review.Rating</span>
+                                            </div>
+                                            <div class="review-comment">
+                                                <p>@review.WrittenReview</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                    <!-- Latest User Reviews -->
+                    <div class="col-md-6">
+                        <h4>User Reviews</h4>
+                        <div class="review-filters">
+                            <label for="user-filter">Filter by:</label>
+                            <select id="user-filter" class="form-select" @onchange="HandleUserFilterChange">
+                                <option value="all">All</option>
+                                <option value="good">Good</option>
+                                <option value="average">Average</option>
+                                <option value="bad">Bad</option>
+                            </select>
+                        </div>
+                        <div id="user-reviews">
+                            <!-- Placeholder for reviews, dynamically filtered -->
+                            @if (_userReviews != null)
+                            {
+                                foreach (var review in FilteredUSerReviews(_userFilter))
+                                {
+                                    <div class="review card mb-3" data-rating="good">
+                                        <div class="card-body">
+                                            <div class="@GetCollorReviewUser(review.Rating)">
+                                                <span>@review.Rating</span>
+                                            </div>
+                                            <div class="review-comment">
+                                                <p>@review.WrittenReview</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    @code {
+                        private string _userFilter = "all";
+                        private string _criticFilter = "all";
+
+                        private void HandleUserFilterChange(ChangeEventArgs args)
+                        {
+                            _userFilter = args.Value?.ToString() ?? "all";
+                        }
+                        private void HandleCriticFilterChange(ChangeEventArgs args)
+                        {
+                            _criticFilter = args.Value?.ToString() ?? "all";
+                        }
+                    }
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code{
+
+    public class Reviews
+    {
+        public string ReviewId { get; set; } = "";
+        public string WrittenReview { get; set; } = "";
+        public int Rating { get; set; } = 0;
+        public string UserId { get; set; } = "";
+        public string GameId { get; set; } = "";
+    }
+
+    public class Game
+    {
+        public string GameId { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+
+    public class User
+    {
+        public string UserId { get; set; }
+        public int tipo_user { get; set; }
+    }
+    
+    private Reviews[]? _reviews;
+    private Game? _game;
+
+    private List<Reviews>? _criticReviews = new List<Reviews>();
+    private List<Reviews>?  _userReviews = new List<Reviews>();
+
+    private User? _user;        
+    
+    double[] _media = new double[2];
+    int[] _total = new int[2];
+    int[] _countReviews = new int[2];
+    
+    
+    int[] _goodReviews = new int[2];
+    int[] _averageReviews = new int[2];
+    int[] _badReviews = new int[2];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _reviews = await ApiHelper.GetFromApiAsync<Reviews[]>($"Reviews/{GameId}");
+        _game = await ApiHelper.GetFromApiAsync<Game>($"Game/{GameId}");
+
+        if (_reviews != null)
+        {
+            Array.Reverse(_reviews);
+            
+            foreach (var rev in _reviews)
+            {
+                    if (rev.GameId.Equals(GameId))
+                    {
+                        string id = rev.UserId;
+                        _user = await ApiHelper.GetFromApiAsync<User>($"User/{id}");
+                        
+                        _countReviews[_user.tipo_user]++;
+                        _total[_user.tipo_user] += rev.Rating;
+
+                        if (_user.tipo_user == 0)
+                        {
+                            _userReviews.Add(rev);
+                        }
+
+                        if (_user.tipo_user == 1)
+                        {
+                            _criticReviews.Add(rev);
+                        }
+                        
+                        switch (rev.Rating)
+                        {
+                            case <5 :
+                                _badReviews[_user.tipo_user]++;
+                                break;
+                            case >= 5 and < 7:
+                                _averageReviews[_user.tipo_user]++;
+                                break;
+                            case >= 7:
+                                _goodReviews[_user.tipo_user]++;
+                                break;
+                        }
+                    }
+            }
+            _media[0] = Math.Round((double)_total[0] / _countReviews[0], 1);
+            _media[1] = Math.Round((double)_total[1] / _countReviews[1], 1);
+        }
+    }
+
+    private string GetCollorMediaUser(double score)
+    {
+        switch (score)
+        {
+            case <4.5 :
+                return "circle red";
+            case >=4.5 and <= 7:
+                return "circle yellow";
+            case > 7:
+                return "circle green";
+            default:
+                return "";
+        }
+    }
+    
+    private string GetCollorMediaCritic(double score)
+    {
+        switch (score)
+        {
+            case <4.5 :
+                return "square red";
+            case >=4.5 and <= 7:
+                return "square yellow";
+            case > 7:
+                return "square green";
+            default:
+                return "";
+        }
+    }
+    
+    private string GetMediaLabel(double media)
+    {
+        switch (media)
+        {
+            case <4.5 :
+                return "Bad";
+            case >=4.5 and <= 7:
+                return "Average";
+            case > 7:
+                return "Great";
+            default:
+                return "";
+        }
+    }
+
+    private string GetCollorReviewUser(int nota)
+    {
+        switch (nota)
+        {
+            case <5 :
+                return "review-score square red";
+            case >= 5 and < 7:
+                return "review-score square yellow";
+            case >= 7:
+                return "review-score square green";
+        }
+    }
+    
+    private string GetCollorReviewCritic(int nota)
+    {
+        switch (nota)
+        {
+            case <5 :
+                return "review-score circle red";
+            case >= 5 and < 7:
+                return "review-score circle yellow";
+            case >= 7:
+                return "review-score circle green";
+        }
+    }
+
+    private int GetBarPercentage(int parcela, int total)
+    {
+        if (total != 0)
+        {
+            int percentagem = (int)Math.Round((total / (double)parcela) * 100);
+            return percentagem;
+        }
+        
+        return 0;
+    }
+    
+    private IEnumerable<Reviews> FilteredUSerReviews(string filter)
+    {
+        if (_userReviews == null)
+            return Enumerable.Empty<Reviews>();
+
+        switch (filter)
+        {
+            case "good":
+                return _userReviews.Where(r => r.Rating >= 7);
+            case "average":
+                return _userReviews.Where(r => r.Rating >= 5 && r.Rating < 7);
+            case "bad":
+                return _userReviews.Where(r => r.Rating < 5);
+            case "all":
+            default:
+                return _userReviews;
+        }
+    }
+    
+    private IEnumerable<Reviews> FilteredCriticReviews(string filter)
+    {
+        if (_criticReviews == null)
+            return Enumerable.Empty<Reviews>();
+
+        switch (filter)
+        {
+            case "good":
+                return _criticReviews.Where(r => r.Rating >= 7);
+            case "average":
+                return _criticReviews.Where(r => r.Rating >= 5 && r.Rating < 7);
+            case "bad":
+                return _criticReviews.Where(r => r.Rating < 5);
+            case "all":
+            default:
+                return _criticReviews;
+        }
+    }
+}
